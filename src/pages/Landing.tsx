@@ -175,65 +175,43 @@ const drillTransition = {
   duration: 0.12,
 };
 
+const ROTATING_WORDS = ["haz más", "disfruta", "relájate", "descansa"];
+
 const TypewriterTitle = () => {
-  const fullText = "Haz más, lava menos";
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    let timer: any;
-    
-    if (!isDeleting && displayText.length < fullText.length) {
-      timer = setTimeout(() => {
-        setDisplayText(fullText.substring(0, displayText.length + 1));
-      }, 120); // Natural typing speed
-    } else if (!isDeleting && displayText.length === fullText.length) {
-      // Completed, pause with cursor blinking for 4 seconds
-      timer = setTimeout(() => {
-        setIsDeleting(true);
-      }, 4000);
-    } else if (isDeleting && displayText.length > 0) {
-      // Deleting speed
-      timer = setTimeout(() => {
-        setDisplayText(fullText.substring(0, displayText.length - 1));
-      }, 60);
-    } else if (isDeleting && displayText.length === 0) {
-      // Pause for 600ms then start again
-      timer = setTimeout(() => {
-        setIsDeleting(false);
-      }, 600);
-    }
-
+    const delay = ROTATING_WORDS[index] === "haz más" ? 3500 : 1500; // "haz más" is prioritized for 3.5s, others for 1.5s
+    const timer = setTimeout(() => {
+      setIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
+    }, delay);
     return () => clearTimeout(timer);
-  }, [displayText, isDeleting]);
+  }, [index]);
 
   return (
-    <div className="w-full text-center pt-0 pb-10 select-none" id="typewriter-header-container">
-      <div className="relative inline-block">
-        {/* Invisible placeholder of the full text to guarantee zero layout shifts */}
-        <span 
-          className="invisible font-geist font-bold text-[34px] sm:text-[38px] leading-none tracking-tight whitespace-nowrap"
-          style={{ fontFamily: '"Geist", sans-serif' }}
-        >
-          {fullText}
-          <span className="inline-block ml-0.5">|</span>
+    <div className="w-full text-center pt-1 pb-10 select-none" id="rotating-title-container">
+      <h1 
+        className="font-geist font-bold text-[#181818] text-[26px] sm:text-[30px] leading-none tracking-tight flex items-center justify-center w-full h-[40px]"
+        style={{ fontFamily: '"Geist", sans-serif' }}
+      >
+        <span>Lava menos,</span>
+        <span className="relative inline-flex h-[32px] sm:h-[40px] items-center overflow-hidden w-[126px] sm:w-[145px] text-left justify-start ml-1.5">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={index}
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -24, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 280, damping: 22 }}
+              className={`absolute left-0 text-[#0f55d8] whitespace-nowrap ${
+                ROTATING_WORDS[index] === "haz más" ? "font-bold" : "font-medium"
+              }`}
+            >
+              {ROTATING_WORDS[index]}
+            </motion.span>
+          </AnimatePresence>
         </span>
-        
-        {/* Real typed text exactly centered & layered on top */}
-        <h1 
-          className="absolute inset-x-0 top-0 bottom-0 font-geist font-bold text-[#181818] text-[34px] sm:text-[38px] leading-none tracking-tight whitespace-nowrap text-center flex items-center justify-center w-full h-full"
-          style={{ fontFamily: '"Geist", sans-serif' }}
-        >
-          <span>{displayText}</span>
-          <motion.span
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-            className="inline-block ml-0.5 text-[#0f55d8]"
-          >
-            |
-          </motion.span>
-        </h1>
-      </div>
+      </h1>
     </div>
   );
 };
@@ -690,31 +668,26 @@ export default function Landing() {
           <div className="w-full bg-[#FAF9F6] border border-[#EBE6DB] rounded-none pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] mt-10 text-left relative overflow-hidden">
             <div className="flex flex-col">
               {/* Item 1 */}
-              <div className="flex items-center gap-3 pb-3">
-                <span className="font-inter font-semibold text-[18px] text-black shrink-0 w-[32px] h-[32px] flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
-                <div className="space-y-0.5">
+              <div className="flex items-start gap-3 pb-3">
+                <span className="font-inter font-semibold text-[18px] text-black shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
+                <div className="space-y-0.5 pt-1.5">
                   <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                     Pide tu cesto gratis
                   </h4>
                   <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Recíbelo en casa sin costo
+                    Recíbelo en casa
                   </p>
                 </div>
               </div>
 
                {/* Item 2 */}
-              <motion.div
-                initial={{ opacity: 0.3 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.5, duration: 0.20, ease: "easeOut" }}
-                className="w-full flex flex-col"
-              >
+              <div className="w-full flex flex-col">
                 {/* Separador 1 */}
                 <div className="border-t border-[#EDE9E0] w-full" />
 
-                <div className="flex items-center gap-3 py-3">
-                  <span className="font-inter font-semibold text-[18px] text-black shrink-0 w-[32px] h-[32px] flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
-                  <div className="space-y-0.5">
+                <div className="flex items-start gap-3 py-3">
+                  <span className="font-inter font-semibold text-[18px] text-black shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
+                  <div className="space-y-0.5 pt-1.5">
                     <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Llénalo a tu ritmo
                     </h4>
@@ -723,21 +696,16 @@ export default function Landing() {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Item 3 */}
-              <motion.div
-                initial={{ opacity: 0.3 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 5.0, duration: 0.20, ease: "easeOut" }}
-                className="w-full flex flex-col"
-              >
+              <div className="w-full flex flex-col">
                 {/* Separador 2 */}
                 <div className="border-t border-[#EDE9E0] w-full" />
 
-                <div className="flex items-center gap-3 pt-3">
-                  <span className="font-inter font-semibold text-[18px] text-black shrink-0 w-[32px] h-[32px] flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>3</span>
-                  <div className="space-y-0.5">
+                <div className="flex items-start gap-3 pt-3">
+                  <span className="font-inter font-semibold text-[18px] text-black shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>3</span>
+                  <div className="space-y-0.5 pt-1.5">
                     <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Déjalo en el punto de recolección
                     </h4>
@@ -747,31 +715,31 @@ export default function Landing() {
                          onClick={() => document.getElementById('editorial-location-section')?.scrollIntoView({ behavior: 'smooth' })} 
                         className="text-black hover:text-slate-700 underline cursor-pointer font-semibold inline-flex items-center gap-0.5"
                       >
-                        [ver ubicación]
+                        ver ubicación
                       </span>
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
 
           {/* Vertical dashed connector line connecting the steps card to the reward card - aligned with left steps */}
           <motion.div 
-            initial={{ opacity: 0.3 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 5.0, duration: 0.20, ease: "easeOut" }}
+            transition={{ delay: 2.5, duration: 0.30, ease: "easeOut" }}
             className="relative select-none pointer-events-none w-full h-[56px] my-0" 
             id="flow-connector-bridge"
           >
             <motion.div
               initial={{ height: 0 }}
               animate={{ height: 56 }}
-              transition={{ duration: 2.5, delay: 5.0, ease: "easeInOut" }}
+              transition={{ duration: 1.2, delay: 2.5, ease: "easeInOut" }}
               style={{ transformOrigin: "top" }}
               className="absolute inset-0 overflow-hidden"
             >
-              <svg className="absolute left-[31px] w-4 h-[56px] -translate-x-1/2 overflow-visible" style={{ top: '0px', bottom: '0px' }}>
+              <svg className="absolute left-[28px] w-4 h-[56px] -translate-x-1/2 overflow-visible" style={{ top: '0px', bottom: '0px' }}>
                 <motion.line
                   x1="8"
                   y1="0"
@@ -791,9 +759,9 @@ export default function Landing() {
           <motion.div 
             initial={{ opacity: 0.3 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 7.5, duration: 0.20, ease: "easeOut" }}
+            transition={{ delay: 3.8, duration: 0.30, ease: "easeOut" }}
             style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
-            className="w-full bg-[#FAF9F6] border border-[#EBE6DB] rounded-none pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] mb-6 text-left flex items-center gap-3 select-none transform-gpu" 
+            className="w-full bg-[#FAF9F6] border border-[#EBE6DB] rounded-none pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] mb-6 text-left flex items-start gap-3 select-none transform-gpu" 
             id="flow-reward-banner"
           >
             <div 
@@ -803,12 +771,12 @@ export default function Landing() {
             >
               <Truck className="w-5 h-5" strokeWidth={2.1} />
             </div>
-            <div className="flex flex-col text-left space-y-0.5">
+            <div className="flex flex-col text-left space-y-0.5 pt-1.5">
               <p className="font-geist font-semibold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                 Tu ropa limpia de vuelta en casa
               </p>
               <p className="font-geist text-[#6A6A6A] font-medium text-[14px] sm:text-[15px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                Entrega al día siguiente sin costo extra
+                Al siguiente día sin costo extra
               </p>
             </div>
           </motion.div>
@@ -827,6 +795,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+
 
       {/* Sección Exclusiva: El cesto SOMOS */}
       <section className="w-full pt-2 pb-12 bg-transparent" id="conoce-tu-cesto-section">
