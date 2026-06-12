@@ -30,12 +30,15 @@ html, body, #root {
   font-family: var(--font-sans);
   background-color: #f6eedd !important;
   color: #1a1a1a;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 56px;
-  scroll-snap-type: y mandatory;
 }
 
 @layer utilities {

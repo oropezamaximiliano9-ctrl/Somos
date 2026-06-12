@@ -54,14 +54,6 @@ function MainLayout() {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const handleClick = (e: MouseEvent) => {
     if (!isLongPressRef.current) {
       if (role === 'associate') {
@@ -79,7 +71,11 @@ function MainLayout() {
   const isNavbarVisible = showAlwaysNavbar || scrollY > 80;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f6eedd]">
+    <div 
+      className="h-[100dvh] w-full overflow-y-auto overflow-x-hidden flex flex-col bg-[#f6eedd] snap-y snap-mandatory"
+      style={{ scrollBehavior: 'smooth', scrollPaddingTop: '56px' }}
+      onScroll={(e) => setScrollY((e.target as HTMLDivElement).scrollTop)}
+    >
       {/* Top Banner removed */}
 
       {/* Header - Always present, sticky below the top banner */}
