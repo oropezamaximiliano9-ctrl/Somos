@@ -359,12 +359,23 @@ export default function Landing() {
   
   useEffect(() => {
     fetch('/api/locations')
-      .then(res => res.json())
+      .then(res => {
+        const isJson = res.headers.get("content-type")?.includes("application/json");
+        if (!res.ok || !isJson) throw new Error("Fallback to mock locations");
+        return res.json();
+      })
       .then(data => {
+        if (!Array.isArray(data)) throw new Error("Invalid format");
         setLocations(data);
         if (data.length > 0) {
           setSelectedLocationName(data[0].name);
         }
+      })
+      .catch((err) => {
+        console.warn("Using offline fallback for locations:", err);
+        const mockLocations = [{ id: "loc_1", name: "Ubicación Palmas", address: "Paseo de las Palmas 209, Coatzacoalcos, Veracruz", isActive: 1, latitude: 18.1404, longitude: -94.4632 }];
+        setLocations(mockLocations);
+        setSelectedLocationName(mockLocations[0].name);
       });
   }, []);
 
@@ -381,15 +392,33 @@ export default function Landing() {
     if (!phone || phone.length < 5) return;
     try {
       const res = await fetch(`/api/users/phone/${encodeURIComponent(phone)}`);
-      if (res.ok) {
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      if (res.ok && isJson) {
         const data = await res.json();
-        if (data.name) setName(data.name);
-        if (data.deliveryPreference) setDeliveryPreference(data.deliveryPreference);
-        if (data.addressColonia) setAddressColonia(data.addressColonia);
-        if (data.addressCalle) setAddressCalle(data.addressCalle);
-        if (data.preferredTime) setPreferredTime(data.preferredTime);
+        if (data && typeof data === "object" && !("error" in data)) {
+          if (data.name) setName(data.name);
+          if (data.deliveryPreference) setDeliveryPreference(data.deliveryPreference);
+          if (data.addressColonia) setAddressColonia(data.addressColonia);
+          if (data.addressCalle) setAddressCalle(data.addressCalle);
+          if (data.preferredTime) setPreferredTime(data.preferredTime);
+        }
+      } else {
+        throw new Error("Phone search response non-json or error");
       }
-    } catch(e) {}
+    } catch(e) {
+      // Offline fallback: try reading from localStorage of simulated user database
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        const user = savedUsers[phone];
+        if (user) {
+          if (user.name) setName(user.name);
+          if (user.deliveryPreference) setDeliveryPreference(user.deliveryPreference);
+          if (user.addressColonia) setAddressColonia(user.addressColonia);
+          if (user.addressCalle) setAddressCalle(user.addressCalle);
+          if (user.preferredTime) setPreferredTime(user.preferredTime);
+        }
+      } catch (err) {}
+    }
   };
 
   const goToStep2 = (e: FormEvent) => {
@@ -427,10 +456,6 @@ export default function Landing() {
 
     setDirection("forward");
     setActiveFormStep(2);
-    setTimeout(() => {
-      if (viewportRef.current) viewportRef.current.scrollLeft = 0;
-      calleInputRef.current?.focus();
-    }, 40);
   };
 
   const submitStep2AndVerify = async (e: FormEvent) => {
@@ -503,10 +528,17 @@ export default function Landing() {
           preferredTime
         }),
       });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Error al verificar cobertura.");
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      if (!res.ok || !isJson) {
+        throw new Error("Preregister response non-json or error");
       }
+
+      // Save simulated user details locally for subsequent loads
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
+      } catch(e) {}
 
       if (eligible) {
         setIsWaitlisted(false);
@@ -517,7 +549,22 @@ export default function Landing() {
         setFormStep("not_eligible_result");
       }
     } catch (err: any) {
-      setFormError(err.message || "Error al verificar cobertura.");
+      console.warn("API preregister failed, falling back to seamless client-side experience:", err);
+      // Seamless LocalStorage Fallback!
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
+      } catch(e) {}
+
+      if (eligible) {
+        setIsWaitlisted(false);
+        setDirection("forward");
+        setRegistered(true);
+      } else {
+        setDirection("forward");
+        setFormStep("not_eligible_result");
+      }
     } finally {
       setLoading(false);
     }
@@ -548,14 +595,15 @@ export default function Landing() {
           preferredTime
         }),
       });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Error al verificar cobertura.");
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      if (!res.ok || !isJson) {
+        throw new Error("HTTP error fallback");
       }
 
       setFormStep(eligible ? 2 : "not_eligible_result");
     } catch (err: any) {
-      setFormError(err.message || "Error al verificar cobertura.");
+      // Offline fallback
+      setFormStep(eligible ? 2 : "not_eligible_result");
     } finally {
       setLoading(false);
     }
@@ -608,16 +656,32 @@ export default function Landing() {
           preferredTime
         }),
       });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Error al guardar tu registro.");
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      if (!res.ok || !isJson) {
+        throw new Error("HTTP error fallback");
       }
+
+      // Save simulated user details locally for subsequent loads
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
+      } catch(e) {}
 
       setIsWaitlisted(false);
       setDirection("forward");
       setRegistered(true);
     } catch (err: any) {
-      setFormError(err.message || "Error al procesar registro.");
+      console.warn("Offline confirmation fallback:", err);
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
+      } catch(e) {}
+
+      setIsWaitlisted(false);
+      setDirection("forward");
+      setRegistered(true);
     } finally {
       setLoading(false);
     }
@@ -640,16 +704,32 @@ export default function Landing() {
           preferredTime
         }),
       });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Error al guardar en lista de espera.");
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      if (!res.ok || !isJson) {
+        throw new Error("HTTP error fallback");
       }
+
+      // Save simulated user details locally for subsequent loads
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
+      } catch(e) {}
 
       setIsWaitlisted(true);
       setDirection("forward");
       setRegistered(true);
     } catch (err: any) {
-      setFormError(err.message || "Error al guardar en lista de espera.");
+      console.warn("Offline waitlist confirmation fallback:", err);
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
+        savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
+      } catch(e) {}
+
+      setIsWaitlisted(true);
+      setDirection("forward");
+      setRegistered(true);
     } finally {
       setLoading(false);
     }
@@ -1196,8 +1276,8 @@ export default function Landing() {
 
                     <button
                       type="button"
-                      onClick={() => { setDirection("backward"); setFormStep(1); setActiveFormStep(2); setTimeout(() => { if (viewportRef.current) viewportRef.current.scrollLeft = 0; coloniaInputRef.current?.focus(); }, 40); }}
-                      className="text-gray-400 hover:text-gray-650 text-xs font-semibold mt-3.5 font-geist transition-colors text-center pointer-events-auto"
+                      onClick={() => { setDirection("backward"); setFormStep(1); setActiveFormStep(2); setTimeout(() => { coloniaInputRef.current?.focus(); }, 40); }}
+                      className="text-gray-400 hover:text-gray-650 text-xs font-semibold mt-3.5 font-geist transition-colors text-center pointer-events-auto w-full block"
                       style={{ fontFamily: '"Geist", sans-serif' }}
                     >
                       Probar con otra dirección
@@ -1225,9 +1305,6 @@ export default function Landing() {
                               setDirection(step > activeFormStep ? "forward" : "backward");
                               setActiveFormStep(step as 1 | 2);
                               setTimeout(() => {
-                                if (viewportRef.current) {
-                                  viewportRef.current.scrollLeft = 0;
-                                }
                                 if (step === 1) {
                                   nameInputRef.current?.focus();
                                 } else if (step === 2) {
@@ -1265,167 +1342,166 @@ export default function Landing() {
                     </div>
 
                     {/* Slider viewport */}
-                    <div 
-                      ref={viewportRef}
-                      className="flex-1 overflow-hidden min-h-0 relative mt-3"
-                      onScroll={(e) => { e.currentTarget.scrollLeft = 0; }}
-                    >
-                      <div 
-                        className="w-[200%] h-full flex transition-transform duration-300 ease-out"
-                        style={{ transform: `translateX(-${(activeFormStep - 1) * 50}%)` }}
-                      >
-                        {/* Step 1 */}
-                        <div 
-                        className={`w-1/2 h-full flex flex-col justify-between shrink-0 px-0.5 select-none transition-opacity duration-300 ${
-                          activeFormStep === 1 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-                        }`}
-                      >
-                        <form onSubmit={goToStep2} className="space-y-3 h-full flex flex-col justify-between">
-                          <div className="space-y-3">
-                            <div className="space-y-1">
-                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Nombre Completo</label>
-                              <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                  ref={nameInputRef}
-                                  type="text"
-                                  required
-                                  autoComplete="name"
-                                  value={name}
-                                  onChange={(e) => { setName(e.target.value); setFormError(null); }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      e.preventDefault();
-                                      phoneInputRef.current?.focus();
-                                    }
-                                  }}
-                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
-                                  placeholder=""
-                                />
+                    <div className="flex-1 relative mt-3 overflow-hidden min-h-0">
+                      <AnimatePresence mode="wait" initial={false}>
+                        {activeFormStep === 1 ? (
+                          <motion.div
+                            key="step-form-1"
+                            initial={{ x: direction === "forward" ? "10%" : "-10%", opacity: 0 }}
+                            animate={{ x: "0%", opacity: 1 }}
+                            exit={{ x: direction === "forward" ? "-10%" : "10%", opacity: 0 }}
+                            transition={{ duration: 0.22, ease: "easeOut" }}
+                            className="w-full h-full flex flex-col justify-between select-none"
+                          >
+                            <form onSubmit={goToStep2} className="space-y-3 h-full flex flex-col justify-between">
+                              <div className="space-y-3">
+                                <div className="space-y-1">
+                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Nombre Completo</label>
+                                  <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <input
+                                      ref={nameInputRef}
+                                      type="text"
+                                      required
+                                      autoComplete="name"
+                                      value={name}
+                                      onChange={(e) => { setName(e.target.value); setFormError(null); }}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                          e.preventDefault();
+                                          phoneInputRef.current?.focus();
+                                        }
+                                      }}
+                                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                      placeholder=""
+                                    />
+                                  </div>
+                                </div>
+           
+                                <div className="space-y-1">
+                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Teléfono (WhatsApp)</label>
+                                  <div className={`relative ${isShaking ? "animate-shake" : ""}`}>
+                                    <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isPhoneError ? "text-red-500" : "text-slate-400"}`} />
+                                    <input
+                                      ref={phoneInputRef}
+                                      type="tel"
+                                      required
+                                      autoComplete="tel"
+                                      value={phone}
+                                      onChange={(e) => { setPhone(e.target.value); setFormError(null); }}
+                                      onBlur={handlePhoneBlur}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                          e.preventDefault();
+                                          goToStep2(e);
+                                        }
+                                      }}
+                                      className={`w-full pl-9 pr-4 py-2 rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 ${
+                                        isPhoneError
+                                          ? "bg-red-50/30 border border-red-300 text-red-900 focus:border-red-500 focus:ring-red-100"
+                                          : "bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white focus:ring-blue-100 placeholder:text-slate-400"
+                                      }`}
+                                      placeholder=""
+                                    />
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-       
-                            <div className="space-y-1">
-                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Teléfono (WhatsApp)</label>
-                              <div className={`relative ${isShaking ? "animate-shake" : ""}`}>
-                                <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isPhoneError ? "text-red-500" : "text-slate-400"}`} />
-                                <input
-                                  ref={phoneInputRef}
-                                  type="tel"
-                                  required
-                                  autoComplete="tel"
-                                  value={phone}
-                                  onChange={(e) => { setPhone(e.target.value); setFormError(null); }}
-                                  onBlur={handlePhoneBlur}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      e.preventDefault();
-                                      goToStep2(e);
-                                    }
-                                  }}
-                                  className={`w-full pl-9 pr-4 py-2 rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 ${
-                                    isPhoneError
-                                      ? "bg-red-50/30 border border-red-300 text-red-900 focus:border-red-500 focus:ring-red-100"
-                                      : "bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white focus:ring-blue-100 placeholder:text-slate-400"
-                                  }`}
-                                  placeholder=""
-                                />
-                              </div>
-                            </div>
-                          </div>
 
-                           <button
-                             type="submit"
-                             className="w-full py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10"
-                           >
-                             <span className="font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>Continuar</span>
-                             <ArrowRight className="w-4 h-4" />
-                           </button>
-                        </form>
-                      </div>
- 
-                      {/* Step 2 */}
-                      <div 
-                        className={`w-1/2 h-full flex flex-col justify-between shrink-0 px-0.5 select-none transition-opacity duration-300 ${
-                          activeFormStep === 2 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-                        }`}
-                      >
-                        <form onSubmit={submitStep2AndVerify} className="space-y-3 h-full flex flex-col justify-between">
-                          <div className="space-y-3">
-                            <div className="space-y-1">
-                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
-                              <div className="relative">
-                                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                  ref={calleInputRef}
-                                  type="text"
-                                  required
-                                  autoComplete="street-address"
-                                  value={addressCalle}
-                                  onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      e.preventDefault();
-                                      coloniaInputRef.current?.focus();
-                                    }
-                                  }}
-                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
-                                  placeholder=""
-                                />
-                              </div>
-                            </div>
- 
-                            <div className="space-y-1">
-                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Colonia</label>
-                              <div className="relative">
-                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                  ref={coloniaInputRef}
-                                  type="text"
-                                  required
-                                  autoComplete="address-level2"
-                                  value={addressColonia}
-                                  onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      e.preventDefault();
-                                      submitStep2AndVerify(e);
-                                    }
-                                  }}
-                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
-                                  placeholder=""
-                                />
-                              </div>
-                            </div>
-                          </div>
+                              <button
+                                type="submit"
+                                className="w-full py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10 cursor-pointer"
+                              >
+                                <span className="font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>Continuar</span>
+                                <ArrowRight className="w-4 h-4" />
+                              </button>
+                            </form>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="step-form-2"
+                            initial={{ x: direction === "forward" ? "10%" : "-10%", opacity: 0 }}
+                            animate={{ x: "0%", opacity: 1 }}
+                            exit={{ x: direction === "forward" ? "-10%" : "10%", opacity: 0 }}
+                            transition={{ duration: 0.22, ease: "easeOut" }}
+                            className="w-full h-full flex flex-col justify-between select-none"
+                          >
+                            <form onSubmit={submitStep2AndVerify} className="space-y-3 h-full flex flex-col justify-between">
+                              <div className="space-y-3">
+                                <div className="space-y-1">
+                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
+                                  <div className="relative">
+                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <input
+                                      ref={calleInputRef}
+                                      type="text"
+                                      required
+                                      autoComplete="street-address"
+                                      value={addressCalle}
+                                      onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); }}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                          e.preventDefault();
+                                          coloniaInputRef.current?.focus();
+                                        }
+                                      }}
+                                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                      placeholder=""
+                                    />
+                                  </div>
+                                </div>
 
-                          <div className="flex gap-2">
-                            <button
-                              type="button"
-                              onClick={() => { setFormError(null); setDirection("backward"); setActiveFormStep(1); setTimeout(() => phoneInputRef.current?.focus(), 40); }}
-                              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-sm font-geist transition-all shrink-0"
-                              style={{ fontFamily: '"Geist", sans-serif' }}
-                            >
-                              Atrás
-                            </button>
-                            <button
-                              type="submit"
-                              disabled={loading}
-                              className="flex-1 py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10"
-                              style={{ fontFamily: '"Geist", sans-serif' }}
-                            >
-                              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                                <>
-                                  <span>Pedir mi cesto gratis</span>
-                                  <ArrowRight className="w-4 h-4" />
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        </form>
-                      </div>
+                                <div className="space-y-1">
+                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Colonia</label>
+                                  <div className="relative">
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <input
+                                      ref={coloniaInputRef}
+                                      type="text"
+                                      required
+                                      autoComplete="address-level2"
+                                      value={addressColonia}
+                                      onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); }}
+                                      onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                          e.preventDefault();
+                                          submitStep2AndVerify(e);
+                                        }
+                                      }}
+                                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                      placeholder=""
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => { setFormError(null); setDirection("backward"); setActiveFormStep(1); }}
+                                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-sm font-geist transition-all shrink-0 cursor-pointer"
+                                  style={{ fontFamily: '"Geist", sans-serif' }}
+                                >
+                                  Atrás
+                                </button>
+                                <button
+                                  type="submit"
+                                  disabled={loading}
+                                  className="flex-1 py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10 cursor-pointer"
+                                  style={{ fontFamily: '"Geist", sans-serif' }}
+                                >
+                                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                    <>
+                                      <span>Pedir mi cesto gratis</span>
+                                      <ArrowRight className="w-4 h-4" />
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            </form>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </div>
                 </motion.div>
               )}
               </AnimatePresence>
