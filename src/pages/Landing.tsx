@@ -222,6 +222,8 @@ export default function Landing() {
   const { role } = useContext(RoleContext);
   const navigate = useNavigate();
 
+  const [activeFeature, setActiveFeature] = useState(0);
+
   const [name, setName] = useState(() => localStorage.getItem("user_name") || "");
   const [phone, setPhone] = useState(() => localStorage.getItem("user_phone") || "");
   const [deliveryPreference, setDeliveryPreference] = useState(() => localStorage.getItem("user_delivery_preference") || "");
@@ -771,7 +773,10 @@ export default function Landing() {
                     <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Nuevo punto en palmas{' '}
                       <span 
-                         onClick={() => document.getElementById('editorial-location-section')?.scrollIntoView({ behavior: 'smooth' })} 
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           document.getElementById('editorial-location-section')?.scrollIntoView({ behavior: 'smooth' });
+                         }} 
                         className="text-black hover:text-slate-700 underline cursor-pointer font-semibold inline-flex items-center gap-0.5"
                       >
                         ver ubicación
@@ -787,14 +792,14 @@ export default function Landing() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2.5, duration: 0.30, ease: "easeOut" }}
+            transition={{ delay: 4.5, duration: 0.30, ease: "easeOut" }}
             className="relative select-none pointer-events-none w-full h-[56px] my-0" 
             id="flow-connector-bridge"
           >
             <motion.div
               initial={{ height: 0 }}
               animate={{ height: 56 }}
-              transition={{ duration: 1.2, delay: 2.5, ease: "easeInOut" }}
+              transition={{ duration: 1.2, delay: 4.5, ease: "easeInOut" }}
               style={{ transformOrigin: "top" }}
               className="absolute inset-0 overflow-hidden"
             >
@@ -818,7 +823,7 @@ export default function Landing() {
           <motion.div 
             initial={{ opacity: 0.3 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 3.8, duration: 0.30, ease: "easeOut" }}
+            transition={{ delay: 5.8, duration: 0.30, ease: "easeOut" }}
             style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
             className="w-full bg-[#FAF9F6] border border-[#EBE6DB] rounded-none pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] mb-6 text-left flex items-start gap-3 select-none transform-gpu" 
             id="flow-reward-banner"
@@ -889,63 +894,117 @@ export default function Landing() {
           </div>
 
           {/* Tarjeta unificada de características (idéntica a la imagen, sin redondeado, mismo ancho que pasos) */}
-          <div className="w-full bg-[#FAF9F6] border border-[#EBE6DB] rounded-none pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] mt-5 text-left">
+          <div className="w-full bg-[#FAF9F6] border border-[#EBE6DB] rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.04)] mt-5 text-left overflow-hidden">
             <div className="flex flex-col">
+              
               {/* Item 1 */}
-              <div className="flex items-center gap-3 pb-3">
-                <div className="shrink-0 w-9 h-9 flex items-center justify-center">
-                  <Tag className="w-5 h-5 text-black" strokeWidth={2} />
-                </div>
-                <div className="space-y-0.5">
-                  <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Sin costo
-                  </h4>
-                  <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Incluido con nuestro servicio
-                  </p>
-                </div>
-              </div>
-
-              {/* Separador 1 */}
-              <div className="border-t border-[#EDE9E0] w-full" />
-
-              {/* Item 2 */}
-              <div className="flex items-center gap-3 py-3">
-                <div className="shrink-0 w-9 h-9 flex items-center justify-center">
-                  <ShoppingBag className="w-5 h-5 text-black" strokeWidth={2} />
-                </div>
-                <div className="space-y-0.5">
-                  <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Fácil de transportar
-                  </h4>
-                  <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Asas para moverlo con comodidad.
-                  </p>
-                </div>
-              </div>
-
-              {/* Separador 2 */}
-              <div className="border-t border-[#EDE9E0] w-full" />
-
-              {/* Item 3 */}
-              <div className="flex items-center gap-3 pt-3">
-                <div className="shrink-0 w-9 h-9 flex items-center justify-center">
-                  {/* Custom QR Scan indicator with corner brackets */}
-                   <div className="relative w-5 h-5 flex items-center justify-center text-black">
-                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t-2 border-l-2 border-black rounded-tl-[1px]" />
-                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t-2 border-r-2 border-black rounded-tr-[1px]" />
-                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b-2 border-l-2 border-black rounded-bl-[1px]" />
-                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b-2 border-r-2 border-black rounded-br-[1px]" />
-                    <QrCode className="w-2.5 h-2.5" strokeWidth={2} />
+              <div 
+                className={`flex flex-col overflow-hidden transition-all duration-300 cursor-pointer px-4 py-2.5 border-b border-[#EBE6DB] ${activeFeature === 0 ? 'bg-white' : 'bg-transparent hover:bg-[#F2EDDF]/40'}`}
+                onClick={() => setActiveFeature(0)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-7 h-7 flex items-center justify-center">
+                    <Tag className={`w-5 h-5 transition-colors ${activeFeature === 0 ? 'text-[#181818]' : 'text-[#6A6A6A]'}`} strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex justify-between items-center w-full min-h-[28px]">
+                      <h4 className={`font-geist font-semibold ${activeFeature === 0 ? 'text-[#181818] text-[16px] sm:text-[17px]' : 'text-[#6A6A6A] text-[15px] sm:text-[16px]'} transition-colors leading-tight`} style={{ fontFamily: '"Geist", sans-serif' }}>
+                        Sin costo
+                      </h4>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${activeFeature === 0 ? 'rotate-180 text-[#181818]' : 'text-[#A0A0A0]'}`} />
+                    </div>
+                    <AnimatePresence>
+                      {activeFeature === 0 && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug mt-0.5 mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+                            Incluido con nuestro servicio
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
-                <div className="space-y-0.5">
-                  <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Vinculado a tu cuenta
-                  </h4>
-                  <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Recibimos tu ropa al instante
-                  </p>
+              </div>
+
+              {/* Item 2 */}
+              <div 
+                className={`flex flex-col overflow-hidden transition-all duration-300 cursor-pointer px-4 py-2.5 border-b border-[#EBE6DB] ${activeFeature === 1 ? 'bg-white' : 'bg-transparent hover:bg-[#F2EDDF]/40'}`}
+                onClick={() => setActiveFeature(1)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-7 h-7 flex items-center justify-center">
+                    <ShoppingBag className={`w-5 h-5 transition-colors ${activeFeature === 1 ? 'text-[#181818]' : 'text-[#6A6A6A]'}`} strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex justify-between items-center w-full min-h-[28px]">
+                      <h4 className={`font-geist font-semibold ${activeFeature === 1 ? 'text-[#181818] text-[16px] sm:text-[17px]' : 'text-[#6A6A6A] text-[15px] sm:text-[16px]'} transition-colors leading-tight`} style={{ fontFamily: '"Geist", sans-serif' }}>
+                        Fácil de transportar
+                      </h4>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${activeFeature === 1 ? 'rotate-180 text-[#181818]' : 'text-[#A0A0A0]'}`} />
+                    </div>
+                    <AnimatePresence>
+                      {activeFeature === 1 && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug mt-0.5 mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+                            Asas para moverlo con comodidad.
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </div>
+
+              {/* Item 3 */}
+              <div 
+                className={`flex flex-col overflow-hidden transition-all duration-300 cursor-pointer px-4 py-2.5 ${activeFeature === 2 ? 'bg-white' : 'bg-transparent hover:bg-[#F2EDDF]/40'}`}
+                onClick={() => setActiveFeature(2)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-7 h-7 flex items-center justify-center">
+                    <div className={`relative w-4 h-4 flex items-center justify-center transition-colors ${activeFeature === 2 ? 'text-[#181818]' : 'text-[#6A6A6A]'}`}>
+                      <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t-2 border-l-2 border-current rounded-tl-[1px]" />
+                      <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t-2 border-r-2 border-current rounded-tr-[1px]" />
+                      <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b-2 border-l-2 border-current rounded-bl-[1px]" />
+                      <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b-2 border-r-2 border-current rounded-br-[1px]" />
+                      <QrCode className="w-2.5 h-2.5" strokeWidth={2} />
+                    </div>
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex justify-between items-center w-full min-h-[28px]">
+                      <h4 className={`font-geist font-semibold ${activeFeature === 2 ? 'text-[#181818] text-[16px] sm:text-[17px]' : 'text-[#6A6A6A] text-[15px] sm:text-[16px]'} transition-colors leading-tight`} style={{ fontFamily: '"Geist", sans-serif' }}>
+                        Vinculado a tu cuenta
+                      </h4>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${activeFeature === 2 ? 'rotate-180 text-[#181818]' : 'text-[#A0A0A0]'}`} />
+                    </div>
+                    <AnimatePresence>
+                      {activeFeature === 2 && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug mt-0.5 mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+                            Recibimos tu ropa al instante
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
             </div>
