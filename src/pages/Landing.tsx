@@ -719,7 +719,7 @@ export default function Landing() {
   return (
     <div className="flex-1 flex flex-col w-full bg-[#f6eedd]">
       {/* Hero Section */}
-      <section className="relative w-full px-0 pt-4 pb-12 flex flex-col items-start text-left justify-center snap-start snap-always" style={{ scrollSnapAlign: 'start', height: '100vh' }}>
+      <section className="relative w-full px-0 pt-4 pb-12 flex flex-col items-start text-left justify-start snap-start snap-always" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
 
         <div className="relative z-10 w-full max-w-sm mx-auto pt-0">
 
@@ -863,7 +863,7 @@ export default function Landing() {
 
 
       {/* Sección Exclusiva: El cesto SOMOS */}
-      <section className="w-full pt-16 pb-12 flex flex-col justify-center bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', height: '100vh' }}>
+      <section className="w-full pt-10 pb-12 flex flex-col justify-start bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1013,7 +1013,7 @@ export default function Landing() {
       </section>
 
       {/* Nueva Sección: Ubicación Dinámica Interactiva sin Clave de API */}
-      <section className="w-full px-0 pt-16 flex flex-col justify-center pb-10 bg-[#f6eedd] snap-start snap-always" id="editorial-location-section" style={{ scrollSnapAlign: 'start', height: '100vh' }}>
+      <section className="w-full px-0 pt-10 flex flex-col justify-start pb-10 bg-[#f6eedd] snap-start snap-always" id="editorial-location-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
         <div className="w-full max-w-sm mx-auto space-y-4 text-left">
           
           {/* Header directly in the layout, extremely bold and crisp */}
