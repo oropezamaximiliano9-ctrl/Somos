@@ -3,6 +3,10 @@ import { Loader2, PackageSearch, Clock, CheckCircle, FileText, MapPin, Plus, Edi
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import { generateBagQrLabelPdf } from "../utils/pdf";
 import { motion, AnimatePresence } from "motion/react";
+import { db } from "../firebase";
+import { 
+  collection, getDocs, getDoc, setDoc, updateDoc, doc, query, where, orderBy, limit 
+} from "firebase/firestore";
 
 const getDeliveryDayDescription = (deliveryTypeStr: string) => {
   const type = (deliveryTypeStr || 'Est\u00e1ndar').toLowerCase();
@@ -430,35 +434,31 @@ export default function Dashboard() {
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     setUpdatingOrderId(orderId);
     try {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (res.ok) {
-        // Find the current order details before fetching fresh list
-        const orderObj = orders.find(o => o.id === orderId);
-        await fetchData();
+      const orderRef = doc(db, "orders", orderId);
+      await updateDoc(orderRef, { status: newStatus });
 
-        if (newStatus === "completed" && orderObj) {
-          // Pre-calculate suggested delivery day based on delivery preference & deliveryType
-          const suggestedDay = getDeliveryDayDescription(orderObj.deliveryType || orderObj.deliveryPreference);
-          const timeInput = orderObj.preferredTime || "17:00 - 19:00";
-          const dCalle = orderObj.addressCalle || "";
-          const dColonia = orderObj.addressColonia || "";
-          const locationPart = dCalle ? `${dCalle}${dColonia ? `, Col. ${dColonia}` : ''}` : "Mostrador / Recoger presencial";
+      // Find the current order details before fetching fresh list
+      const orderObj = orders.find(o => o.id === orderId);
+      await fetchData();
 
-          const message = `\u00A1Hola, *${orderObj.userName}*! \u{1F9E7}\n\nTe comunicamos de *SOMOS lavander\u00EDa* que tu ropa de la *Bolsa ${orderObj.bagId}* (Orden *#${String(orderObj.id || '').padStart(4, '0')}*) ya est\u00E1 lista, limpia y doblada. \u{2705}\n\n\u{1F69A} *Programaci\u00F3n de Entrega:*\n\u{1F4C5} *D\u00EDa:* ${suggestedDay}\n\u{23F0} *Horario:* ${timeInput}\n\u{1F4CD} *Domicilio:* ${locationPart}\n\n\u00A1Muchas gracias por tu confianza! Si tienes alguna duda o necesitas cambiar el horario, av\u00EDsanos con un mensaje aqu\u00ED.`;
-          
-          let cleanPhone = (orderObj.userPhone || "").replace(/\D/g, "");
-          // MX prefix support
-          if (cleanPhone.length === 10) {
-            cleanPhone = "52" + cleanPhone;
-          }
-          
-          const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-          window.open(waUrl, "_blank");
+      if (newStatus === "completed" && orderObj) {
+        // Pre-calculate suggested delivery day based on delivery preference & deliveryType
+        const suggestedDay = getDeliveryDayDescription(orderObj.deliveryType || orderObj.deliveryPreference);
+        const timeInput = orderObj.preferredTime || "17:00 - 19:00";
+        const dCalle = orderObj.addressCalle || "";
+        const dColonia = orderObj.addressColonia || "";
+        const locationPart = dCalle ? `${dCalle}${dColonia ? `, Col. ${dColonia}` : ''}` : "Mostrador / Recoger presencial";
+
+        const message = `\u00A1Hola, *${orderObj.userName}*! \u{1F9E7}\n\nTe comunicamos de *SOMOS lavander\u00EDa* que tu ropa de la *Bolsa ${orderObj.bagId}* (Orden *#${String(orderObj.id || '').padStart(4, '0')}*) ya est\u00E1 lista, limpia y doblada. \u{2705}\n\n\u{1F69A} *Programaci\u00F3n de Entrega:*\n\u{1F4C5} *D\u00EDa:* ${suggestedDay}\n\u{23F0} *Horario:* ${timeInput}\n\u{1F4CD} *Domicilio:* ${locationPart}\n\n\u00A1Muchas gracias por tu confianza! Si tienes alguna duda o necesitas cambiar el horario, av\u00EDsanos con un mensaje aqu\u00ED.`;
+        
+        let cleanPhone = (orderObj.userPhone || "").replace(/\D/g, "");
+        // MX prefix support
+        if (cleanPhone.length === 10) {
+          cleanPhone = "52" + cleanPhone;
         }
+        
+        const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, "_blank");
       }
     } catch (err) {
       console.error(err);
@@ -475,35 +475,113 @@ export default function Dashboard() {
     setLoading(true);
     setErrorObj(null);
     try {
-      // Add AbortController for timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-
-      const [ordersRes, locationsRes, bagsRes, customersRes] = await Promise.all([
-        fetch("/api/orders", { signal: controller.signal }),
-        fetch("/api/locations", { signal: controller.signal }),
-        fetch("/api/bags", { signal: controller.signal }),
-        fetch("/api/customers", { signal: controller.signal })
+      // 1. Fetch collections from Firestore
+      const [ordersSnap, locationsSnap, bagsSnap, usersSnap] = await Promise.all([
+        getDocs(collection(db, "orders")),
+        getDocs(collection(db, "locations")),
+        getDocs(collection(db, "bags")),
+        getDocs(collection(db, "users"))
       ]);
-      
-      clearTimeout(timeoutId);
 
-      if (!ordersRes.ok || !locationsRes.ok || !bagsRes.ok || !customersRes.ok) {
-        throw new Error(`Error: ${ordersRes.status} ${locationsRes.status} ${bagsRes.status} ${customersRes.status}`);
-      }
-      
-      const ordersData = await ordersRes.json();
-      const locationsData = await locationsRes.json();
-      const bagsData = await bagsRes.json();
-      const customersData = await customersRes.json();
+      // 2. Map users/customers
+      const usersList: any[] = [];
+      const usersMap: Record<string, any> = {};
+      usersSnap.forEach((snap) => {
+        const u = snap.data();
+        usersList.push(u);
+        usersMap[u.id] = u;
+      });
+
+      // Sort users by name ASC
+      usersList.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+      // 3. Map orders
+      const rawOrdersList: any[] = [];
+      ordersSnap.forEach((snap) => {
+        rawOrdersList.push(snap.data());
+      });
+
+      // Sort orders by createdAt DESC
+      rawOrdersList.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      const ordersData = rawOrdersList.map((ord) => {
+        const u = ord.userId ? usersMap[ord.userId] : null;
+        return {
+          id: ord.id,
+          bagId: ord.bagId,
+          status: ord.status,
+          createdAt: ord.createdAt,
+          deliveryType: ord.deliveryType,
+          userName: u ? (u.name || "") : "Usuario no encontrado",
+          userPhone: u ? (u.phone || "") : "",
+          deliveryPreference: u ? (u.deliveryPreference || "") : "",
+          addressCalle: u ? (u.addressCalle || "") : "",
+          addressColonia: u ? (u.addressColonia || "") : "",
+          preferredTime: u ? (u.preferredTime || "") : ""
+        };
+      });
+
+      // 4. Map active geolocated branch locations
+      const locationsData: any[] = [];
+      locationsSnap.forEach((snap) => {
+        const data = snap.data();
+        if (data.isActive === 1 || data.isActive === true) {
+          locationsData.push(data);
+        }
+      });
+
+      // 5. Map bags with assigned owners
+      const rawBagsList: any[] = [];
+      bagsSnap.forEach((snap) => {
+        rawBagsList.push(snap.data());
+      });
+
+      // Sort bags alphabetically by id
+      rawBagsList.sort((a, b) => (a.id || "").localeCompare(b.id || ""));
+
+      const bagsData = rawBagsList.map((bag) => {
+        const u = bag.userId ? usersMap[bag.userId] : null;
+        return {
+          id: bag.id,
+          status: bag.status,
+          userId: bag.userId,
+          userName: u ? (u.name || "") : ""
+        };
+      });
+
+      // 6. Map customers with calculated transaction counts
+      const customersData = usersList.map((u) => {
+        let orderCount = 0;
+        let activeOrderCount = 0;
+        rawOrdersList.forEach((ord) => {
+          if (ord.userId === u.id) {
+            orderCount++;
+            if (ord.status !== "completed") {
+              activeOrderCount++;
+            }
+          }
+        });
+
+        return {
+          ...u,
+          orderCount,
+          activeOrderCount
+        };
+      });
+
       setOrders(ordersData);
       setLocations(locationsData);
       setBags(bagsData);
       setCustomers(customersData);
     } catch (err: any) {
-      console.error(err);
+      console.error("Direct Firestore fetching failed on dashboard:", err);
       setErrorObj(err.message || 'Error de conexión');
-      // Ensure we don't crash the UI with empty mapping by setting default arrays
+      
+      // Attempt using cached lists or default to empty on extreme failure
       setOrders(prev => prev || []);
       setLocations(prev => prev || []);
       setBags(prev => prev || []);
@@ -516,12 +594,23 @@ export default function Dashboard() {
   const handleCreateBag = async () => {
     setCreatingBag(true);
     try {
-      const res = await fetch("/api/bags", { method: "POST" });
-      if (res.ok) {
-        fetchData();
+      const bagsSnap = await getDocs(collection(db, "bags"));
+      let nextNum = bagsSnap.size + 1;
+      let bagId = `BOLSA-${nextNum.toString().padStart(3, "0")}`;
+
+      while (true) {
+        const checkSnap = await getDoc(doc(db, "bags", bagId));
+        if (!checkSnap.exists()) {
+          break;
+        }
+        nextNum++;
+        bagId = `BOLSA-${nextNum.toString().padStart(3, "0")}`;
       }
+
+      await setDoc(doc(db, "bags", bagId), { id: bagId, status: "unassigned", userId: null });
+      await fetchData();
     } catch (err) {
-      console.error(err);
+      console.error("Failed to create bag client-side in Firestore:", err);
     } finally {
       setCreatingBag(false);
     }
@@ -531,15 +620,26 @@ export default function Dashboard() {
     e.preventDefault();
     setSavingLoc(true);
     try {
-      await fetch("/api/locations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingLoc)
-      });
+      const { id, name, address, isActive } = editingLoc;
+      if (id) {
+        await updateDoc(doc(db, "locations", id), {
+          name,
+          address: address || null,
+          isActive: isActive ? 1 : 0
+        });
+      } else {
+        const newId = "loc_" + Date.now();
+        await setDoc(doc(db, "locations", newId), {
+          id: newId,
+          name,
+          address: address || null,
+          isActive: isActive !== false ? 1 : 0
+        });
+      }
       setShowLocModal(false);
-      fetchData();
+      await fetchData();
     } catch (err) {
-      console.error(err);
+      console.error("Failed to save location client-side in Firestore:", err);
     } finally {
       setSavingLoc(false);
     }
@@ -557,13 +657,25 @@ export default function Dashboard() {
     setSelectedCustomer(cust);
     setLoadingCustOrders(true);
     try {
-      const res = await fetch(`/api/customers/${cust.id}/orders`);
-      if (res.ok) {
-        const data = await res.json();
-        setCustomerOrders(data);
-      }
+      const ordersSnap = await getDocs(collection(db, "orders"));
+      const customerOrdersList: any[] = [];
+      ordersSnap.forEach((oSnap) => {
+        const o = oSnap.data();
+        if (o.userId === cust.id) {
+          customerOrdersList.push(o);
+        }
+      });
+
+      // Sort by createdAt DESC
+      customerOrdersList.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      setCustomerOrders(customerOrdersList);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch customer orders client-side in Firestore:", err);
     } finally {
       setLoadingCustOrders(false);
     }
@@ -572,19 +684,24 @@ export default function Dashboard() {
   const handleSaveCustomerDetails = async (custDetails: any) => {
     setSavingCustomer(true);
     try {
-      const res = await fetch(`/api/customers/${custDetails.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(custDetails)
+      const { id, name, phone, deliveryPreference, addressColonia, addressCalle, addressNumero, preferredTime, addressReferences, credits } = custDetails;
+      await updateDoc(doc(db, "users", id), {
+        name,
+        phone,
+        deliveryPreference: deliveryPreference || "Estándar (48 h)",
+        addressColonia: addressColonia || null,
+        addressCalle: addressCalle || null,
+        addressNumero: addressNumero || null,
+        preferredTime: preferredTime || "",
+        addressReferences: addressReferences || "",
+        credits: credits !== undefined ? Number(credits) : 0
       });
-      if (res.ok) {
-        await fetchData(); // Refresh references and balances
-        // Keep selected user with fresh updated values
-        setSelectedCustomer(custDetails);
-        setEditingCustomer(null);
-      }
+      await fetchData(); // Refresh references and balances
+      // Keep selected user with fresh updated values
+      setSelectedCustomer(custDetails);
+      setEditingCustomer(null);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to save customer details client-side in Firestore:", err);
     } finally {
       setSavingCustomer(false);
     }
