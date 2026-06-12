@@ -191,21 +191,21 @@ const TypewriterTitle = () => {
   }, [index]);
 
   return (
-    <div className="w-full text-center pt-1 pb-10 select-none" id="rotating-title-container">
+    <div className="w-full text-center pt-8 pb-10 select-none" id="rotating-title-container">
       <h1 
         className="font-geist font-bold text-[#181818] text-[26px] sm:text-[30px] leading-none tracking-tight flex items-center justify-center w-full h-[40px]"
         style={{ fontFamily: '"Geist", sans-serif' }}
       >
         <span>Lava menos,</span>
         <span className="relative inline-flex h-[32px] sm:h-[40px] items-center overflow-hidden w-[126px] sm:w-[145px] text-left justify-start ml-1.5">
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence initial={false}>
             <motion.span
               key={index}
-              initial={{ y: 24, opacity: 0 }}
+              initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -24, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 280, damping: 22 }}
-              className={`absolute left-0 text-[#0f55d8] whitespace-nowrap ${
+              exit={{ y: -30, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              className={`absolute left-0 text-[#0f55d8] whitespace-nowrap will-change-transform ${
                 ROTATING_WORDS[index] === "haz más" ? "font-bold" : "font-medium"
               }`}
             >
@@ -717,9 +717,9 @@ export default function Landing() {
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full pb-12 overflow-x-hidden pt-0 bg-[#f6eedd]">
+    <div className="flex-1 flex flex-col w-full bg-[#f6eedd]">
       {/* Hero Section */}
-      <section className="relative w-full px-0 pt-0 pb-12 flex flex-col items-start text-left">
+      <section className="relative w-full px-0 pt-4 pb-12 flex flex-col items-start text-left justify-center snap-start snap-always" style={{ scrollSnapAlign: 'start', height: '100vh' }}>
 
         <div className="relative z-10 w-full max-w-sm mx-auto pt-0">
 
@@ -863,7 +863,7 @@ export default function Landing() {
 
 
       {/* Sección Exclusiva: El cesto SOMOS */}
-      <section className="w-full pt-2 pb-12 bg-transparent" id="conoce-tu-cesto-section">
+      <section className="w-full pt-16 pb-12 flex flex-col justify-center bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', height: '100vh' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1013,7 +1013,7 @@ export default function Landing() {
       </section>
 
       {/* Nueva Sección: Ubicación Dinámica Interactiva sin Clave de API */}
-      <section className="w-full px-0 pt-2 pb-10 bg-[#f6eedd]" id="editorial-location-section">
+      <section className="w-full px-0 pt-16 flex flex-col justify-center pb-10 bg-[#f6eedd] snap-start snap-always" id="editorial-location-section" style={{ scrollSnapAlign: 'start', height: '100vh' }}>
         <div className="w-full max-w-sm mx-auto space-y-4 text-left">
           
           {/* Header directly in the layout, extremely bold and crisp */}

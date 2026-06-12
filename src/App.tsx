@@ -120,7 +120,7 @@ function MainLayout() {
       </header>
 
       {/* Main Content Area - Mobile constrained with modern standard spacing */}
-      <main className={`flex-1 w-full max-w-sm mx-auto relative flex flex-col px-4 ${isLandingPage ? "pt-3" : "pt-16"} pb-4`}>
+      <main className={`flex-1 w-full max-w-sm mx-auto relative flex flex-col px-4 ${isLandingPage ? "pt-0 pb-0" : "pt-16 pb-4"}`}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/bolsa/:id" element={<BagFlow />} />

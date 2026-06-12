@@ -32,6 +32,12 @@ html, body, #root {
   color: #1a1a1a;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 56px;
+}
+
 @layer utilities {
   .card {
     background: white;
