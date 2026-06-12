@@ -4,6 +4,8 @@ import { ArrowLeft, Search, CheckCircle2, QrCode, Loader2, Camera, Package } fro
 import { motion, AnimatePresence } from "motion/react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { extractBagId } from "../utils/qr";
+import { db } from "../firebase";
+import { doc, getDoc, getDocs, updateDoc, setDoc, collection, query, where } from "firebase/firestore";
 
 export default function AssociateAssignPreRegistered() {
   const navigate = useNavigate();
@@ -27,10 +29,13 @@ export default function AssociateAssignPreRegistered() {
         setLoading(true);
         setSearchError("");
         try {
-          const res = await fetch(`/api/users/phone/${encodeURIComponent(prefilledPhone)}`);
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error);
-          setFoundUser(data);
+          const q = query(collection(db, "users"), where("phone", "==", prefilledPhone));
+          const snap = await getDocs(q);
+          if (snap.empty) {
+            throw new Error("Cliente no encontrado.");
+          }
+          const uDoc = snap.docs[0];
+          setFoundUser({ id: uDoc.id, ...uDoc.data() } as any);
         } catch (err: any) {
           setSearchError("No encontrado. Intenta con otro teléfono.");
           setFoundUser(null);
@@ -49,10 +54,13 @@ export default function AssociateAssignPreRegistered() {
     setLoading(true);
     setSearchError("");
     try {
-      const res = await fetch(`/api/users/phone/${encodeURIComponent(phoneSearch)}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setFoundUser(data);
+      const q = query(collection(db, "users"), where("phone", "==", phoneSearch.trim()));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        throw new Error("Cliente no encontrado.");
+      }
+      const uDoc = snap.docs[0];
+      setFoundUser({ id: uDoc.id, ...uDoc.data() } as any);
     } catch (err: any) {
       setSearchError("No encontrado. Intenta con otro teléfono.");
       setFoundUser(null);
@@ -65,13 +73,52 @@ export default function AssociateAssignPreRegistered() {
     if (!foundUser) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bagId, name: foundUser.name, phone: foundUser.phone }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const bagRef = doc(db, "bags", bagId);
+      const bagSnap = await getDoc(bagRef);
+      if (!bagSnap.exists()) {
+        throw new Error("Bolsa no encontrada.");
+      }
+      const bagData = bagSnap.data() as any;
+      if (bagData.status === "assigned") {
+        throw new Error("La bolsa ya está asignada.");
+      }
+
+      const usersQuery = query(collection(db, "users"), where("phone", "==", foundUser.phone));
+      const usersSnap = await getDocs(usersQuery);
+      let targetUserId = foundUser.id;
+
+      if (!usersSnap.empty) {
+        const docSnap = usersSnap.docs[0];
+        targetUserId = docSnap.id;
+        const existingUser = docSnap.data();
+
+        await updateDoc(doc(db, "users", targetUserId), {
+          name: foundUser.name,
+          deliveryPreference: existingUser.deliveryPreference || "",
+          addressColonia: existingUser.addressColonia || null,
+          addressCalle: existingUser.addressCalle || null,
+          addressNumero: existingUser.addressNumero || null,
+          preferredTime: existingUser.preferredTime || "",
+          addressReferences: existingUser.addressReferences || ""
+        });
+      } else {
+        targetUserId = "USR-" + Math.random().toString(36).substring(2, 11);
+        await setDoc(doc(db, "users", targetUserId), {
+          id: targetUserId,
+          name: foundUser.name,
+          phone: foundUser.phone,
+          deliveryPreference: "",
+          addressColonia: null,
+          addressCalle: null,
+          addressNumero: null,
+          preferredTime: "",
+          addressReferences: "",
+          credits: 0.0,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      await updateDoc(doc(db, "bags", bagId), { status: "assigned", userId: targetUserId });
       
       // Success! Show green screen mode
       setSuccessData({ name: foundUser.name, bagId });

@@ -4,6 +4,8 @@ import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
 import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.png";
+import { db } from "../firebase";
+import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
 const AnimatedTruck = () => (
   <div className="relative w-16 h-16 flex items-center justify-center mb-1">
@@ -358,18 +360,18 @@ export default function Landing() {
   }, [activeFormStep, isBottomSheetOpen]);
   
   useEffect(() => {
-    fetch('/api/locations')
-      .then(res => {
-        const isJson = res.headers.get("content-type")?.includes("application/json");
-        if (!res.ok || !isJson) throw new Error("Fallback to mock locations");
-        return res.json();
-      })
-      .then(data => {
-        if (!Array.isArray(data)) throw new Error("Invalid format");
-        setLocations(data);
-        if (data.length > 0) {
-          setSelectedLocationName(data[0].name);
-        }
+    getDocs(collection(db, "locations"))
+      .then(snap => {
+        const list: any[] = [];
+        snap.forEach(d => {
+          const data = d.data();
+          if (data.isActive === 1 || data.isActive === true) {
+            list.push(data);
+          }
+        });
+        if (list.length === 0) throw new Error("No active locations in DB");
+        setLocations(list);
+        setSelectedLocationName(list[0].name);
       })
       .catch((err) => {
         console.warn("Using offline fallback for locations:", err);
@@ -391,19 +393,17 @@ export default function Landing() {
   const handlePhoneBlur = async () => {
     if (!phone || phone.length < 5) return;
     try {
-      const res = await fetch(`/api/users/phone/${encodeURIComponent(phone)}`);
-      const isJson = res.headers.get("content-type")?.includes("application/json");
-      if (res.ok && isJson) {
-        const data = await res.json();
-        if (data && typeof data === "object" && !("error" in data)) {
-          if (data.name) setName(data.name);
-          if (data.deliveryPreference) setDeliveryPreference(data.deliveryPreference);
-          if (data.addressColonia) setAddressColonia(data.addressColonia);
-          if (data.addressCalle) setAddressCalle(data.addressCalle);
-          if (data.preferredTime) setPreferredTime(data.preferredTime);
-        }
+      const q = query(collection(db, "users"), where("phone", "==", phone.trim()));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const data = snap.docs[0].data();
+        if (data.name) setName(data.name);
+        if (data.deliveryPreference) setDeliveryPreference(data.deliveryPreference);
+        if (data.addressColonia) setAddressColonia(data.addressColonia);
+        if (data.addressCalle) setAddressCalle(data.addressCalle);
+        if (data.preferredTime) setPreferredTime(data.preferredTime);
       } else {
-        throw new Error("Phone search response non-json or error");
+        throw new Error("Phone not found in DB");
       }
     } catch(e) {
       // Offline fallback: try reading from localStorage of simulated user database
@@ -456,6 +456,50 @@ export default function Landing() {
 
     setDirection("forward");
     setActiveFormStep(2);
+  };
+
+  const dbPreregister = async () => {
+    const usersQuery = query(collection(db, "users"), where("phone", "==", phone.trim()));
+    const usersSnap = await getDocs(usersQuery);
+    let userId;
+
+    if (!usersSnap.empty) {
+      const docSnap = usersSnap.docs[0];
+      userId = docSnap.id;
+      const existingUser = docSnap.data();
+
+      const pref = deliveryPreference !== undefined ? deliveryPreference : (existingUser.deliveryPreference || "");
+      const col = addressColonia !== undefined ? addressColonia : (existingUser.addressColonia || null);
+      const calle = addressCalle !== undefined ? addressCalle : (existingUser.addressCalle || null);
+      const prefTime = preferredTime !== undefined ? preferredTime : (existingUser.preferredTime || "");
+
+      await updateDoc(doc(db, "users", userId), {
+        name,
+        deliveryPreference: pref,
+        addressColonia: col,
+        addressCalle: calle,
+        preferredTime: prefTime
+      });
+    } else {
+      userId = "USR-" + Math.random().toString(36).substr(2, 9);
+      const pref = deliveryPreference !== undefined ? deliveryPreference : "";
+      const prefTime = preferredTime || "";
+
+      await setDoc(doc(db, "users", userId), {
+        id: userId,
+        name,
+        phone: phone.trim(),
+        deliveryPreference: pref,
+        addressColonia: addressColonia || null,
+        addressCalle: addressCalle || null,
+        addressNumero: "",
+        preferredTime: prefTime,
+        addressReferences: "",
+        credits: 0.0,
+        createdAt: new Date().toISOString()
+      });
+    }
+    return { success: true, userId };
   };
 
   const submitStep2AndVerify = async (e: FormEvent) => {
@@ -515,23 +559,7 @@ export default function Landing() {
     const eligible = addressColonia.toLowerCase().includes("palmas");
 
     try {
-      const res = await fetch("/api/preregister", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          phone,
-          deliveryPreference,
-          addressColonia,
-          addressCalle,
-          addressNumero: "",
-          preferredTime
-        }),
-      });
-      const isJson = res.headers.get("content-type")?.includes("application/json");
-      if (!res.ok || !isJson) {
-        throw new Error("Preregister response non-json or error");
-      }
+      await dbPreregister();
 
       // Save simulated user details locally for subsequent loads
       try {
@@ -582,24 +610,7 @@ export default function Landing() {
     const eligible = addressColonia.toLowerCase().includes("palmas");
 
     try {
-      const res = await fetch("/api/preregister", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          phone,
-          deliveryPreference,
-          addressColonia,
-          addressCalle,
-          addressNumero: "",
-          preferredTime
-        }),
-      });
-      const isJson = res.headers.get("content-type")?.includes("application/json");
-      if (!res.ok || !isJson) {
-        throw new Error("HTTP error fallback");
-      }
-
+      await dbPreregister();
       setFormStep(eligible ? 2 : "not_eligible_result");
     } catch (err: any) {
       // Offline fallback
@@ -643,23 +654,7 @@ export default function Landing() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/preregister", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          phone,
-          deliveryPreference,
-          addressColonia,
-          addressCalle,
-          addressNumero: "",
-          preferredTime
-        }),
-      });
-      const isJson = res.headers.get("content-type")?.includes("application/json");
-      if (!res.ok || !isJson) {
-        throw new Error("HTTP error fallback");
-      }
+      await dbPreregister();
 
       // Save simulated user details locally for subsequent loads
       try {
@@ -691,23 +686,7 @@ export default function Landing() {
     setFormError(null);
     setLoading(true);
     try {
-      const res = await fetch("/api/preregister", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          phone,
-          deliveryPreference,
-          addressColonia,
-          addressCalle,
-          addressNumero: "",
-          preferredTime
-        }),
-      });
-      const isJson = res.headers.get("content-type")?.includes("application/json");
-      if (!res.ok || !isJson) {
-        throw new Error("HTTP error fallback");
-      }
+      await dbPreregister();
 
       // Save simulated user details locally for subsequent loads
       try {

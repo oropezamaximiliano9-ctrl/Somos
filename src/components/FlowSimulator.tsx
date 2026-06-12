@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
-import { Sparkles, RefreshCw, Check, ArrowRight, QrCode, HelpCircle, UserCheck, Link, ShoppingBag, Send, Loader2 } from "lucide-react";
+import { Sparkles, RefreshCw, Check, ArrowRight, HelpCircle } from "lucide-react";
+import { db } from "../firebase";
+import { doc, getDoc, getDocs, updateDoc, setDoc, deleteDoc, collection, query, where } from "firebase/firestore";
 
 export default function FlowSimulator() {
   const navigate = useNavigate();
@@ -18,26 +20,40 @@ export default function FlowSimulator() {
   // Fetch initial state of BOLSA-001 to sync step correctly on load
   const checkStatus = async () => {
     try {
-      const res = await fetch("/api/bags/BOLSA-001");
-      if (res.ok) {
-        const data = await res.json();
-        setBagStatus(data.status);
-        if (data.status === "assigned") {
-          setRegisteredUser(data.user);
-          if (data.activeOrder) {
-            setActiveOrderId(data.activeOrder.id);
-            setCurrentStep(4); // Order is active/confirmed
-          } else {
-            // Check if there are completed orders for this bag in the system
-            const ordersRes = await fetch("/api/orders");
-            let hasCompleted = false;
-            if (ordersRes.ok) {
-              const orders = await ordersRes.json();
-              const b001Orders = orders.filter((o: any) => o.bagId === "BOLSA-001" && o.status === "completed");
-              if (b001Orders.length > 0) {
+      const id = "BOLSA-001";
+      const bagSnap = await getDoc(doc(db, "bags", id));
+      if (bagSnap.exists()) {
+        const bagData = bagSnap.data() as any;
+        setBagStatus(bagData.status);
+        if (bagData.status === "assigned" && bagData.userId) {
+          const userSnap = await getDoc(doc(db, "users", bagData.userId));
+          const userData = userSnap.exists() ? userSnap.data() : null;
+          setRegisteredUser(userData);
+
+          const ordersSnap = await getDocs(collection(db, "orders"));
+          let activeOrder: any = null;
+          let latestCreatedAt = 0;
+          let hasCompleted = false;
+
+          ordersSnap.forEach((oSnap) => {
+            const data = oSnap.data();
+            if (data.bagId === id) {
+              if (data.status !== "completed") {
+                const creationTime = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+                if (creationTime > latestCreatedAt) {
+                  latestCreatedAt = creationTime;
+                  activeOrder = data;
+                }
+              } else if (data.status === "completed") {
                 hasCompleted = true;
               }
             }
+          });
+
+          if (activeOrder) {
+            setActiveOrderId(activeOrder.id);
+            setCurrentStep(4); // Order is active/confirmed
+          } else {
             if (hasCompleted) {
               setActiveOrderId("");
               setCurrentStep(5); // Completed & Delivered
@@ -49,9 +65,10 @@ export default function FlowSimulator() {
         } else {
           setActiveOrderId("");
           // Check if preregistered user exists in DB by querying the phone
-          const uRes = await fetch("/api/users/phone/9212393938");
-          if (uRes.ok) {
-            const uData = await uRes.json();
+          const q = query(collection(db, "users"), where("phone", "==", "9212393938"));
+          const usersSnap = await getDocs(q);
+          if (!usersSnap.empty) {
+            const uData = usersSnap.docs[0].data();
             setRegisteredUser(uData);
             setCurrentStep(2); // Registered but bag unassigned
           } else {
@@ -74,33 +91,43 @@ export default function FlowSimulator() {
     setLoading(true);
     setStatusMsg("Pre-registrando a Jaime...");
     try {
-      const res = await fetch("/api/preregister", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: "Jaime Hernández",
-          phone: "9212393938",
-          deliveryPreference: "",
-          addressColonia: "Las Palmas",
-          addressCalle: "Paseo de las Palmas",
-          addressNumero: "209",
-          preferredTime: ""
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setRegisteredUser({ name: "Jaime Hernández", phone: "9212393938" });
-        setCurrentStep(2);
-        setStatusMsg("✅ Jaime Hernández pre-registrado con éxito en el servidor.");
-        // Only navigate automatically if they aren't on the dedicated simulator page
-        if (location.pathname !== "/simulator") {
-          navigate("/associate/link?bagId=BOLSA-001&phone=9212393938");
-        }
+      const phone = "9212393938";
+      const usersQuery = query(collection(db, "users"), where("phone", "==", phone));
+      const usersSnap = await getDocs(usersQuery);
+      let userId;
+
+      const userData: any = {
+        name: "Jaime Hernández",
+        phone: phone,
+        deliveryPreference: "",
+        addressColonia: "Las Palmas",
+        addressCalle: "Paseo de las Palmas",
+        addressNumero: "209",
+        preferredTime: ""
+      };
+
+      if (!usersSnap.empty) {
+        userId = usersSnap.docs[0].id;
+        await updateDoc(doc(db, "users", userId), userData);
       } else {
-        setStatusMsg(`❌ Error: ${data.error}`);
+        userId = "USR-" + Math.random().toString(36).substr(2, 9);
+        await setDoc(doc(db, "users", userId), {
+          id: userId,
+          ...userData,
+          credits: 0.0,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      setRegisteredUser(userData);
+      setCurrentStep(2);
+      setStatusMsg("✅ Jaime Hernández pre-registrado con éxito en Firestore.");
+      // Only navigate automatically if they aren't on the dedicated simulator page
+      if (location.pathname !== "/simulator") {
+        navigate("/associate/link?bagId=BOLSA-001&phone=9212393938");
       }
     } catch (e: any) {
-      setStatusMsg(`❌ Error de red: ${e.message}`);
+      setStatusMsg(`❌ Error: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -111,34 +138,51 @@ export default function FlowSimulator() {
     setLoading(true);
     setStatusMsg("Bypasseando: Vinculando BOLSA-001 a Jaime...");
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bagId: "BOLSA-001",
-          name: "Jaime Hernández",
-          phone: "9212393938",
-          deliveryPreference: "",
-          addressColonia: "Las Palmas",
-          addressCalle: "Paseo de las Palmas",
-          addressNumero: "209",
-          preferredTime: ""
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setBagStatus("assigned");
-        setCurrentStep(3);
-        setStatusMsg("🔗 BOLSA-001 asignada con éxito.");
-        // Only navigate automatically if they aren't on the dedicated simulator page
-        if (location.pathname !== "/simulator") {
-          navigate("/bolsa/BOLSA-001");
-        }
+      const bagRef = doc(db, "bags", "BOLSA-001");
+      const bagSnap = await getDoc(bagRef);
+      if (!bagSnap.exists()) {
+        throw new Error("La bolsa BOLSA-001 no existe en la BD.");
+      }
+      
+      const phone = "9212393938";
+      const usersQuery = query(collection(db, "users"), where("phone", "==", phone));
+      const usersSnap = await getDocs(usersQuery);
+      let userId;
+
+      const userData: any = {
+        name: "Jaime Hernández",
+        phone: phone,
+        deliveryPreference: "",
+        addressColonia: "Las Palmas",
+        addressCalle: "Paseo de las Palmas",
+        addressNumero: "209",
+        preferredTime: ""
+      };
+
+      if (!usersSnap.empty) {
+        userId = usersSnap.docs[0].id;
+        await updateDoc(doc(db, "users", userId), userData);
       } else {
-        setStatusMsg(`❌ Error: ${data.error}`);
+        userId = "USR-" + Math.random().toString(36).substr(2, 9);
+        await setDoc(doc(db, "users", userId), {
+          id: userId,
+          ...userData,
+          credits: 0.0,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      await updateDoc(bagRef, { status: "assigned", userId });
+
+      setBagStatus("assigned");
+      setCurrentStep(3);
+      setStatusMsg("🔗 BOLSA-001 asignada con éxito.");
+      // Only navigate automatically if they aren't on the dedicated simulator page
+      if (location.pathname !== "/simulator") {
+        navigate("/bolsa/BOLSA-001");
       }
     } catch (e: any) {
-      setStatusMsg(`❌ Error de red: ${e.message}`);
+      setStatusMsg(`❌ Error: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -149,29 +193,60 @@ export default function FlowSimulator() {
     setLoading(true);
     setStatusMsg("Recibiendo prendas y generando Orden en base de datos...");
     try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bagId: "BOLSA-001",
-          deliveryType: "Estándar (48 h)"
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setActiveOrderId(data.orderId);
-        setCurrentStep(4);
-        setStatusMsg("🎉 ¡Orden # " + data.orderId + " creada para Jaime!");
-        // Only navigate automatically or reload if not on dedicated simulator page
-        if (location.pathname !== "/simulator") {
-          navigate("/bolsa/BOLSA-001");
-          window.location.reload();
+      const bagId = "BOLSA-001";
+      const bagSnap = await getDoc(doc(db, "bags", bagId));
+      if (!bagSnap.exists() || bagSnap.data()?.status !== "assigned") {
+        throw new Error("La bolsa no está asignada o no existe.");
+      }
+
+      const bag = bagSnap.data() as any;
+      const userSnap = await getDoc(doc(db, "users", bag.userId));
+      if (!userSnap.exists()) {
+        throw new Error("No se encontró el registro del usuario.");
+      }
+      const user = userSnap.data() as any;
+
+      const ordersSnap = await getDocs(collection(db, "orders"));
+      let nextIdVal = 1;
+      ordersSnap.forEach((oSnap) => {
+        const dIdVal = parseInt(oSnap.id, 10);
+        if (!isNaN(dIdVal) && dIdVal >= nextIdVal) {
+          nextIdVal = dIdVal + 1;
         }
-      } else {
-        setStatusMsg(`❌ Error al crear orden: ${data.error}`);
+      });
+
+      const orderId = nextIdVal.toString();
+      const finalDeliveryType = user.deliveryPreference || "Estándar (48 h)";
+
+      // Archive/complete any past uncompleted orders tied to this bag
+      for (const oSnap of ordersSnap.docs) {
+        const data = oSnap.data();
+        if (data.bagId === bagId && data.status !== "completed") {
+          await updateDoc(doc(db, "orders", oSnap.id), { status: "completed" });
+        }
+      }
+
+      const newOrder = {
+        id: orderId,
+        bagId,
+        userId: user.id,
+        status: "pending",
+        deliveryType: finalDeliveryType,
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, "orders", orderId), newOrder);
+
+      setActiveOrderId(orderId);
+      setCurrentStep(4);
+      setStatusMsg("🎉 ¡Orden # " + orderId + " creada para Jaime!");
+      // Only navigate automatically or reload if not on dedicated simulator page
+      if (location.pathname !== "/simulator") {
+        navigate("/bolsa/BOLSA-001");
+        window.location.reload();
       }
     } catch (e: any) {
-      setStatusMsg(`❌ Error de red: ${e.message}`);
+      setStatusMsg(`❌ Error al crear orden: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -181,15 +256,20 @@ export default function FlowSimulator() {
   const runStep4Auto = async () => {
     let orderIdToComplete = activeOrderId;
     if (!orderIdToComplete) {
-      // Look up if there's any pending/active order for BOLSA-001
       try {
-        const res = await fetch("/api/bags/BOLSA-001");
-        if (res.ok) {
-          const bagData = await res.json();
-          if (bagData.activeOrder) {
-            orderIdToComplete = bagData.activeOrder.id;
+        const id = "BOLSA-001";
+        const ordersSnap = await getDocs(collection(db, "orders"));
+        let latestCreatedAt = 0;
+        ordersSnap.forEach((oSnap) => {
+          const data = oSnap.data();
+          if (data.bagId === id && data.status !== "completed") {
+            const creationTime = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+            if (creationTime > latestCreatedAt) {
+              latestCreatedAt = creationTime;
+              orderIdToComplete = data.id;
+            }
           }
-        }
+        });
       } catch (err) {}
     }
 
@@ -201,24 +281,17 @@ export default function FlowSimulator() {
     setLoading(true);
     setStatusMsg(`Entregando prendas para Orden #${orderIdToComplete} y liberando BOLSA-001...`);
     try {
-      const res = await fetch(`/api/orders/${orderIdToComplete}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "completed" })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setCurrentStep(5);
-        setActiveOrderId("");
-        setStatusMsg("✅ ¡Prendas entregadas al cliente! Bolsa liberada con éxito.");
-        if (location.pathname !== "/simulator") {
-          navigate("/bolsa/BOLSA-001");
-        }
-      } else {
-        setStatusMsg(`❌ Error al entregar orden: ${data.error}`);
+      const orderRef = doc(db, "orders", orderIdToComplete);
+      await updateDoc(orderRef, { status: "completed" });
+
+      setCurrentStep(5);
+      setActiveOrderId("");
+      setStatusMsg("✅ ¡Prendas entregadas al cliente! Bolsa liberada con éxito.");
+      if (location.pathname !== "/simulator") {
+        navigate("/bolsa/BOLSA-001");
       }
     } catch (e: any) {
-      setStatusMsg(`❌ Error de red: ${e.message}`);
+      setStatusMsg(`❌ Error al entregar orden: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -229,22 +302,41 @@ export default function FlowSimulator() {
     setLoading(true);
     setStatusMsg("Restableciendo base de datos...");
     try {
-      const res = await fetch("/api/simulation/reset", { method: "POST" });
-      if (res.ok) {
-        setRegisteredUser(null);
-        setBagStatus("unassigned");
-        setActiveOrderId("");
-        setCurrentStep(1);
-        setStatusMsg("🔄 Simulación reiniciada. Bolsa 1 puesta a 'unassigned'.");
-        // Only navigate automatically if they aren't on the dedicated simulator page
-        if (location.pathname !== "/simulator") {
-          navigate("/scanner");
+      const userIdsToDelete: string[] = ["USR-simula1", "USR-simula2", "USR-jaime123"];
+      const uq = query(collection(db, "users"), where("phone", "==", "9212393938"));
+      const usnap = await getDocs(uq);
+      usnap.forEach((uDoc) => {
+        userIdsToDelete.push(uDoc.id);
+      });
+
+      // Reset BOLSA-001
+      await setDoc(doc(db, "bags", "BOLSA-001"), { id: "BOLSA-001", status: "unassigned", userId: null });
+
+      // Delete active orders for BOLSA-001
+      const ordersSnap = await getDocs(collection(db, "orders"));
+      for (const oDoc of ordersSnap.docs) {
+        const odata = oDoc.data();
+        if (odata.bagId === "BOLSA-001") {
+          await deleteDoc(doc(db, "orders", oDoc.id));
         }
-      } else {
-        setStatusMsg("❌ Error al reiniciar base de datos.");
       }
-    } catch (e) {
-      setStatusMsg("❌ Error de comunicación con servidor.");
+
+      // Delete temporary / simulator users
+      for (const uid of userIdsToDelete) {
+        await deleteDoc(doc(db, "users", uid));
+      }
+
+      setRegisteredUser(null);
+      setBagStatus("unassigned");
+      setActiveOrderId("");
+      setCurrentStep(1);
+      setStatusMsg("🔄 Simulación reiniciada. Bolsa 1 puesta a 'unassigned'.");
+      // Only navigate automatically if they aren't on the dedicated simulator page
+      if (location.pathname !== "/simulator") {
+        navigate("/scanner");
+      }
+    } catch (e: any) {
+      setStatusMsg(`❌ Error de comunicación con Firestore: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -330,7 +422,7 @@ export default function FlowSimulator() {
           </span>
           <div className="flex-1 flex flex-col text-left">
             <div className="flex justify-between items-start">
-              <span className={`text-xs font-bold leading-non ${currentStep === 1 ? "text-slate-900" : "text-slate-400"}`}>
+              <span className={`text-xs font-bold leading-none ${currentStep === 1 ? "text-slate-900" : "text-slate-400"}`}>
                 Pre-registro de Jaime
               </span>
               {currentStep === 1 && (
@@ -484,7 +576,7 @@ export default function FlowSimulator() {
       {/* Extra guide tip */}
       <div className="text-[10px] text-slate-400 text-left flex items-start gap-1 pt-2.5 border-t border-slate-100">
         <HelpCircle className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
-        <span>Usa este panel compañero para moverte con fluidez entre las pantallas reales de tu flujo y ver cómo responde el sistema sin depender de una cámara real.</span>
+        <span>Usa este panel compañero para moverte con fluidez entre las pantallas reales de tu flujo y ver cómo responde el sistema sin deparar de una cámara real.</span>
       </div>
     </motion.div>
   );

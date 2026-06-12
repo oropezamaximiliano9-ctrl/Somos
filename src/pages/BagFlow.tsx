@@ -4,6 +4,8 @@ import { CheckCircle2, Package, Loader2, ArrowRight, Zap, Clock, Sun, Moon, Spar
 import { RoleContext } from "../App";
 import { motion } from "motion/react";
 import { toBlob } from "html-to-image";
+import { db } from "../firebase";
+import { doc, getDoc, updateDoc, setDoc, getDocs, collection } from "firebase/firestore";
 
 export default function BagFlow() {
   const { id } = useParams<{ id: string }>();
@@ -60,29 +62,53 @@ export default function BagFlow() {
   const fetchBag = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/bags/${id}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error fetching bag");
-      
-      setBag(data);
+      if (!id) throw new Error("ID de bolsa es requerido");
+      const bagSnap = await getDoc(doc(db, "bags", id));
+      if (!bagSnap.exists()) {
+        throw new Error("Bolsa no encontrada en la base de datos.");
+      }
+      const bagData = bagSnap.data() as any;
+      let userData: any = null;
+      let activeOrder: any = null;
+
+      if (bagData.status === "assigned" && bagData.userId) {
+        const userSnap = await getDoc(doc(db, "users", bagData.userId));
+        userData = userSnap.exists() ? userSnap.data() : null;
+
+        const ordersSnap = await getDocs(collection(db, "orders"));
+        let latestCreatedAt = 0;
+        ordersSnap.forEach((oSnap) => {
+          const data = oSnap.data();
+          if (data.bagId === id && data.status !== "completed") {
+            const creationTime = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+            if (creationTime > latestCreatedAt) {
+              latestCreatedAt = creationTime;
+              activeOrder = data;
+            }
+          }
+        });
+      }
+
+      const mergedBag = { ...bagData, user: userData, activeOrder };
+      setBag(mergedBag);
 
       // If there is an active order in the DB, pre-populate receipt view so the ticket is ready on demand, but do not force redirect
-      if (data.activeOrder) {
-        const formattedDate = new Date(data.activeOrder.createdAt).toLocaleDateString("es-MX", {
+      if (activeOrder) {
+        const formattedDate = new Date(activeOrder.createdAt).toLocaleDateString("es-MX", {
           year: "numeric",
           month: "long",
           day: "numeric"
         });
 
         setConfirmedOrderData({
-          orderId: data.activeOrder.id,
-          user: data.user,
-          deliveryType: data.activeOrder.deliveryType || data.user?.deliveryPreference || "Estándar (48 h)",
+          orderId: activeOrder.id,
+          user: userData,
+          deliveryType: activeOrder.deliveryType || userData?.deliveryPreference || "Estándar (48 h)",
           date: formattedDate
         });
 
-        if (data.user && data.user.phone) {
-          const phoneClean = data.user.phone.replace(/\D/g, "");
+        if (userData && userData.phone) {
+          const phoneClean = userData.phone.replace(/\D/g, "");
           const mxPhone = phoneClean.length === 10 ? `52${phoneClean}` : phoneClean;
           setWhatsAppUrl(`https://wa.me/${mxPhone}`);
         }
@@ -97,19 +123,55 @@ export default function BagFlow() {
   const handleReceiveBag = async (selectedDeliveryType?: string, preferredTimePreference?: string) => {
     setReceiving(true);
     try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          bagId: id, 
-          deliveryType: selectedDeliveryType,
-          deliveryPreference: selectedDeliveryType,
-          preferredTime: preferredTimePreference
-        })
+      if (!id) throw new Error("ID de bolsa es requerido");
+      const bagSnap = await getDoc(doc(db, "bags", id));
+      if (!bagSnap.exists() || bagSnap.data()?.status !== "assigned") {
+        throw new Error("La bolsa no está asignada o no fue encontrada.");
+      }
+      const bagData = bagSnap.data() as any;
+      const userSnap = await getDoc(doc(db, "users", bagData.userId));
+      if (!userSnap.exists()) {
+        throw new Error("No se encontró la referencia del cliente.");
+      }
+      let userData = userSnap.data() as any;
+
+      const pref = selectedDeliveryType || userData.deliveryPreference || "Estándar (48 h)";
+      const prefTime = preferredTimePreference || userData.preferredTime || "Mañana (8:00 AM – 10:00 AM)";
+      await updateDoc(doc(db, "users", userData.id), { deliveryPreference: pref, preferredTime: prefTime });
+      userData.deliveryPreference = pref;
+      userData.preferredTime = prefTime;
+
+      const ordersSnap = await getDocs(collection(db, "orders"));
+      let nextIdVal = 1;
+      ordersSnap.forEach((oSnap) => {
+        const dIdVal = parseInt(oSnap.id, 10);
+        if (!isNaN(dIdVal) && dIdVal >= nextIdVal) {
+          nextIdVal = dIdVal + 1;
+        }
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      
+
+      const orderId = nextIdVal.toString();
+      const finalDeliveryType = selectedDeliveryType || userData.deliveryPreference || "Estándar (48 h)";
+
+      // Complete any past uncompleted orders for this bag
+      for (const oSnap of ordersSnap.docs) {
+        const data = oSnap.data();
+        if (data.bagId === id && data.status !== "completed") {
+          await updateDoc(doc(db, "orders", oSnap.id), { status: "completed" });
+        }
+      }
+
+      const newOrder = {
+        id: orderId,
+        bagId: id,
+        userId: userData.id,
+        status: "pending",
+        deliveryType: finalDeliveryType,
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, "orders", orderId), newOrder);
+
       const formattedDate = new Date().toLocaleDateString('es-MX', {
         year: 'numeric',
         month: 'long',
@@ -117,22 +179,21 @@ export default function BagFlow() {
       });
 
       setConfirmedOrderData({
-        orderId: data.orderId,
-        user: data.user,
-        deliveryType: selectedDeliveryType || data.user.deliveryPreference || 'Estándar (48 h)',
+        orderId: orderId,
+        user: userData,
+        deliveryType: selectedDeliveryType || userData.deliveryPreference || 'Estándar (48 h)',
         date: formattedDate
       });
 
       setOrderConfirmed(true);
       
-      if (data.user && data.user.phone) {
-        const phoneClean = data.user.phone.replace(/\D/g, '');
+      if (userData && userData.phone) {
+        const phoneClean = userData.phone.replace(/\D/g, '');
         const mxPhone = phoneClean.length === 10 ? `52${phoneClean}` : phoneClean;
         
         const waUrl = `https://wa.me/${mxPhone}`;
         setWhatsAppUrl(waUrl);
       }
-      
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -149,13 +210,8 @@ export default function BagFlow() {
 
     setDelivering(true);
     try {
-      const res = await fetch(`/api/orders/${activeOrderId}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "completed" })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "No se pudo actualizar el estado de la orden");
+      const orderRef = doc(db, "orders", String(activeOrderId));
+      await updateDoc(orderRef, { status: "completed" });
       
       setShowDeliverySuccess(true);
       setTimeout(async () => {
