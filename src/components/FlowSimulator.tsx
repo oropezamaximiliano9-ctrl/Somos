@@ -416,7 +416,7 @@ export default function FlowSimulator() {
           <span className={`w-5 h-5 rounded-full shrink-0 flex items-center justify-center font-bold text-[10px] border mt-0.5 ${
             currentStep > 1 
               ? "bg-[#0f55d8] text-white border-[#0f55d8]" 
-              : "bg-slate-100 text-slate-400 border-slate-200"
+              : "bg-blue-50 text-[#0f55d8] border-[#0f55d8]"
           }`}>
             {currentStep > 1 ? <Check className="w-3 h-3" /> : "1"}
           </span>
