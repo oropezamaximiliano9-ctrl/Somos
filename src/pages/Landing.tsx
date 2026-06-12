@@ -719,7 +719,7 @@ export default function Landing() {
   return (
     <div className="flex-1 flex flex-col w-full bg-[#f6eedd]">
       {/* Hero Section */}
-      <section className="relative w-full px-0 pt-4 pb-12 flex flex-col items-start text-left justify-start snap-start snap-always" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
+      <section className="relative w-full px-0 pt-0 pb-12 flex flex-col items-start text-left justify-start snap-start snap-always" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
 
         <div className="relative z-10 w-full max-w-sm mx-auto pt-0">
 
@@ -863,7 +863,7 @@ export default function Landing() {
 
 
       {/* Sección Exclusiva: El cesto SOMOS */}
-      <section className="w-full pt-10 pb-12 flex flex-col justify-start bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
+      <section className="w-full pt-4 pb-12 flex flex-col justify-start bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1549,6 +1549,8 @@ export default function Landing() {
       )}
       </AnimatePresence>
 
+      {/* Spacer to prevent Safari rubber-band snap glitch on the last section */}
+      <div className="h-[2vh] w-full shrink-0 bg-transparent snap-end" style={{ scrollSnapAlign: 'end' }} />
     </div>
   );
 }
