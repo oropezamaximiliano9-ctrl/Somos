@@ -1,5 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
-import { Loader2, PackageSearch, Clock, CheckCircle, FileText, MapPin, Plus, Edit2, ChevronRight, ArrowLeft, QrCode, Download, Users, CreditCard, Search, Send, MessageSquare, LayoutGrid, TrendingUp, Calendar, ChevronDown } from "lucide-react";
+import { Loader2, PackageSearch, Clock, CheckCircle, FileText, MapPin, Plus, Edit2, ChevronRight, ArrowLeft, QrCode, Download, Users, CreditCard, Search, Send, MessageSquare, LayoutGrid, TrendingUp, Calendar, ChevronDown, Info } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import { generateBagQrLabelPdf } from "../utils/pdf";
 import { motion, AnimatePresence } from "motion/react";
@@ -117,12 +118,18 @@ const getMetricsForRange = (
   const prevRevenue = prevCompleted * 150;
 
   // 4. Bags in rotation (linked to orders in date range)
-  const currentBags = new Set(ordersInRange.map(o => o.bagId)).size || bagsList.filter(b => b.status === 'assigned').length;
+  let currentBags = 0;
+  if (range === 'all') {
+    currentBags = bagsList.filter(b => b.status === 'assigned').length;
+  } else {
+    currentBags = new Set(ordersInRange.map(o => o.bagId).filter(Boolean)).size;
+  }
+  
   let prevBags = 0;
   if (range === 'all') {
     prevBags = bagsList.filter(b => b.status === 'assigned').length;
   } else {
-    prevBags = new Set(previousOrdersInRange.map(o => o.bagId)).size;
+    prevBags = new Set(previousOrdersInRange.map(o => o.bagId).filter(Boolean)).size;
   }
 
   // 5. Customer sign ups
@@ -190,6 +197,39 @@ const getMetricsForRange = (
     }
   });
 
+  const completedOrdersInRange = ordersInRange.filter(o => o.status === 'completed');
+  const userCompletedCounts: Record<string, number> = {};
+  
+  completedOrdersInRange.forEach(o => {
+    const cid = o.userId || o.userPhone || o.userName;
+    if (cid) {
+      userCompletedCounts[cid] = (userCompletedCounts[cid] || 0) + 1;
+    }
+  });
+
+  let habitual = 0;
+  let ocasional = 0;
+  let enRiesgo = 0;
+
+  // We should evaluate all registered customers to find those with 0 orders ("en riesgo").
+  customersList.forEach(c => {
+    // Try to match the customer using the same fields we used for the orders
+    const cid = c.id || c.phone || c.name;
+    const count = userCompletedCounts[cid] || userCompletedCounts[c.phone] || userCompletedCounts[c.name] || 0;
+
+    if (count >= 2) {
+      habitual++;
+    } else if (count === 1) {
+      ocasional++;
+    } else {
+      enRiesgo++;
+    }
+  });
+
+  const activeCustIds = new Set(ordersInRange.map(getCustId).filter(Boolean));
+  const activeCustomersCount = activeCustIds.size;
+  const promedio = activeCustomersCount > 0 ? (ordersInRange.length / activeCustomersCount) : 0;
+
   return {
     active: { value: curActive, trend: getTrend(curActive, prevActive) },
     completed: { value: curCompleted, trend: getTrend(curCompleted, prevCompleted) },
@@ -198,7 +238,8 @@ const getMetricsForRange = (
     customers: { value: range === 'all' ? customersList.length : curCusts, trend: getTrend(curCusts, prevCusts) },
     kilos: { value: curKilos, trend: getTrend(curKilos, prevKilos) },
     recurrent: { value: curRecurrent, trend: getTrend(curRecurrent, prevRecurrent) },
-    servicePreferences: { estandar, express, otros }
+    servicePreferences: { estandar, express, otros },
+    customerFrequency: { habitual, ocasional, enRiesgo, promedio, ordersCount: ordersInRange.length, activeCount: activeCustomersCount }
   };
 };
 
@@ -389,6 +430,155 @@ function ServicePreferenceChart({ preferences }: ServicePreferenceChartProps) {
   );
 }
 
+interface CustomerFrequencyChartProps {
+  frequency: {
+    habitual: number;
+    ocasional: number;
+    enRiesgo: number;
+    promedio: number;
+    ordersCount: number;
+    activeCount: number;
+  };
+  range?: '7d' | '4w' | '6m' | 'all';
+}
+
+function CustomerFrequencyChart({ frequency, range = '7d' }: CustomerFrequencyChartProps) {
+  const { habitual, ocasional, enRiesgo, promedio, ordersCount, activeCount } = frequency;
+  const total = habitual + ocasional + enRiesgo;
+
+  if (total === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 rounded-none border border-dashed border-slate-200">
+        <div className="relative w-28 h-28 flex items-center justify-center">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
+            <circle cx="50" cy="50" r="38" fill="transparent" stroke="#e2e8f0" strokeWidth="8" />
+          </svg>
+          <div className="absolute flex flex-col items-center justify-center text-center">
+            <span className="text-sm font-bold text-slate-400">0</span>
+            <span className="text-[7px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes</span>
+          </div>
+        </div>
+        <p className="text-xs text-slate-400 mt-4 font-medium">No hay suficiente información en este período</p>
+      </div>
+    );
+  }
+
+  const r = 38;
+  const circ = 2 * Math.PI * r;
+
+  const habPct = (habitual / total) * 100;
+  const ocaPct = (ocasional / total) * 100;
+  const enRPct = (enRiesgo / total) * 100;
+
+  const habOffset = 0;
+  const habDash = (habPct / 100) * circ;
+
+  const ocaOffset = habDash;
+  const ocaDash = (ocaPct / 100) * circ;
+
+  const enROffset = habDash + ocaDash;
+  const enRDash = (enRPct / 100) * circ;
+
+  const getFrequencyUnitLabel = () => {
+    switch (range) {
+      case '7d':
+        return 'pedidos/semana por cliente';
+      case '4w':
+        return 'pedidos/mes por cliente';
+      case '6m':
+        return 'pedidos/6 meses por cliente';
+      default:
+        return 'pedidos/período por cliente';
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+        <div className="sm:col-span-4 flex justify-center">
+          <div className="relative w-28 h-28 flex items-center justify-center">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
+              <circle cx="50" cy="50" r={r} fill="transparent" stroke="#f8fafc" strokeWidth="10" />
+              
+              {habitual > 0 && (
+                <circle cx="50" cy="50" r={r} fill="transparent" stroke="#10b981" strokeWidth="10" strokeDasharray={`${habDash} ${circ - habDash}`} strokeDashoffset={-habOffset} strokeLinecap="round" className="transition-all duration-500 ease-out" />
+              )}
+              {ocasional > 0 && (
+                <circle cx="50" cy="50" r={r} fill="transparent" stroke="#f59e0b" strokeWidth="10" strokeDasharray={`${ocaDash} ${circ - ocaDash}`} strokeDashoffset={-ocaOffset} strokeLinecap="round" className="transition-all duration-500 ease-out" />
+              )}
+              {enRiesgo > 0 && (
+                <circle cx="50" cy="50" r={r} fill="transparent" stroke="#f43f5e" strokeWidth="10" strokeDasharray={`${enRDash} ${circ - enRDash}`} strokeDashoffset={-enROffset} strokeLinecap="round" className="transition-all duration-500 ease-out" />
+              )}
+            </svg>
+            <div className="absolute flex flex-col items-center justify-center text-center">
+              <span className="text-xl font-black text-slate-800 leading-none">{total}</span>
+              <span className="text-[7px] uppercase font-bold text-slate-400 mt-0.5 font-mono tracking-widest">Clientes</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="sm:col-span-8 space-y-2">
+          <div className="space-y-0.5">
+            <div className="flex justify-between items-baseline">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-xs bg-[#10b981] block shrink-0" />
+                <span className="text-xs font-bold text-slate-700">Habituales</span>
+              </div>
+              <div className="text-right font-mono text-xs font-semibold text-slate-500">
+                {habitual} <span className="text-[10px] text-slate-400">({Math.round(habPct)}%)</span>
+              </div>
+            </div>
+            <div className="h-1.5 w-full bg-slate-100 rounded-xs overflow-hidden">
+              <div className="bg-[#10b981] h-full transition-all duration-500" style={{ width: `${habPct}%` }} />
+            </div>
+          </div>
+
+          <div className="space-y-0.5">
+            <div className="flex justify-between items-baseline">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-xs bg-[#f59e0b] block shrink-0" />
+                <span className="text-xs font-bold text-slate-700">Ocasionales</span>
+              </div>
+              <div className="text-right font-mono text-xs font-semibold text-slate-500">
+                {ocasional} <span className="text-[10px] text-slate-400">({Math.round(ocaPct)}%)</span>
+              </div>
+            </div>
+            <div className="h-1.5 w-full bg-slate-100 rounded-xs overflow-hidden">
+              <div className="bg-[#f59e0b] h-full transition-all duration-500" style={{ width: `${ocaPct}%` }} />
+            </div>
+          </div>
+
+          <div className="space-y-0.5">
+            <div className="flex justify-between items-baseline">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-xs bg-[#f43f5e] block shrink-0" />
+                <span className="text-xs font-bold text-slate-700">Ausentes</span>
+              </div>
+              <div className="text-right font-mono text-xs font-semibold text-slate-500">
+                {enRiesgo} <span className="text-[10px] text-slate-400">({Math.round(enRPct)}%)</span>
+              </div>
+            </div>
+            <div className="h-1.5 w-full bg-slate-100 rounded-xs overflow-hidden">
+              <div className="bg-[#f43f5e] h-full transition-all duration-500" style={{ width: `${enRPct}%` }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-2.5 mt-2 border-t border-slate-100/70 flex justify-between items-baseline font-sans">
+        <div className="text-left animate-fade-in">
+          <span className="text-[10px] font-bold text-slate-400 uppercase font-mono tracking-wider block">
+            Promedio de pedidos por cliente
+          </span>
+        </div>
+        <div className="text-right font-mono text-xs font-semibold text-slate-600">
+          {promedio.toFixed(1)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'general' | 'orders' | 'locations' | 'qrcodes' | 'customers'>('general');
   const [orders, setOrders] = useState<any[]>([]);
@@ -410,6 +600,8 @@ export default function Dashboard() {
   // Customers Management State
   const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
+  const [activeFrequencyTooltip, setActiveFrequencyTooltip] = useState<string | null>(null);
+  const [activeMetricTooltip, setActiveMetricTooltip] = useState<string | null>(null);
   const [loadingCustOrders, setLoadingCustOrders] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [editingCustomer, setEditingCustomer] = useState<any | null>(null);
@@ -512,6 +704,7 @@ export default function Dashboard() {
         const u = ord.userId ? usersMap[ord.userId] : null;
         return {
           id: ord.id,
+          userId: ord.userId,
           bagId: ord.bagId,
           status: ord.status,
           createdAt: ord.createdAt,
@@ -826,9 +1019,13 @@ export default function Dashboard() {
               {/* Dynamic stats cards responsive grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Metric 2: Completadas */}
-                <div className="bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none">
+                <div 
+                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'completed' ? null : 'completed')}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Órdenes completadas</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'completed' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <span className="text-2xl font-black text-slate-900 leading-none">
@@ -844,12 +1041,21 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
+                  {activeMetricTooltip === 'completed' && (
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Total de órdenes con estado "Completado" en el período seleccionado.</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Metric 2.5: Kilos Carga Procesada */}
-                <div className="bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none">
+                <div 
+                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'kilos' ? null : 'kilos')}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Kilos procesados</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'kilos' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <div className="flex items-baseline gap-1">
@@ -870,12 +1076,21 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
+                  {activeMetricTooltip === 'kilos' && (
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Equivalente estimado basado en órdenes completadas.</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Metric 3: Ingresos Est. */}
-                <div className="bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none">
+                <div 
+                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'revenue' ? null : 'revenue')}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Ingresos</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'revenue' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <div className="flex items-baseline gap-1">
@@ -896,12 +1111,21 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
+                  {activeMetricTooltip === 'revenue' && (
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Valor monetario generado por las órdenes completadas.</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Metric 4: Bolsas Asignadas */}
-                <div className="bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none">
+                <div 
+                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'bags' ? null : 'bags')}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Bolsas asignadas</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'bags' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <span className="text-2xl font-black text-slate-900 leading-none">
@@ -917,12 +1141,21 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
+                  {activeMetricTooltip === 'bags' && (
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Bolsas actualmente en posesión de los clientes en este período o en general.</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Metric 5: Clientes */}
-                <div className="bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none">
+                <div 
+                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'customers' ? null : 'customers')}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'customers' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <span className="text-2xl font-black text-slate-900 leading-none">
@@ -938,12 +1171,21 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
+                  {activeMetricTooltip === 'customers' && (
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Nuevos clientes registrados vs el período anterior.</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Metric 6: Clientes Recurrentes */}
-                <div className="bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none">
+                <div 
+                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'recurrentes' ? null : 'recurrentes')}
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Recurrentes</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'recurrentes' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <span className="text-2xl font-black text-slate-900 leading-none">
@@ -959,17 +1201,66 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
+                  {activeMetricTooltip === 'recurrentes' && (
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Clientes que han completado 2 o más órdenes.</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Gráfico circular de preferencias de servicio */}
-              <div className="bg-white border border-gray-100 px-5 py-3 shadow-sm rounded-none text-left mt-4">
-                <div className="border-b border-gray-100 pb-1.5 mb-2.5">
-                  <h3 className="font-bold text-slate-800 text-[11px] uppercase font-mono tracking-wider">
-                    Preferencias de Servicio
-                  </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                {/* Gráfico circular de preferencias de servicio */}
+                <div 
+                  className="relative bg-white border border-gray-100 px-5 py-3 shadow-sm rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'services' ? null : 'services')}
+                >
+                  <div>
+                    <div className="border-b border-gray-100 pb-1.5 mb-2.5 flex items-center justify-between">
+                      <h3 className="font-bold text-slate-800 text-[11px] uppercase font-mono tracking-wider">
+                        Preferencias de Servicio
+                      </h3>
+                      <div className={`flex items-center gap-1 transition-colors ${activeMetricTooltip === 'services' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'}`}>
+                        <span className="text-[9px] uppercase font-bold tracking-wider">Detalles</span>
+                        <Info className="w-3 h-3" />
+                      </div>
+                    </div>
+                  </div>
+                  {activeMetricTooltip === 'services' && (
+                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Distribución de los servicios completados según la preferencia de entrega en el período.</p>
+                    </div>
+                  )}
+                  <div className="mt-2 w-full flex-1 flex flex-col justify-center">
+                    <ServicePreferenceChart preferences={metrics.servicePreferences} />
+                  </div>
                 </div>
-                <ServicePreferenceChart preferences={metrics.servicePreferences} />
+
+                {/* Cliente Frecuencia Frecuencia de Pedidos por Cliente */}
+                <div 
+                  className="relative bg-white border border-gray-100 px-5 py-3 shadow-sm rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'frequencies' ? null : 'frequencies')}
+                >
+                  <div>
+                    <div className="border-b border-gray-100 pb-1.5 mb-2.5 flex items-center justify-between">
+                      <h3 className="font-bold text-slate-800 text-[11px] uppercase font-mono tracking-wider">
+                        Frecuencia de Pedidos
+                      </h3>
+                      <div className={`flex items-center gap-1 transition-colors ${activeMetricTooltip === 'frequencies' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'}`}>
+                        <span className="text-[9px] uppercase font-bold tracking-wider">Detalles</span>
+                        <Info className="w-3 h-3" />
+                      </div>
+                    </div>
+                  </div>
+                  {activeMetricTooltip === 'frequencies' && (
+                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                      <p className="text-[10px] text-white leading-tight">Clasificación de clientes según las órdenes completadas en este período.</p>
+                    </div>
+                  )}
+                  <div className="mt-2 w-full flex-1 flex flex-col justify-center">
+                    <CustomerFrequencyChart frequency={metrics.customerFrequency} range={timeRange} />
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}

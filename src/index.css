@@ -57,4 +57,21 @@ html {
   .animate-shake {
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
   }
+
+  @keyframes softGlow {
+    0%, 100% { 
+      box-shadow: 0 5px 15px rgba(15,85,216,0.2);
+      transform: scale(1);
+    }
+    50% { 
+      box-shadow: 0 12px 25px rgba(15,85,216,0.4);
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-soft-glow {
+    animation: softGlow 3s ease-in-out infinite;
+  }
 }
+
+

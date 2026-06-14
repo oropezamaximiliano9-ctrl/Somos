@@ -392,22 +392,7 @@ export default function BagFlow() {
       const fileName = `Ticket-SOMOS-${orderNumber}.png`;
       const file = new File([blob], fileName, { type: "image/png" });
 
-      // Action 1: Attempt native file share (Very high fidelity on mobile WhatsApp)
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: `Ticket Digital SOMOS #${orderNumber}`,
-            text: `¡Hola! Aquí tienes el ticket de recepción de tu ropa en SOMOS lavandería. 🫧`
-          });
-          setIsGeneratingImage(false);
-          return;
-        } catch (shareErr) {
-          console.warn("Navigator share failed/cancelled:", shareErr);
-        }
-      }
-
-      // Action 2: Image clipboards (Auto copy PNG to clipboard for rapid WhatsApp Web Ctrl+V paste)
+      // Action 1: Copy image ticket to clipboard so the user has the high-fidelity visual ready
       try {
         await navigator.clipboard.write([
           new ClipboardItem({
@@ -418,7 +403,7 @@ export default function BagFlow() {
         setTimeout(() => setCopiedImage(false), 3500);
       } catch (clipErr) {
         console.warn("Clipboard copy image failed, fallback to automatic download:", clipErr);
-        // Action 3: Invariant direct down link
+        // Action 2: Fallback direct download link
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -429,9 +414,17 @@ export default function BagFlow() {
         URL.revokeObjectURL(url);
       }
 
-      // Automatically open WhatsApp so that the associate starts the conversation and can simply PASTE or attach!
+      // Action 3: Directly open WhatsApp with target text & phone number (avoiding the generic contact picker)
       if (whatsappUrl) {
-        window.open(whatsappUrl, "_blank");
+        const orderNumber = confirmedOrderData?.orderId || "SOMOS";
+        const clientName = confirmedOrderData?.user?.name || "Cliente";
+        const deliveryType = confirmedOrderData?.deliveryType || "Estándar (48 h)";
+        const dateText = confirmedOrderData?.date || "Hoy";
+
+        const textMessage = `¡Hola, *${clientName}*! 🫧\n\nAquí tienes tu ticket digital de *SOMOS lavandería*:\n\n📦 *Orden:* #${String(orderNumber).padStart(4, '0')}\n📅 *Fecha:* ${dateText}\n🚀 *Servicio:* ${deliveryType}\n\n_(Te copiamos la imagen del ticket al portapapeles. ¡Solo mantén presionado el chat y dale Pegar para enviarla!)_`;
+
+        const finalWaUrl = `${whatsappUrl}?text=${encodeURIComponent(textMessage)}`;
+        window.open(finalWaUrl, "_blank");
       }
     } catch (err: any) {
       setErrorMessage(err.message || "Ocurrió un error al preparar el ticket visual.");
