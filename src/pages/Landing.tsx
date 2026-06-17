@@ -4,6 +4,7 @@ import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
 import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.png";
+import mapaImg from "../assets/images/mapa-estatico.webp";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
@@ -904,7 +905,7 @@ export default function Landing() {
               id="location-dynamic-map-frame-container"
             >
               <img 
-                src="/mapa-estatico.webp" 
+                src={mapaImg} 
                 alt="Mapa de ubicación" 
                 className="w-full h-full object-cover select-none pointer-events-none" 
               />
