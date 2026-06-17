@@ -4,7 +4,8 @@ import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
 import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.png";
-import mapaImg from "../assets/images/mapa-estatico.webp";
+import mapaImg from "../assets/images/F7551F3F-844A-4625-9AA2-FA22CCD39636.jpeg";
+
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
