@@ -1394,7 +1394,7 @@ export default function Dashboard() {
                   className="px-3 py-2 bg-blue-50 text-blue-700 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-100 transition-colors border border-blue-200"
                 >
                   <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline">Nuevo Punto</span>
+                  <span className="inline">Nuevo Punto</span>
                 </button>
               </div>
 
@@ -1593,7 +1593,7 @@ export default function Dashboard() {
                   className="px-3 py-2 bg-blue-50 text-blue-700 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-100 transition-colors border border-blue-200 disabled:opacity-50 flex-shrink-0 ml-4"
                 >
                   {creatingBag ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                  <span className="hidden sm:inline">Nueva Bolsa</span>
+                  <span className="inline">Nueva Bolsa</span>
                 </button>
               </div>
 
