@@ -259,7 +259,6 @@ export default function Landing() {
   const [isNavigatingGPS, setIsNavigatingGPS] = useState(false);
   const [gpsLoadingStep, setGpsLoadingStep] = useState<string | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
-  const [mapZoom, setMapZoom] = useState(17);
 
   const handleNavigationAndGPS = () => {
     const DEST_ADDRESS = "Paseo de las Palmas 209, Coatzacoalcos, Veracruz";
@@ -825,7 +824,7 @@ export default function Landing() {
           <div className="pt-4 px-4 sm:px-0">
             <button 
               onClick={openBottomSheet}
-              className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_20px_rgba(15,85,216,0.18)] disabled:opacity-85 animate-soft-glow hover:brightness-110 active:!scale-[0.95] active:animate-none transition-[filter,transform]"
+              className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_15px_rgba(15,85,216,0.15)] disabled:opacity-85 hover:brightness-110 active:scale-[0.98] transition-all"
               style={{ fontFamily: '"Geist", sans-serif' }}
             >
               <div className="flex items-center space-x-2">
@@ -870,121 +869,14 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Tarjeta unificada de características (idéntica a la imagen, sin redondeado, mismo ancho que pasos) */}
-          <div className="w-full bg-white border border-[#eaeaea] rounded-lg shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] mt-5 text-left overflow-hidden">
-            <div className="flex flex-col">
-              
-              {/* Item 1 */}
-              <div 
-                className={`flex flex-col overflow-hidden transition-all duration-300 cursor-pointer px-4 py-2.5 border-b border-[#eaeaea] ${activeFeature === 0 ? 'bg-white' : 'bg-transparent hover:bg-[#F2EDDF]/40'}`}
-                onClick={() => setActiveFeature(0)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-7 h-7 flex items-center justify-center">
-                    <Tag className={`w-5 h-5 transition-colors ${activeFeature === 0 ? 'text-[#181818]' : 'text-[#6A6A6A]'}`} strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex justify-between items-center w-full min-h-[28px]">
-                      <h4 className={`font-geist font-semibold ${activeFeature === 0 ? 'text-[#181818] text-[16px] sm:text-[17px]' : 'text-[#6A6A6A] text-[15px] sm:text-[16px]'} transition-colors leading-tight`} style={{ fontFamily: '"Geist", sans-serif' }}>
-                        Sin costo
-                      </h4>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${activeFeature === 0 ? 'rotate-180 text-[#181818]' : 'text-[#A0A0A0]'}`} />
-                    </div>
-                    <AnimatePresence>
-                      {activeFeature === 0 && (
-                        <motion.div 
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug mt-0.5 mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
-                            Incluido con nuestro servicio
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-
-              {/* Item 2 */}
-              <div 
-                className={`flex flex-col overflow-hidden transition-all duration-300 cursor-pointer px-4 py-2.5 border-b border-[#eaeaea] ${activeFeature === 1 ? 'bg-white' : 'bg-transparent hover:bg-[#F2EDDF]/40'}`}
-                onClick={() => setActiveFeature(1)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-7 h-7 flex items-center justify-center">
-                    <ShoppingBag className={`w-5 h-5 transition-colors ${activeFeature === 1 ? 'text-[#181818]' : 'text-[#6A6A6A]'}`} strokeWidth={2} />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex justify-between items-center w-full min-h-[28px]">
-                      <h4 className={`font-geist font-semibold ${activeFeature === 1 ? 'text-[#181818] text-[16px] sm:text-[17px]' : 'text-[#6A6A6A] text-[15px] sm:text-[16px]'} transition-colors leading-tight`} style={{ fontFamily: '"Geist", sans-serif' }}>
-                        Fácil de transportar
-                      </h4>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${activeFeature === 1 ? 'rotate-180 text-[#181818]' : 'text-[#A0A0A0]'}`} />
-                    </div>
-                    <AnimatePresence>
-                      {activeFeature === 1 && (
-                        <motion.div 
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug mt-0.5 mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
-                            Asas para moverlo con comodidad.
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-
-              {/* Item 3 */}
-              <div 
-                className={`flex flex-col overflow-hidden transition-all duration-300 cursor-pointer px-4 py-2.5 ${activeFeature === 2 ? 'bg-white' : 'bg-transparent hover:bg-[#F2EDDF]/40'}`}
-                onClick={() => setActiveFeature(2)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-7 h-7 flex items-center justify-center">
-                    <div className={`relative w-4 h-4 flex items-center justify-center transition-colors ${activeFeature === 2 ? 'text-[#181818]' : 'text-[#6A6A6A]'}`}>
-                      <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t-2 border-l-2 border-current rounded-tl-[1px]" />
-                      <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t-2 border-r-2 border-current rounded-tr-[1px]" />
-                      <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b-2 border-l-2 border-current rounded-bl-[1px]" />
-                      <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b-2 border-r-2 border-current rounded-br-[1px]" />
-                      <QrCode className="w-2.5 h-2.5" strokeWidth={2} />
-                    </div>
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex justify-between items-center w-full min-h-[28px]">
-                      <h4 className={`font-geist font-semibold ${activeFeature === 2 ? 'text-[#181818] text-[16px] sm:text-[17px]' : 'text-[#6A6A6A] text-[15px] sm:text-[16px]'} transition-colors leading-tight`} style={{ fontFamily: '"Geist", sans-serif' }}>
-                        Vinculado a tu cuenta
-                      </h4>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 shrink-0 ${activeFeature === 2 ? 'rotate-180 text-[#181818]' : 'text-[#A0A0A0]'}`} />
-                    </div>
-                    <AnimatePresence>
-                      {activeFeature === 2 && (
-                        <motion.div 
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug mt-0.5 mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
-                            Recibimos tu ropa al instante
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Texto descriptivo del cesto sin fondo o caja */}
+          <div className="w-full mt-6 text-center select-none" id="cesto-description-text">
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Llénalo en casa con la ropa de tu semana
+            </p>
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium tracking-tight leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+              y recíbela limpia por <span className="font-bold text-[#181818]">$95</span>, sin importar el peso.
+            </p>
           </div>
         </motion.div>
       </section>
@@ -1007,73 +899,57 @@ export default function Landing() {
 
           {/* Premium Map Frame with elegant border radii */}
           <div className="px-4 sm:px-0 mt-10">
-            <div className="relative w-full h-[260px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-slate-100 shadow-sm" id="location-dynamic-map-frame-container">
-              <iframe
-                src={`https://maps.google.com/maps?q=Paseo%20de%20las%20Palmas%20209,%20Coatzacoalcos,%20Veracruz&t=m&z=${mapZoom}&ie=UTF8&iwloc=&output=embed`}
-                style={{
-                  width: 'calc(100% + 300px)',
-                  height: 'calc(100% + 300px)',
-                  top: '-150px',
-                  left: '-150px'
-                }}
-                className="absolute border-0 select-all pointer-events-none"
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Interactive Location Map"
-              ></iframe>
-
-              {/* Controles de Zoom Personalizados con pointer-events-auto */}
-              <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
-                <button
-                  type="button"
-                  onClick={() => setMapZoom(prev => Math.min(prev + 1, 20))}
-                  className="w-10 h-10 rounded-full bg-white/95 backdrop-blur border border-slate-200/80 shadow-md flex items-center justify-center text-slate-800 hover:bg-slate-50 active:scale-95 transition-all pointer-events-auto"
-                  title="Acercar"
-                >
-                  <Plus className="w-5 h-5 text-slate-700" strokeWidth={2.5} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMapZoom(prev => Math.max(prev - 1, 10))}
-                  className="w-10 h-10 rounded-full bg-white/95 backdrop-blur border border-slate-200/80 shadow-md flex items-center justify-center text-slate-800 hover:bg-slate-50 active:scale-95 transition-all pointer-events-auto"
-                  title="Alejar"
-                >
-                  <Minus className="w-5 h-5 text-slate-700" strokeWidth={2.5} />
-                </button>
-              </div>
+            <div 
+              className="relative w-full h-[260px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-slate-100 shadow-sm" 
+              id="location-dynamic-map-frame-container"
+            >
+              <img 
+                src="/mapa-estatico.webp" 
+                alt="Mapa de ubicación" 
+                className="w-full h-full object-cover select-none pointer-events-none" 
+              />
             </div>
           </div>
 
           {/* Navigation Route CTA helper */}
           <div className="space-y-4 pt-6 px-4 sm:px-0 flex flex-col items-center">
-            <button 
-              type="button"
-              onClick={handleNavigationAndGPS}
-              disabled={isNavigatingGPS}
-              className="w-full py-4 bg-[#0f55d8] hover:bg-[#0d4bc0] active:scale-[0.98] text-white rounded-2xl font-bold text-lg font-geist transition-all flex items-center justify-center gap-2 select-none shadow-[0_5px_20px_rgba(15,85,216,0.18)] cursor-pointer disabled:opacity-85"
-              style={{ fontFamily: '"Geist", sans-serif' }}
-              id="location-cta-navigation-button"
-            >
-              {isNavigatingGPS ? (
-                <span>Conectando...</span>
-              ) : (
-                <span>¿Cómo llegar?</span>
-              )}
-            </button>
-
-            {/* Pure text and centered WhatsApp support link */}
-            <div className="text-center text-[14.5px] font-geist text-slate-500 font-medium select-none" style={{ fontFamily: '"Geist", sans-serif' }}>
-              ¿Dudas?{" "}
-              <a 
-                href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa." 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-[#0f55d8] underline font-semibold hover:text-[#0d4bc0] transition-colors"
-                id="whatsapp-support-link"
+            <div className="w-full flex flex-col items-center gap-y-1.5" id="cta-info-wrapper">
+              <button 
+                type="button"
+                onClick={handleNavigationAndGPS}
+                disabled={isNavigatingGPS}
+                className="w-full py-4 bg-[#0f55d8] hover:bg-[#0d4bc0] active:scale-[0.98] text-white rounded-2xl font-bold text-lg font-geist transition-all flex items-center justify-center gap-2 select-none shadow-[0_5px_20px_rgba(15,85,216,0.18)] cursor-pointer disabled:opacity-85"
+                style={{ fontFamily: '"Geist", sans-serif' }}
+                id="location-cta-navigation-button"
               >
-                Habla con nosotros
-              </a>
+                {isNavigatingGPS ? (
+                  <span>Conectando...</span>
+                ) : (
+                  <span>¿Cómo llegar?</span>
+                )}
+              </button>
+
+              {/* Información rápida en dos líneas separadas (uno debajo del otro) */}
+              <div className="w-full flex flex-col gap-y-1 mt-3.5 px-1 select-none text-[15px] font-geist text-[#6A6A6A] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }} id="quick-info-container">
+                {/* Horario */}
+                <div id="quick-info-horario">
+                  Horario: 9:00 am - 6:00 pm
+                </div>
+
+                {/* Contacto */}
+                <div className="flex items-center gap-1" id="quick-info-contacto">
+                  Contacto:{" "}
+                  <a 
+                    href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#6A6A6A] underline hover:no-underline font-bold active:scale-[0.98] transition-all inline-block"
+                    id="row-whatsapp-contact"
+                  >
+                    WhatsApp
+                  </a>
+                </div>
+              </div>
             </div>
 
             {isNavigatingGPS && gpsLoadingStep && (
