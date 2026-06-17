@@ -858,26 +858,27 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Cesto grande centrado en ambiente real minimal */}
-          <div className="px-4 sm:px-0 mt-10">
-            <div className="relative w-full h-[310px] select-none overflow-hidden rounded-[32px] border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
-              <img 
-                src={canvasLaundryBag} 
-                alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover object-[center_55%]"
-              />
+          {/* Tarjeta envolviendo el cesto y el texto */}
+          <div className="w-full bg-white border border-[#eaeaea] rounded-lg shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] mt-6 pb-6 pt-5 flex flex-col relative text-left">
+            <div className="px-4 sm:px-4">
+              <div className="relative w-full h-[310px] select-none overflow-hidden border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20 mt-2 text-center">
+                <img 
+                  src={canvasLaundryBag} 
+                  alt="Cesto de lona premium SOMOS en ambiente real minimal" 
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover object-[center_55%]"
+                />
+              </div>
             </div>
-          </div>
-
-          {/* Texto descriptivo del cesto sin fondo o caja */}
-          <div className="w-full mt-6 text-center select-none" id="cesto-description-text">
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Llénalo en casa con la ropa de tu semana
-            </p>
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium tracking-tight leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-              y recíbela limpia por <span className="font-bold text-[#181818]">$95</span>, sin importar el peso.
-            </p>
+            
+            <div className="w-full pt-10 px-4 text-center select-none" id="cesto-description-text">
+              <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-2" style={{ fontFamily: '"Geist", sans-serif' }}>
+                Llénalo en casa con la ropa de tu semana
+              </p>
+              <p className="font-geist text-[#6A6A6A] text-[15px] font-medium tracking-tight leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                y recíbela limpia por <span className="font-bold text-[#181818]">$95</span>, sin importar el peso.
+              </p>
+            </div>
           </div>
         </motion.div>
       </section>
