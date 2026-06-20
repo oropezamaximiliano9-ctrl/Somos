@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDown, Sparkles, Loader2, ArrowRight, Package, Clock, Plus, Minus, Info, Shirt, User, Phone, MapPin, Truck, Gift, Map, Building, Banknote, Coins, DollarSign, Tag, ShoppingBag, X, FileText, Car } from "lucide-react";
+import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDown, Sparkles, Loader2, ArrowRight, Package, Clock, Plus, Minus, Info, Shirt, User, Phone, MapPin, Truck, Gift, Map, Building, Banknote, Coins, DollarSign, Tag, ShoppingBag, X, FileText, Car, Star, BadgeCheck, Award, Trophy, Check, CheckCheck, CheckCircle, CheckSquare } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
@@ -222,6 +222,9 @@ const TypewriterTitle = () => {
           </AnimatePresence>
         </span>
       </h1>
+      <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
+        Tu ropa limpia a un precio fijo
+      </p>
     </div>
   );
 };
@@ -757,10 +760,10 @@ export default function Landing() {
                   <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
                   <div className="space-y-0.5 pt-1.5">
                     <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Llénalo con tu ropa
+                      Llénalo en casa
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Todo lo que quepa por $95
+                      Con tu ropa de la semana
                     </p>
                   </div>
                 </div>
@@ -778,16 +781,7 @@ export default function Landing() {
                       Déjalo en el punto de recolección
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Nuevo punto en palmas{' '}
-                      <span 
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           document.getElementById('editorial-location-section')?.scrollIntoView({ behavior: 'smooth' });
-                         }} 
-                        className="text-black hover:text-slate-700 underline cursor-pointer font-semibold inline-flex items-center gap-0.5"
-                      >
-                        ver ubicación
-                      </span>
+                      Sin pesar, sin esperar
                     </p>
                   </div>
                 </div>
@@ -805,18 +799,22 @@ export default function Landing() {
               id="flow-reward-banner"
             >
               <div 
-                className="shrink-0 w-9 h-9 text-[#0f55d8] bg-[#0f55d8]/10 rounded-full flex items-center justify-center transform-gpu" 
-                style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
+                className="shrink-0 w-9 h-9 flex items-center justify-center" 
                 id="flow-reward-icon-container"
               >
-                <Truck className="w-5 h-5" strokeWidth={2.1} />
+                <div 
+                  className="w-7 h-7 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu"
+                  style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
+                >
+                  <Check className="w-[15px] h-[15px]" strokeWidth={2.5} />
+                </div>
               </div>
               <div className="flex flex-col text-left space-y-0.5 pt-1.5">
                 <p className="font-geist font-semibold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Tu ropa limpia de vuelta en casa
+                  Tu ropa limpia en casa
                 </p>
                 <p className="font-geist text-[#4b6a9b] font-medium text-[14px] sm:text-[15px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Al siguiente día sin costo extra
+                  Al día siguiente y sin costo extra
                 </p>
               </div>
             </div>
@@ -854,31 +852,30 @@ export default function Landing() {
               Nuestro cesto
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Tu ropa limpia a un precio fijo
+              De tu habitación a la recolección
             </p>
           </div>
 
-          {/* Tarjeta envolviendo el cesto y el texto */}
-          <div className="w-full bg-white border border-[#eaeaea] rounded-lg shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] mt-6 pb-6 pt-5 flex flex-col relative text-left">
-            <div className="px-4 sm:px-4">
-              <div className="relative w-full h-[310px] select-none overflow-hidden border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20 mt-2 text-center">
-                <img 
-                  src={canvasLaundryBag} 
-                  alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover object-[center_55%]"
-                />
-              </div>
+          {/* Cesto grande centrado en ambiente real minimal */}
+          <div className="px-4 sm:px-0 mt-10">
+            <div className="relative w-full h-[310px] select-none overflow-hidden rounded-[32px] border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
+              <img 
+                src={canvasLaundryBag} 
+                alt="Cesto de lona premium SOMOS en ambiente real minimal" 
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover object-[center_55%]"
+              />
             </div>
-            
-            <div className="w-full pt-10 px-4 text-center select-none" id="cesto-description-text">
-              <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-2" style={{ fontFamily: '"Geist", sans-serif' }}>
-                Llénalo en casa con la ropa de tu semana
-              </p>
-              <p className="font-geist text-[#6A6A6A] text-[15px] font-medium tracking-tight leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                y recíbela limpia por <span className="font-bold text-[#181818]">$95</span>, sin importar el peso.
-              </p>
-            </div>
+          </div>
+
+          {/* Texto descriptivo del cesto sin fondo o caja */}
+          <div className="w-full mt-6 text-center select-none" id="cesto-description-text">
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Llénalo en casa con la ropa de tu semana
+            </p>
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium tracking-tight leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+              y recíbela limpia por <span className="text-[#6A6A6A] font-bold active:scale-[0.98] transition-all inline-block">$95</span>, sin importar el peso.
+            </p>
           </div>
         </motion.div>
       </section>
@@ -893,7 +890,7 @@ export default function Landing() {
               Nuestra ubicación
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ fontFamily: '"Geist", sans-serif', textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
-              Paseo de las Palmas 209, Las Palmas
+              Paseo de las Palmas 209, las Palmas
             </p>
           </div>
 
