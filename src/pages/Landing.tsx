@@ -4,7 +4,6 @@ import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
 import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.jpg";
-import mapaImg from "../assets/images/F7551F3F-844A-4625-9AA2-FA22CCD39636.jpg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
@@ -901,10 +900,11 @@ export default function Landing() {
               className="relative w-full h-[260px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-slate-100 shadow-sm" 
               id="location-dynamic-map-frame-container"
             >
-              <img 
-                src={mapaImg} 
-                alt="Mapa de ubicación" 
-                className="w-full h-full object-cover select-none pointer-events-none" 
+              <iframe 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-99.215%2C19.426%2C-99.205%2C19.434&amp;layer=mapnik&amp;marker=19.430%2C-99.210" 
+                className="w-full h-[150%] -mt-10 object-cover opacity-90 contrast-125 select-none pointer-events-none" 
+                style={{ border: 0, filter: 'grayscale(0.6) hue-rotate(190deg)' }}
+                title="Mapa de ubicación Paseo de las Palmas"
               />
             </div>
           </div>
