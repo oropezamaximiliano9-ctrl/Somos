@@ -3,7 +3,7 @@ import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDo
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
-import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.png";
+import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.jpg";
 import mapaImg from "../assets/images/F7551F3F-844A-4625-9AA2-FA22CCD39636.jpeg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
@@ -862,8 +862,7 @@ export default function Landing() {
               <img 
                 src={canvasLaundryBag} 
                 alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover object-[center_55%]"
+                className="w-full h-full object-cover object-[center_55%] pointer-events-none select-none"
               />
             </div>
           </div>
