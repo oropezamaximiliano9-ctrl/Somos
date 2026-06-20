@@ -915,17 +915,17 @@ export default function Landing() {
               {/* Streets & Roads Layer */}
               {/* Paseo de las palmas */}
               <div className="absolute top-[-20%] bottom-[35%] left-[48%] w-[32px] bg-[#cbcfdb] z-0">
-                 <span className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide">Paseo de las Palmas</span>
+                 <span translate="no" className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide notranslate">Paseo de las Palmas</span>
               </div>
               
               {/* Avestruces */}
               <div className="absolute top-[-20%] bottom-[-20%] left-[84%] w-[32px] bg-[#cbcfdb] z-0">
-                <span className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide">Avestruces</span>
+                <span translate="no" className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide notranslate">Avestruces</span>
               </div>
 
               {/* Río Calzadas */}
               <div className="absolute bottom-[35%] -left-10 w-[120%] h-[32px] bg-[#cbcfdb] z-0 flex items-center justify-center">
-                 <span className="text-[#495464] text-[12px] font-medium tracking-wide mr-10 relative">Río Calzadas</span>
+                 <span translate="no" className="text-[#495464] text-[12px] font-medium tracking-wide mr-10 relative notranslate">Río Calzadas</span>
                  <ArrowRight className="absolute right-12 text-[#6e7682] w-3.5 h-3.5 rotate-180" />
               </div>
               
@@ -941,7 +941,7 @@ export default function Landing() {
               
               {/* Lions Boot Camp */}
               <div className="absolute top-[18%] left-[10%] flex items-center z-10 transition-transform cursor-pointer">
-                <span className="text-black text-[12px] font-medium mr-2 tracking-tight drop-shadow-sm">Lions Boot Camp</span>
+                <span translate="no" className="text-black text-[12px] font-medium mr-2 tracking-tight drop-shadow-sm notranslate">Lions Boot Camp</span>
                 <div className="w-[28px] h-[28px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-[2.5px] border-white shadow-sm">
                   <div className="w-[8px] h-[8px] bg-white rounded-full"></div>
                 </div>
@@ -967,7 +967,7 @@ export default function Landing() {
                 <div className="bg-[#9ca3af] w-[26px] h-[26px] rounded-[6px] border-2 border-white shadow-sm flex items-center justify-center text-white mb-1">
                   <ShoppingBag size={14} strokeWidth={2.5}/>
                 </div>
-                <span className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight drop-shadow-sm">OXXO Santa Isabel</span>
+                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight drop-shadow-sm notranslate">OXXO Santa Isabel</span>
               </div>
 
             </div>
