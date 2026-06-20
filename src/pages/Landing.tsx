@@ -742,7 +742,7 @@ export default function Landing() {
                 <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
                 <div className="space-y-0.5 pt-1.5">
                   <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Pide tu cesto gratis
+                    Pide nuestro cesto gratis
                   </h4>
                   <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                     Sin costo de envío
@@ -810,7 +810,7 @@ export default function Landing() {
               </div>
               <div className="flex flex-col text-left space-y-0.5 pt-1.5">
                 <p className="font-geist font-semibold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Tu ropa limpia en casa
+                  Tu ropa limpia a domicilio
                 </p>
                 <p className="font-geist text-[#4b6a9b] font-medium text-[14px] sm:text-[15px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                   Al día siguiente y sin costo extra
@@ -851,7 +851,7 @@ export default function Landing() {
               Nuestro cesto
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              De tu habitación a la recolección
+              Toda la ropa que metas por $95
             </p>
           </div>
 
@@ -867,7 +867,7 @@ export default function Landing() {
           </div>
 
           {/* Texto descriptivo del cesto sin fondo o caja */}
-          <div className="w-full mt-6 text-center select-none" id="cesto-description-text">
+          <div className="w-full mt-6 text-center select-none invisible" id="cesto-description-text" aria-hidden="true">
             <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
               Llénalo en casa con la ropa de tu semana
             </p>
@@ -894,26 +894,82 @@ export default function Landing() {
 
 
 
-          {/* Premium Map Container */}
+          {/* Custom CSS Map Container matching the exact provided location image */}
           <div className="px-4 sm:px-0 mt-10">
             <div 
-              className="relative w-full h-[260px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-[#e5e9ea] shadow-sm flex items-center justify-center" 
+              className="relative w-full h-[300px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-[#f4f5f5] shadow-sm flex items-center justify-center font-sans tracking-tight" 
               id="location-dynamic-map-frame-container"
             >
-              <img 
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                alt="Mapa de ubicación Paseo de las Palmas" 
-                className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-50 grayscale" 
-              />
-              <div className="absolute inset-0 bg-slate-100/10 pointer-events-none"></div>
+              {/* Abstract Buildings */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.6]">
+                <div className="absolute top-8 left-4 w-24 h-12 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
+                <div className="absolute top-24 left-4 w-32 h-12 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
+                <div className="absolute top-[140px] left-6 w-28 h-16 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
+                <div className="absolute top-8 right-24 w-16 h-20 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
+                <div className="absolute top-4 left-[56%] w-20 h-14 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
+                <div className="absolute top-[80px] left-[56%] w-16 h-28 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
+                <div className="absolute top-[140px] right-6 w-14 h-14 bg-[#eef1ed] border border-[#e4e9e3]"></div>
+                <div className="absolute top-[190px] right-12 w-20 h-20 bg-[#faefe4] border border-[#f0e3d6]"></div>
+              </div>
 
-              {/* Minimal Map Marker */}
-              <div className="relative flex flex-col items-center">
-                <div className="w-16 h-16 bg-[#0f55d8]/15 rounded-full absolute -top-4 -left-4 animate-ping" style={{ animationDuration: '3s' }}></div>
-                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative z-10">
-                  <div className="w-3.5 h-3.5 bg-[#0f55d8] rounded-full"></div>
+              {/* Streets & Roads Layer */}
+              {/* Paseo de las palmas */}
+              <div className="absolute top-[-20%] bottom-[35%] left-[48%] w-[32px] bg-[#cbcfdb] z-0">
+                 <span className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide">Paseo de las Palmas</span>
+              </div>
+              
+              {/* Avestruces */}
+              <div className="absolute top-[-20%] bottom-[-20%] left-[84%] w-[32px] bg-[#cbcfdb] z-0">
+                <span className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide">Avestruces</span>
+              </div>
+
+              {/* Río Calzadas */}
+              <div className="absolute bottom-[35%] -left-10 w-[120%] h-[32px] bg-[#cbcfdb] z-0 flex items-center justify-center">
+                 <span className="text-[#495464] text-[12px] font-medium tracking-wide mr-10 relative">Río Calzadas</span>
+                 <ArrowRight className="absolute right-12 text-[#6e7682] w-3.5 h-3.5 rotate-180" />
+              </div>
+              
+              {/* Bottom horizontal street */}
+              <div className="absolute bottom-[10%] -left-10 w-[120%] h-[32px] bg-[#cbcfdb] z-0">
+                 <ArrowRight className="absolute left-[47%] top-1/2 -translate-y-1/2 text-[#6e7682] w-3.5 h-3.5" />
+              </div>
+              
+              {/* Conexión de calles izquierda */}
+              <div className="absolute bottom-[10%] -left-6 w-[50px] h-[30%] bg-[#cbcfdb] z-0"></div>
+
+              {/* Markers & Labels */}
+              
+              {/* Lions Boot Camp */}
+              <div className="absolute top-[18%] left-[10%] flex items-center z-10 transition-transform cursor-pointer">
+                <span className="text-black text-[12px] font-medium mr-2 tracking-tight drop-shadow-sm">Lions Boot Camp</span>
+                <div className="w-[28px] h-[28px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-[2.5px] border-white shadow-sm">
+                  <div className="w-[8px] h-[8px] bg-white rounded-full"></div>
                 </div>
               </div>
+
+              {/* Red Pin - Location */}
+              <motion.div 
+                className="absolute top-[24%] left-[40%] z-20 drop-shadow-md cursor-pointer origin-bottom"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                whileHover={{ scale: 1.15 }}
+              >
+                <div className="text-[#ea4335] relative">
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-sm">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <div className="absolute top-[9px] left-1/2 w-3 h-3 bg-[#a50f03] rounded-full -translate-x-1/2 opacity-30"></div>
+                </div>
+              </motion.div>
+
+              {/* OXXO Santa Isabel */}
+              <div className="absolute bottom-[2%] right-[25%] flex flex-col items-center z-10 transition-transform hover:-translate-y-1 cursor-pointer">
+                <div className="bg-[#9ca3af] w-[26px] h-[26px] rounded-[6px] border-2 border-white shadow-sm flex items-center justify-center text-white mb-1">
+                  <ShoppingBag size={14} strokeWidth={2.5}/>
+                </div>
+                <span className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight drop-shadow-sm">OXXO Santa Isabel</span>
+              </div>
+
             </div>
           </div>
 
