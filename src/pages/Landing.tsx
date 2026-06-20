@@ -894,18 +894,26 @@ export default function Landing() {
 
 
 
-          {/* Premium Map Frame with elegant border radii */}
+          {/* Premium Map Container */}
           <div className="px-4 sm:px-0 mt-10">
             <div 
-              className="relative w-full h-[260px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-slate-100 shadow-sm" 
+              className="relative w-full h-[260px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-[#e5e9ea] shadow-sm flex items-center justify-center" 
               id="location-dynamic-map-frame-container"
             >
-              <iframe 
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-99.215%2C19.426%2C-99.205%2C19.434&amp;layer=mapnik&amp;marker=19.430%2C-99.210" 
-                className="w-full h-[150%] -mt-10 object-cover opacity-90 contrast-125 select-none pointer-events-none" 
-                style={{ border: 0, filter: 'grayscale(0.6) hue-rotate(190deg)' }}
-                title="Mapa de ubicación Paseo de las Palmas"
+              <img 
+                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                alt="Mapa de ubicación Paseo de las Palmas" 
+                className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-50 grayscale" 
               />
+              <div className="absolute inset-0 bg-slate-100/10 pointer-events-none"></div>
+
+              {/* Minimal Map Marker */}
+              <div className="relative flex flex-col items-center">
+                <div className="w-16 h-16 bg-[#0f55d8]/15 rounded-full absolute -top-4 -left-4 animate-ping" style={{ animationDuration: '3s' }}></div>
+                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] relative z-10">
+                  <div className="w-3.5 h-3.5 bg-[#0f55d8] rounded-full"></div>
+                </div>
+              </div>
             </div>
           </div>
 
