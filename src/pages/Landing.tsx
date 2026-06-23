@@ -869,9 +869,12 @@ export default function Landing() {
           <div className="px-4 sm:px-0 mt-4">
             <div className="relative w-full h-[310px] select-none overflow-hidden rounded-[32px] border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
               <img 
-                src={canvasLaundryBag} 
+                src="https://i.postimg.cc/9MMvCSqC/IMG-8321.jpg" 
                 alt="Cesto de lona premium SOMOS en ambiente real minimal" 
                 className="w-full h-full object-cover object-center pointer-events-none select-none"
+                onError={(e) => {
+                  e.currentTarget.src = canvasLaundryBag;
+                }}
               />
             </div>
           </div>
