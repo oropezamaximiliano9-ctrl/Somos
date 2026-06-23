@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from "re
 import { useState, createContext, useContext, useRef, MouseEvent, useEffect } from "react";
 import { Calendar, Clock, Menu, MoreVertical, X, ArrowLeft, Play } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { safeGetItem, safeSetItem } from "./utils/storage";
 import Landing from "./pages/Landing";
 import BagFlow from "./pages/BagFlow";
 import Dashboard from "./pages/Dashboard";
@@ -222,7 +221,7 @@ function MainLayout() {
 
 export default function App() {
   const [role, setRole] = useState<'customer' | 'associate' | 'admin'>(() => {
-    const saved = safeGetItem('app_role');
+    const saved = localStorage.getItem('app_role');
     if (saved === 'admin' || saved === 'associate' || saved === 'customer') {
       return saved as 'customer' | 'associate' | 'admin';
     }
@@ -231,7 +230,7 @@ export default function App() {
 
   const updateRole = (newRole: 'customer' | 'associate' | 'admin') => {
     setRole(newRole);
-    safeSetItem('app_role', newRole);
+    localStorage.setItem('app_role', newRole);
   };
 
   return (

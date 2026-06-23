@@ -1,9 +1,9 @@
-import { safeGetItem, safeSetItem } from '../utils/storage';
 import { Link, useNavigate } from "react-router-dom";
 import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDown, Sparkles, Loader2, ArrowRight, Package, Clock, Plus, Minus, Info, Shirt, User, Phone, MapPin, Truck, Gift, Map, Building, Banknote, Coins, DollarSign, Tag, ShoppingBag, X, FileText, Car, Star, BadgeCheck, Award, Trophy, Check, CheckCheck, CheckCircle, CheckSquare } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
+import canvasLaundryBag from "../assets/images/IMG_8301.jpeg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
@@ -234,28 +234,28 @@ export default function Landing() {
 
   const [activeFeature, setActiveFeature] = useState(0);
 
-  const [name, setName] = useState(() => safeGetItem("user_name") || "");
-  const [phone, setPhone] = useState(() => safeGetItem("user_phone") || "");
-  const [deliveryPreference, setDeliveryPreference] = useState(() => safeGetItem("user_delivery_preference") || "");
+  const [name, setName] = useState(() => localStorage.getItem("user_name") || "");
+  const [phone, setPhone] = useState(() => localStorage.getItem("user_phone") || "");
+  const [deliveryPreference, setDeliveryPreference] = useState(() => localStorage.getItem("user_delivery_preference") || "");
   
-  const [addressColonia, setAddressColonia] = useState(() => safeGetItem("user_address_colonia") || "");
-  const [addressCalle, setAddressCalle] = useState(() => safeGetItem("user_address_calle") || "");
-  const [preferredTime, setPreferredTime] = useState(() => safeGetItem("user_preferred_time") || "");
+  const [addressColonia, setAddressColonia] = useState(() => localStorage.getItem("user_address_colonia") || "");
+  const [addressCalle, setAddressCalle] = useState(() => localStorage.getItem("user_address_calle") || "");
+  const [preferredTime, setPreferredTime] = useState(() => localStorage.getItem("user_preferred_time") || "");
   
   const [loading, setLoading] = useState(false);
-  const [registered, setRegistered] = useState(() => safeGetItem("user_registered") === "true");
-  const [isWaitlisted, setIsWaitlisted] = useState(() => safeGetItem("user_is_waitlisted") === "true");
+  const [registered, setRegistered] = useState(() => localStorage.getItem("user_registered") === "true");
+  const [isWaitlisted, setIsWaitlisted] = useState(() => localStorage.getItem("user_is_waitlisted") === "true");
   const [formStep, setFormStep] = useState<1 | 2 | "eligible_result" | "not_eligible_result">(1);
 
   useEffect(() => {
-    safeSetItem("user_name", name);
-    safeSetItem("user_phone", phone);
-    safeSetItem("user_delivery_preference", deliveryPreference);
-    safeSetItem("user_address_colonia", addressColonia);
-    safeSetItem("user_address_calle", addressCalle);
-    safeSetItem("user_preferred_time", preferredTime);
-    safeSetItem("user_registered", registered ? "true" : "false");
-    safeSetItem("user_is_waitlisted", isWaitlisted ? "true" : "false");
+    localStorage.setItem("user_name", name);
+    localStorage.setItem("user_phone", phone);
+    localStorage.setItem("user_delivery_preference", deliveryPreference);
+    localStorage.setItem("user_address_colonia", addressColonia);
+    localStorage.setItem("user_address_calle", addressCalle);
+    localStorage.setItem("user_preferred_time", preferredTime);
+    localStorage.setItem("user_registered", registered ? "true" : "false");
+    localStorage.setItem("user_is_waitlisted", isWaitlisted ? "true" : "false");
   }, [name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime, registered, isWaitlisted]);
 
   const [copied, setCopied] = useState(false);
@@ -419,7 +419,7 @@ export default function Landing() {
     } catch(e) {
       // Offline fallback: try reading from localStorage of simulated user database
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         const user = savedUsers[phone];
         if (user) {
           if (user.name) setName(user.name);
@@ -574,9 +574,9 @@ export default function Landing() {
 
       // Save simulated user details locally for subsequent loads
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
-        safeSetItem("simulated_users", JSON.stringify(savedUsers));
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
       } catch(e) {}
 
       if (eligible) {
@@ -591,9 +591,9 @@ export default function Landing() {
       console.warn("API preregister failed, falling back to seamless client-side experience:", err);
       // Seamless LocalStorage Fallback!
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
-        safeSetItem("simulated_users", JSON.stringify(savedUsers));
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
       } catch(e) {}
 
       if (eligible) {
@@ -669,9 +669,9 @@ export default function Landing() {
 
       // Save simulated user details locally for subsequent loads
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
-        safeSetItem("simulated_users", JSON.stringify(savedUsers));
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
       } catch(e) {}
 
       setIsWaitlisted(false);
@@ -680,9 +680,9 @@ export default function Landing() {
     } catch (err: any) {
       console.warn("Offline confirmation fallback:", err);
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
-        safeSetItem("simulated_users", JSON.stringify(savedUsers));
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
       } catch(e) {}
 
       setIsWaitlisted(false);
@@ -701,9 +701,9 @@ export default function Landing() {
 
       // Save simulated user details locally for subsequent loads
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
-        safeSetItem("simulated_users", JSON.stringify(savedUsers));
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
       } catch(e) {}
 
       setIsWaitlisted(true);
@@ -712,9 +712,9 @@ export default function Landing() {
     } catch (err: any) {
       console.warn("Offline waitlist confirmation fallback:", err);
       try {
-        const savedUsers = JSON.parse(safeGetItem("simulated_users") || "{}");
+        const savedUsers = JSON.parse(localStorage.getItem("simulated_users") || "{}");
         savedUsers[phone] = { name, phone, deliveryPreference, addressColonia, addressCalle, preferredTime };
-        safeSetItem("simulated_users", JSON.stringify(savedUsers));
+        localStorage.setItem("simulated_users", JSON.stringify(savedUsers));
       } catch(e) {}
 
       setIsWaitlisted(true);
