@@ -3,7 +3,7 @@ import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDo
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
-import canvasLaundryBag from "../assets/images/IMG_8321.jpeg";
+import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
