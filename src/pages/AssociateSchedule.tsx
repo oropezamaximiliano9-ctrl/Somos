@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Calendar, Check } from "lucide-react";
+import { safeGetItem, safeSetItem } from "../utils/storage";
 
 export default function AssociateSchedule() {
   const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
   const timeSlots = ["7:00 AM - 1:00 PM", "1:00 PM - 7:00 PM", "7:00 PM - 10:00 PM"];
   
   const [schedule, setSchedule] = useState<Record<string, boolean[]>>(() => {
-    const saved = localStorage.getItem("somos_schedule");
+    const saved = safeGetItem("somos_schedule");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -25,7 +26,7 @@ export default function AssociateSchedule() {
         ...prev,
         [day]: prev[day].map((checked, i) => i === slotIndex ? !checked : checked)
       };
-      localStorage.setItem("somos_schedule", JSON.stringify(updated));
+      safeSetItem("somos_schedule", JSON.stringify(updated));
       return updated;
     });
   };
