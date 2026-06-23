@@ -867,7 +867,7 @@ export default function Landing() {
           </div>
 
           {/* Texto descriptivo del cesto sin fondo o caja */}
-          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none flex flex-col gap-4" id="cesto-description-text">
+          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none flex flex-col gap-6" id="cesto-description-text">
             <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
               <span className="font-bold text-slate-800">Capacidad:</span> Para toda tu ropa de la semana.
             </p>
