@@ -856,7 +856,7 @@ export default function Landing() {
           </div>
 
           {/* Cesto grande centrado en ambiente real minimal */}
-          <div className="px-4 sm:px-0 mt-10">
+          <div className="px-4 sm:px-0 mt-4">
             <div className="relative w-full h-[310px] select-none overflow-hidden rounded-[32px] border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
               <img 
                 src={canvasLaundryBag} 
@@ -869,13 +869,15 @@ export default function Landing() {
           {/* Texto descriptivo del cesto sin fondo o caja */}
           <div className="w-full mt-6 text-left px-4 sm:px-0 select-none" id="cesto-description-text">
             <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Espacio para toda tu ropa de la semana.
+              <span className="font-bold text-slate-800">Capacidad:</span> Para toda tu ropa de la semana.
             </p>
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mt-4" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Precio fijo por cesto, sin importar el peso ni el número de prendas.
+            <div className="w-full h-[1px] bg-[#6A6A6A] my-2"></div>
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+              <span className="font-bold text-slate-800">Precio fijo:</span> Sin importar el peso ni el número de prendas.
             </p>
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mt-4" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Úsalo en casa para juntar tu ropa, cuando esté lleno solo ciérralo y déjalo con nosotros.
+            <div className="w-full h-[1px] bg-[#6A6A6A] my-2"></div>
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+              <span className="font-bold text-slate-800">Comodidad:</span> Cuando esté lleno, solo ciérralo y déjalo con nosotros.
             </p>
           </div>
         </motion.div>
@@ -898,7 +900,7 @@ export default function Landing() {
 
 
           {/* Custom CSS Map Container matching the exact provided location image */}
-          <div className="px-4 sm:px-0 mt-10">
+          <div className="px-4 sm:px-0 mt-4">
             <a 
               href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
               target="_blank"
