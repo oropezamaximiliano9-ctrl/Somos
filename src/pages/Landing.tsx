@@ -3,7 +3,7 @@ import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDo
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
-import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.jpg";
+import canvasLaundryBag from "../assets/images/IMG_8301.jpeg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
@@ -851,7 +851,7 @@ export default function Landing() {
               Nuestro cesto
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Toda la ropa que quepa por $95
+              Toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
             </p>
           </div>
 
@@ -861,21 +861,19 @@ export default function Landing() {
               <img 
                 src={canvasLaundryBag} 
                 alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                className="w-full h-full object-cover object-[center_55%] pointer-events-none select-none"
+                className="w-full h-full object-cover object-bottom pointer-events-none select-none"
               />
             </div>
           </div>
 
           {/* Texto descriptivo del cesto sin fondo o caja */}
-          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none" id="cesto-description-text">
+          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none flex flex-col gap-4" id="cesto-description-text">
             <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
               <span className="font-bold text-slate-800">Capacidad:</span> Para toda tu ropa de la semana.
             </p>
-            <div className="w-full h-[1px] bg-[#6A6A6A] my-2"></div>
             <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
               <span className="font-bold text-slate-800">Precio fijo:</span> Sin importar el peso ni el número de prendas.
             </p>
-            <div className="w-full h-[1px] bg-[#6A6A6A] my-2"></div>
             <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
               <span className="font-bold text-slate-800">Comodidad:</span> Cuando esté lleno, solo ciérralo y déjalo con nosotros.
             </p>
