@@ -851,7 +851,7 @@ export default function Landing() {
               Nuestro cesto
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Toda la ropa que metas por $95
+              Toda la ropa que quepa por $95
             </p>
           </div>
 
@@ -867,12 +867,15 @@ export default function Landing() {
           </div>
 
           {/* Texto descriptivo del cesto sin fondo o caja */}
-          <div className="w-full mt-6 text-center select-none invisible" id="cesto-description-text" aria-hidden="true">
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mb-1" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Llénalo en casa con la ropa de tu semana
+          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none" id="cesto-description-text">
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Espacio para toda tu ropa de la semana.
             </p>
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium tracking-tight leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-              y recíbela limpia por <span className="text-[#6A6A6A] font-bold active:scale-[0.98] transition-all inline-block">$95</span>, sin importar el peso.
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mt-4" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Precio fijo por cesto, sin importar el peso ni el número de prendas.
+            </p>
+            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug mt-4" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Úsalo en casa para juntar tu ropa, cuando esté lleno solo ciérralo y déjalo con nosotros.
             </p>
           </div>
         </motion.div>
@@ -896,8 +899,11 @@ export default function Landing() {
 
           {/* Custom CSS Map Container matching the exact provided location image */}
           <div className="px-4 sm:px-0 mt-10">
-            <div 
-              className="relative w-full h-[300px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-[#f4f5f5] shadow-sm flex items-center justify-center font-sans tracking-tight" 
+            <a 
+              href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative w-full h-[300px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-[#f4f5f5] shadow-sm flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:shadow-md transition-shadow" 
               id="location-dynamic-map-frame-container"
             >
               {/* Abstract Buildings */}
@@ -970,7 +976,7 @@ export default function Landing() {
                 <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight drop-shadow-sm notranslate">OXXO Santa Isabel</span>
               </div>
 
-            </div>
+            </a>
           </div>
 
           {/* Navigation Route CTA helper */}
