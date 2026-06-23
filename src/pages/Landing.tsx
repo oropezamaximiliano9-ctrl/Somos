@@ -3,7 +3,7 @@ import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDo
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
-import canvasLaundryBag from "../assets/images/IMG_8301.jpeg";
+import canvasLaundryBag from "../assets/images/bag_real_minimal_environment_1780510413096.jpg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
@@ -371,8 +371,10 @@ export default function Landing() {
   }, [activeFormStep, isBottomSheetOpen]);
   
   useEffect(() => {
+    console.log("[Firestore Call] Initiating fetch for 'locations' collection...");
     getDocs(collection(db, "locations"))
       .then(snap => {
+        console.log("[Firestore Call] Successfully fetched 'locations', document count:", snap.size);
         const list: any[] = [];
         snap.forEach(d => {
           const data = d.data();
@@ -385,7 +387,8 @@ export default function Landing() {
         setSelectedLocationName(list[0].name);
       })
       .catch((err) => {
-        console.warn("Using offline fallback for locations:", err);
+        console.error("[Firestore Error] Failed to fetch locations:", err);
+        console.warn("[Firestore Fallback] Using offline mock locations.");
         const mockLocations = [{ id: "loc_1", name: "Ubicación Palmas", address: "Paseo de las Palmas 209, Coatzacoalcos, Veracruz", isActive: 1, latitude: 18.1404, longitude: -94.4632 }];
         setLocations(mockLocations);
         setSelectedLocationName(mockLocations[0].name);
@@ -404,9 +407,11 @@ export default function Landing() {
   const handlePhoneBlur = async () => {
     if (!phone || phone.length < 5) return;
     try {
+      console.log(`[Firestore Call] Querying 'users' collection for phone number: ${phone.trim()}`);
       const q = query(collection(db, "users"), where("phone", "==", phone.trim()));
       const snap = await getDocs(q);
       if (!snap.empty) {
+        console.log(`[Firestore Call] Found existing user matching phone number.`);
         const data = snap.docs[0].data();
         if (data.name) setName(data.name);
         if (data.deliveryPreference) setDeliveryPreference(data.deliveryPreference);
@@ -470,11 +475,13 @@ export default function Landing() {
   };
 
   const dbPreregister = async () => {
+    console.log(`[Firestore Call] dbPreregister: Searching users with phone: ${phone.trim()}`);
     const usersQuery = query(collection(db, "users"), where("phone", "==", phone.trim()));
     const usersSnap = await getDocs(usersQuery);
     let userId;
 
     if (!usersSnap.empty) {
+      console.log(`[Firestore Call] dbPreregister: User already exists. Updating record...`);
       const docSnap = usersSnap.docs[0];
       userId = docSnap.id;
       const existingUser = docSnap.data();
@@ -491,7 +498,9 @@ export default function Landing() {
         addressCalle: calle,
         preferredTime: prefTime
       });
+      console.log(`[Firestore Call] dbPreregister: Successfully updated user ${userId}`);
     } else {
+      console.log(`[Firestore Call] dbPreregister: User not found. Creating new record...`);
       userId = "USR-" + Math.random().toString(36).substr(2, 9);
       const pref = deliveryPreference !== undefined ? deliveryPreference : "";
       const prefTime = preferredTime || "";
@@ -509,6 +518,7 @@ export default function Landing() {
         credits: 0.0,
         createdAt: new Date().toISOString()
       });
+      console.log(`[Firestore Call] dbPreregister: Successfully created new user ${userId}`);
     }
     return { success: true, userId };
   };
@@ -859,7 +869,7 @@ export default function Landing() {
           <div className="px-4 sm:px-0 mt-4">
             <div className="relative w-full h-[310px] select-none overflow-hidden rounded-[32px] border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
               <img 
-                src="https://raw.githubusercontent.com/oropezamaximiliano9-ctrl/Somos/refs/heads/main/src/assets/images/A5DFA592-E652-4373-9358-BA9DC228E0D7.png" 
+                src={canvasLaundryBag} 
                 alt="Cesto de lona premium SOMOS en ambiente real minimal" 
                 className="w-full h-full object-cover object-center pointer-events-none select-none"
               />
