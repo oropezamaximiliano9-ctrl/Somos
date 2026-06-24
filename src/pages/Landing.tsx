@@ -879,7 +879,7 @@ export default function Landing() {
           className="relative z-10 w-full max-w-sm mx-auto pt-0 font-sans"
         >
           {/* Título de la sección */}
-          <div className="w-full">
+          <div className="w-full pb-4">
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
               Nuestro servicio
             </h2>
@@ -889,10 +889,10 @@ export default function Landing() {
           </div>
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
-          <div className="px-4 sm:px-0 mt-4">
+          <div className="px-4 sm:px-0 mt-6">
             <div className="bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
               {/* Imagen del cesto */}
-              <div className="relative w-full h-[310px] select-none overflow-hidden bg-slate-50/20">
+              <div className="relative w-full h-[300px] select-none overflow-hidden bg-slate-50/20">
                 <img 
                   src="https://i.postimg.cc/9MMvCSqC/IMG-8321.jpg" 
                   alt="Cesto de lona premium SOMOS en ambiente real minimal" 
@@ -919,7 +919,7 @@ export default function Landing() {
         <div className="w-full max-w-sm mx-auto space-y-4 text-left">
           
           {/* Header directly in the layout, extremely bold and crisp */}
-          <div id="location-editorial-head" className="w-full">
+          <div id="location-editorial-head" className="w-full pb-4">
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
               Nuestra ubicación
             </h2>
@@ -931,7 +931,7 @@ export default function Landing() {
 
 
           {/* Custom CSS Map Container matching the exact provided location image */}
-          <div className="px-4 sm:px-0 mt-4">
+          <div className="px-4 sm:px-0 mt-6">
             <a 
               href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
               target="_blank"
