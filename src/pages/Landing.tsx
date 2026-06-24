@@ -348,6 +348,29 @@ export default function Landing() {
   const calleInputRef = useRef<HTMLInputElement>(null);
   const coloniaInputRef = useRef<HTMLInputElement>(null);
 
+  const step1Ref = useRef<HTMLDivElement>(null);
+  const step2Ref = useRef<HTMLDivElement>(null);
+  const [sliderHeight, setSliderHeight] = useState<number | string>("auto");
+
+  useEffect(() => {
+    if (isBottomSheetOpen) {
+      const activeRef = activeFormStep === 1 ? step1Ref : step2Ref;
+      if (activeRef.current) {
+        const handleResize = () => {
+          if (activeRef.current) {
+            setSliderHeight(activeRef.current.offsetHeight);
+          }
+        };
+        handleResize();
+        const observer = new ResizeObserver(handleResize);
+        observer.observe(activeRef.current);
+        return () => observer.disconnect();
+      }
+    } else {
+      setSliderHeight("auto");
+    }
+  }, [activeFormStep, isBottomSheetOpen, registered, formStep]);
+
   useEffect(() => {
     if (viewportRef.current) {
       viewportRef.current.scrollLeft = 0;
@@ -754,7 +777,7 @@ export default function Landing() {
                   <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                     Pide nuestro cesto gratis
                   </h4>
-                  <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                     Sin costo de envío
                   </p>
                 </div>
@@ -771,7 +794,7 @@ export default function Landing() {
                     <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Llénalo en casa
                     </h4>
-                    <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Con tu ropa de la semana
                     </p>
                   </div>
@@ -789,7 +812,7 @@ export default function Landing() {
                     <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Déjalo en el punto de recolección
                     </h4>
-                    <p className="font-geist text-[#6A6A6A] text-[14px] sm:text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Sin pesar, sin esperar
                     </p>
                   </div>
@@ -822,7 +845,7 @@ export default function Landing() {
                 <p className="font-geist font-semibold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                   Tu ropa limpia a domicilio
                 </p>
-                <p className="font-geist text-[#4b6a9b] font-medium text-[14px] sm:text-[15px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
                   Al día siguiente y sin costo extra
                 </p>
               </div>
@@ -867,7 +890,7 @@ export default function Landing() {
 
           {/* Cesto grande centrado en ambiente real minimal */}
           <div className="px-4 sm:px-0 mt-4">
-            <div className="relative w-full h-[310px] select-none overflow-hidden rounded-[32px] border border-slate-200/55 shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
+            <div className="relative w-full h-[310px] select-none overflow-hidden rounded-lg shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
               <img 
                 src="https://i.postimg.cc/9MMvCSqC/IMG-8321.jpg" 
                 alt="Cesto de lona premium SOMOS en ambiente real minimal" 
@@ -880,15 +903,9 @@ export default function Landing() {
           </div>
 
           {/* Texto descriptivo del cesto */}
-          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none flex flex-col gap-6" id="cesto-description-text">
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-              <span className="font-bold text-slate-800">Capacidad:</span> Para toda tu ropa de la semana.
-            </p>
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-              <span className="font-bold text-slate-800">Precio fijo:</span> Sin importar el peso ni el número de prendas.
-            </p>
-            <p className="font-geist text-[#6A6A6A] text-[15px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-              <span className="font-bold text-slate-800">Comodidad:</span> Cuando esté lleno, solo ciérralo y déjalo con nosotros.
+          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none" id="cesto-description-text">
+            <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-relaxed text-justify" style={{ fontFamily: '"Geist", sans-serif' }}>
+              El mismo precio siempre, no importa el peso ni las prendas. Tiene espacio para toda tu ropa de la semana. Cuando esté lleno, solo ciérralo y déjalo con nosotros.
             </p>
           </div>
         </motion.div>
@@ -916,7 +933,7 @@ export default function Landing() {
               href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative w-full h-[300px] border border-slate-200/55 rounded-[32px] overflow-hidden bg-[#f4f5f5] shadow-sm flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:shadow-md transition-shadow" 
+              className="relative w-full h-[300px] border border-slate-200/55 rounded-lg overflow-hidden bg-[#f4f5f5] shadow-sm flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:shadow-md transition-shadow" 
               id="location-dynamic-map-frame-container"
             >
               {/* Abstract Buildings */}
@@ -1011,7 +1028,7 @@ export default function Landing() {
               </button>
 
               {/* Información rápida en dos líneas separadas (uno debajo del otro) */}
-              <div className="w-full flex flex-col gap-y-1 mt-3.5 px-1 select-none text-[15px] font-geist text-[#6A6A6A] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }} id="quick-info-container">
+              <div className="w-full flex flex-col gap-y-1 mt-3.5 px-1 select-none text-[16px] font-geist text-[#6A6A6A] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }} id="quick-info-container">
                 {/* Horario */}
                 <div id="quick-info-horario">
                   Horario: 9:00 am - 6:00 pm
@@ -1046,424 +1063,405 @@ export default function Landing() {
               </div>
             )}
           </div>
-
         </div>
       </section>
 
-      {/* Bottom Sheet sliding panel modal */}
-      <AnimatePresence>
-        {isBottomSheetOpen && (
-          <motion.div 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 1 }}
-            className="fixed inset-0 z-50 flex items-end justify-center pointer-events-none"
-          >
-            {/* Backdrop with elegant, lightweight opacity fade and static blur */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              onClick={() => setIsBottomSheetOpen(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-[1px] cursor-pointer pointer-events-auto"
-            />
+      {/* Bottom Sheet sliding panel modal - High Performance pure CSS */}
+      <div 
+        className="form-overlay" 
+        data-open={isBottomSheetOpen ? "true" : "false"}
+        onClick={() => setIsBottomSheetOpen(false)}
+      />
 
-            {/* Sliding sheet container with buttery smooth premium decelerating curve */}
-            <motion.div
-              key="sheet"
-              initial={{ y: "100%" }}
-              animate={{ y: "0%" }}
-              exit={{ y: "100%" }}
-              transition={{ duration: 0.52, ease: [0.16, 1, 0.3, 1] }}
-              className="bottom-sheet-contents relative bg-white w-full max-w-sm h-[390px] rounded-t-[28px] shadow-2xl overflow-hidden flex flex-col pointer-events-auto z-10 mx-auto transform-gpu will-change-transform"
-              style={{ maxHeight: "88vh" }}
-            >
-            {/* Close Button X on top-right */}
-            <button
-              onClick={() => setIsBottomSheetOpen(false)}
-              className="absolute right-4 top-4 p-1.5 text-slate-400 hover:text-slate-650 hover:bg-slate-50 transition-colors rounded-full pointer-events-auto z-20"
-            >
-              <X className="w-4 h-4" />
-            </button>
+      <div 
+        className="form-bottom-sheet h-auto pt-4 pb-8 px-6" 
+        data-open={isBottomSheetOpen ? "true" : "false"}
+        id="bottom-sheet-container"
+      >
+        {/* Visual drag indicator (mobile-native premium aesthetic) */}
+        <div className="w-12 h-1 bg-slate-200 rounded-full mx-auto mb-1 shrink-0" />
 
+        {/* Close Button X on top-right */}
+        <button
+          onClick={() => setIsBottomSheetOpen(false)}
+          className="absolute right-4 top-4 p-1.5 text-slate-400 hover:text-slate-650 hover:bg-slate-50 transition-colors rounded-full pointer-events-auto z-20"
+        >
+          <X className="w-4 h-4" />
+        </button>
 
-            {formError && (
-              <div className="mx-5 mt-2.5 p-2 bg-red-50 border border-red-100 text-red-650 rounded-xl text-[11px] font-bold flex items-center gap-2 select-none shrink-0">
-                <Info className="w-4.5 h-4.5 text-red-500 shrink-0" />
-                <span className="leading-tight">{formError}</span>
-              </div>
-            )}
+        {formError && (
+          <div className="mx-0 mt-2 p-2 bg-red-50 border border-red-100 text-red-650 rounded-xl text-[11px] font-bold flex items-center gap-2 select-none shrink-0 z-20">
+            <Info className="w-4.5 h-4.5 text-red-500 shrink-0" />
+            <span className="leading-tight">{formError}</span>
+          </div>
+        )}
 
-            {/* Form Inner Content Scroller with static height */}
-            <div className="flex-1 overflow-hidden min-h-0 relative">
-              <AnimatePresence mode="wait" initial={false}>
-                {registered ? (
-                  <motion.div 
-                    key="step-registered"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="text-center flex flex-col items-center justify-center h-full w-full p-5 pb-6"
-                  >
-                    <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 mt-1">
-                      <CheckCircle2 className="w-6 h-6" />
-                    </div>
-                    
-                    <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-2">
-                      ¡Listo, {name.split(' ')[0]}!
-                    </h2>
+        {/* Form Inner Content Scroller with static height */}
+        <div className="w-full relative mt-3">
+          <div className="form-content-inner w-full flex flex-col">
+            <AnimatePresence mode="wait" initial={false}>
+              {registered ? (
+                <motion.div 
+                  key="step-registered"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-center flex flex-col items-center justify-center w-full py-4"
+                >
+                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4 shrink-0">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  
+                  <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-2">
+                    ¡Listo, {name.split(' ')[0]}!
+                  </h2>
 
-                    {isWaitlisted ? (
-                      <>
-                        <p className="text-gray-550 text-xs leading-relaxed mb-5">
-                          Hemos asignado y reservado tu cesto premium gratis. Aunque no contamos con reparto a domicilio en tu zona, te esperamos en nuestro mostrador para recibir y entregar tu ropa limpia.
-                        </p>
-
-                        {/* simulated coupon notches */}
-                        <div className="w-full border-t border-dashed border-gray-200 my-2 relative">
-                          <div className="absolute -left-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-r border-[#ebecef]"></div>
-                          <div className="absolute -right-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-l border-[#ebecef]"></div>
-                        </div>
-
-                        <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl w-full text-left space-y-1.5 mt-2">
-                          <div>
-                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
-                              Punto de Entrega y Recepción
-                            </p>
-                            <p className="font-extrabold text-gray-800 text-xs">
-                              {selectedLocationName || 'Ubicación Palmas (Mostrador)'}
-                            </p>
-                            <p className="text-[10px] text-gray-500 mt-1">
-                              Tu colonia ({addressColonia}) queda fuera de reparto, ¡pero tu cesto te espera en mostrador!
-                            </p>
-                          </div>
-                          
-                          <div className="border-t border-slate-150 pt-1.5 flex justify-between items-center text-[10px]">
-                            <span className="text-slate-500 font-semibold">Pre-registro:</span>
-                            <span className="bg-[#EBECEF] text-slate-800 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider">Activo — Mostrador</span>
-                          </div>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => setIsBottomSheetOpen(false)}
-                          className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all mt-4 select-none active:scale-[0.98]"
-                        >
-                          Entendido, ¡gracias!
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-gray-500 text-xs leading-relaxed mb-5">
-                          Hemos asignado y guardado un cesto premium exclusivo a tu número. Tu ropa limpia llegará directo a tu puerta en <span className="font-bold text-gray-800">{addressColonia}</span>.
-                        </p>
-
-                        {/* simulated coupon notches */}
-                        <div className="w-full border-t border-dashed border-gray-200 my-2 relative">
-                          <div className="absolute -left-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-r border-[#ebecef]"></div>
-                          <div className="absolute -right-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-l border-[#ebecef]"></div>
-                        </div>
-
-                        <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl w-full text-left space-y-1.5 mt-2">
-                           <div>
-                             <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
-                               Dirección Registrada
-                             </p>
-                             <p className="font-extrabold text-gray-800 text-xs text-slate-800">
-                               {addressCalle}, {addressColonia}
-                             </p>
-                           </div>
-                           
-                           <div className="border-t border-slate-150 pt-1.5 flex justify-between items-center text-[10px]">
-                             <span className="text-slate-500 font-semibold">Pre-registro:</span>
-                             <span className="bg-[#EBECEF] text-slate-800 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider">Activo</span>
-                           </div>
-                         </div>
-
-                         <button
-                           type="button"
-                           onClick={() => setIsBottomSheetOpen(false)}
-                           className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all mt-4 select-none active:scale-[0.98]"
-                         >
-                           Listo, ¡muchas gracias!
-                         </button>
-                       </>
-                     )}
-                   </motion.div>
-                ) : formStep === "not_eligible_result" ? (
-                  <motion.div 
-                    key="step-not-eligible"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="text-center flex flex-col items-center justify-center h-full w-full p-5 pb-6"
-                  >
-                    <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 mt-1 shadow-sm shrink-0">
-                      <MapPin className="w-6 h-6 text-blue-500" />
-                    </div>
-
-                    <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-2 leading-tight">
-                      ¡Recoge gratis en sucursal!
-                    </h2>
-                    
-                    <p className="text-gray-550 text-xs leading-relaxed mb-5 max-w-sm">
-                      Por ahora no contamos con entregas a domicilio en tu zona, pero aún puedes pedir tu cesto gratis y manejar tus prendas directamente en nuestro mostrador.
-                    </p>
-
-                    <button
-                      type="button"
-                      onClick={handleConfirmWaitlist}
-                      disabled={loading}
-                      className="w-full py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.95] disabled:opacity-50 flex items-center justify-center gap-1.5 pointer-events-auto"
-                      style={{ fontFamily: '"Geist", sans-serif' }}
-                    >
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                        <>
-                          <span>Quiero mi cesto</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => { setDirection("backward"); setFormStep(1); setActiveFormStep(2); setTimeout(() => { coloniaInputRef.current?.focus(); }, 40); }}
-                      className="text-gray-400 hover:text-gray-650 text-xs font-semibold mt-3.5 font-geist transition-colors text-center pointer-events-auto w-full block"
-                      style={{ fontFamily: '"Geist", sans-serif' }}
-                    >
-                      Probar con otra dirección
-                    </button>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="active-steps-slider"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="w-full h-full overflow-hidden relative flex flex-col p-5 pb-6"
-                  >
-                    {/* Elegant Segmented Progress Indicator */}
-                    <div className="flex gap-2 shrink-0 justify-center mb-1">
-                      {[1, 2].map((step) => {
-                        const isActive = step <= activeFormStep;
-                        return (
-                          <button 
-                            key={step}
-                            type="button"
-                            onClick={() => {
-                              setFormError(null);
-                              setDirection(step > activeFormStep ? "forward" : "backward");
-                              setActiveFormStep(step as 1 | 2);
-                              setTimeout(() => {
-                                if (step === 1) {
-                                  nameInputRef.current?.focus();
-                                } else if (step === 2) {
-                                  calleInputRef.current?.focus();
-                                }
-                              }, 40);
-                            }}
-                            className="h-5 flex-1 relative group focus:outline-none pointer-events-auto"
-                            title={`Ir al Paso ${step}`}
-                          >
-                            <div className="h-1.5 w-full bg-slate-105 rounded-full overflow-hidden transition-all duration-300 group-hover:bg-slate-200">
-                              <motion.div
-                                 className="h-full bg-[#0f55d8] rounded-full"
-                                initial={{ width: isActive ? "100%" : "0%" }}
-                                animate={{ width: isActive ? "100%" : "0%" }}
-                                transition={{ duration: step === 1 ? 0 : 0.35, ease: "easeInOut" }}
-                              />
-                            </div>
-                            <span className="sr-only">Paso {step}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Static Title/Subtitle block (does not slide) */}
-                    <div className="pt-2 pb-1 shrink-0 select-none">
-                      <h2 className="text-[19px] font-semibold text-slate-800 tracking-tight leading-snug">
-                        {activeFormStep === 1 && "Tu cesto SOMOS te espera"}
-                        {activeFormStep === 2 && "Tu dirección de entrega"}
-                      </h2>
-                      <p className="text-gray-550 text-xs mt-0.5 font-medium">
-                        {activeFormStep === 1 && "Pedirla toma menos de un minuto."}
-                        {activeFormStep === 2 && "¿A dónde te llevamos tu cesto?"}
+                  {isWaitlisted ? (
+                    <>
+                      <p className="text-gray-550 text-xs leading-relaxed mb-5">
+                        Hemos asignado y reservado tu cesto premium gratis. Aunque no contamos con reparto a domicilio en tu zona, te esperamos en nuestro mostrador para recibir y entregar tu ropa limpia.
                       </p>
-                    </div>
 
-                    {/* Slider viewport */}
-                    <div className="flex-1 relative mt-3 overflow-hidden min-h-0">
-                      <AnimatePresence mode="wait" initial={false}>
-                        {activeFormStep === 1 ? (
-                          <motion.div
-                            key="step-form-1"
-                            initial={{ x: direction === "forward" ? "10%" : "-10%", opacity: 0 }}
-                            animate={{ x: "0%", opacity: 1 }}
-                            exit={{ x: direction === "forward" ? "-10%" : "10%", opacity: 0 }}
-                            transition={{ duration: 0.22, ease: "easeOut" }}
-                            className="w-full h-full flex flex-col justify-between select-none"
+                      {/* simulated coupon notches */}
+                      <div className="w-full border-t border-dashed border-gray-200 my-2 relative">
+                        <div className="absolute -left-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-r border-[#ebecef]"></div>
+                        <div className="absolute -right-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-l border-[#ebecef]"></div>
+                      </div>
+
+                      <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl w-full text-left space-y-1.5 mt-2">
+                        <div>
+                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
+                            Punto de Entrega y Recepción
+                          </p>
+                          <p className="font-extrabold text-gray-800 text-xs">
+                            {selectedLocationName || 'Ubicación Palmas (Mostrador)'}
+                          </p>
+                          <p className="text-[10px] text-gray-500 mt-1">
+                            Tu colonia ({addressColonia}) queda fuera de reparto, ¡pero tu cesto te espera en mostrador!
+                          </p>
+                        </div>
+                        
+                        <div className="border-t border-slate-150 pt-1.5 flex justify-between items-center text-[10px]">
+                          <span className="text-slate-500 font-semibold">Pre-registro:</span>
+                          <span className="bg-[#EBECEF] text-slate-800 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider">Activo — Mostrador</span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsBottomSheetOpen(false)}
+                        className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all mt-4 select-none active:scale-[0.98]"
+                      >
+                        Entendido, ¡gracias!
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-gray-500 text-xs leading-relaxed mb-5">
+                        Hemos asignado y guardado un cesto premium exclusivo a tu número. Tu ropa limpia llegará directo a tu puerta en <span className="font-bold text-gray-800">{addressColonia}</span>.
+                      </p>
+
+                      {/* simulated coupon notches */}
+                      <div className="w-full border-t border-dashed border-gray-200 my-2 relative">
+                        <div className="absolute -left-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-r border-[#ebecef]"></div>
+                        <div className="absolute -right-[30px] -top-1.5 w-3 h-3 rounded-full bg-white border-l border-[#ebecef]"></div>
+                      </div>
+
+                      <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl w-full text-left space-y-1.5 mt-2">
+                         <div>
+                           <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
+                             Dirección Registrada
+                           </p>
+                           <p className="font-extrabold text-gray-800 text-xs text-slate-800">
+                             {addressCalle}, {addressColonia}
+                           </p>
+                         </div>
+                         
+                         <div className="border-t border-slate-150 pt-1.5 flex justify-between items-center text-[10px]">
+                           <span className="text-slate-500 font-semibold">Pre-registro:</span>
+                           <span className="bg-[#EBECEF] text-slate-800 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider">Activo</span>
+                         </div>
+                       </div>
+
+                       <button
+                         type="button"
+                         onClick={() => setIsBottomSheetOpen(false)}
+                         className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all mt-4 select-none active:scale-[0.98]"
+                       >
+                         Listo, ¡muchas gracias!
+                       </button>
+                    </>
+                  )}
+                </motion.div>
+              ) : formStep === "not_eligible_result" ? (
+                <motion.div 
+                  key="step-not-eligible"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-center flex flex-col items-center justify-center w-full py-4"
+                >
+                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 shadow-sm shrink-0">
+                    <MapPin className="w-6 h-6 text-blue-500" />
+                  </div>
+
+                  <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-2 leading-tight">
+                    ¡Recoge gratis en sucursal!
+                  </h2>
+                  
+                  <p className="text-gray-550 text-xs leading-relaxed mb-5 max-w-sm">
+                    Por ahora no contamos con entregas a domicilio en tu zona, pero aún puedes pedir tu cesto gratis y manejar tus prendas directamente en nuestro mostrador.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={handleConfirmWaitlist}
+                    disabled={loading}
+                    className="w-full py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.95] disabled:opacity-50 flex items-center justify-center gap-1.5 pointer-events-auto"
+                    style={{ fontFamily: '"Geist", sans-serif' }}
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                      <>
+                        <span>Quiero mi cesto</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setDirection("backward"); setFormStep(1); setActiveFormStep(2); setTimeout(() => { coloniaInputRef.current?.focus(); }, 40); }}
+                    className="text-gray-400 hover:text-gray-650 text-xs font-semibold mt-3.5 font-geist transition-colors text-center pointer-events-auto w-full block"
+                    style={{ fontFamily: '"Geist", sans-serif' }}
+                  >
+                    Probar con otra dirección
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="active-steps-slider"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="w-full relative flex flex-col"
+                >
+                  {/* Elegant Segmented Progress Indicator */}
+                  <div className="flex gap-2 shrink-0 justify-center mb-1">
+                    {[1, 2].map((step) => {
+                      const isActive = step <= activeFormStep;
+                      return (
+                        <button 
+                          key={step}
+                          type="button"
+                          onClick={() => {
+                            setFormError(null);
+                            setDirection(step > activeFormStep ? "forward" : "backward");
+                            setActiveFormStep(step as 1 | 2);
+                            setTimeout(() => {
+                              if (step === 1) {
+                                nameInputRef.current?.focus();
+                              } else if (step === 2) {
+                                calleInputRef.current?.focus();
+                              }
+                            }, 40);
+                          }}
+                          className="h-5 flex-1 relative group focus:outline-none pointer-events-auto"
+                          title={`Ir al Paso ${step}`}
+                        >
+                          <div className="h-1.5 w-full bg-slate-105 rounded-full overflow-hidden transition-all duration-300 group-hover:bg-slate-200">
+                            <motion.div
+                              className="h-full bg-[#0f55d8] rounded-full"
+                              initial={{ width: isActive ? "100%" : "0%" }}
+                              animate={{ width: isActive ? "100%" : "0%" }}
+                              transition={{ duration: step === 1 ? 0 : 0.35, ease: "easeInOut" }}
+                            />
+                          </div>
+                          <span className="sr-only">Paso {step}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Static Title/Subtitle block (does not slide) */}
+                  <div className="pt-2 pb-1 shrink-0 select-none">
+                    <h2 className="text-[19px] font-semibold text-slate-800 tracking-tight leading-snug">
+                      {activeFormStep === 1 && "Tu cesto SOMOS te espera"}
+                      {activeFormStep === 2 && "Tu dirección de entrega"}
+                    </h2>
+                    <p className="text-gray-550 text-xs mt-0.5 font-medium">
+                      {activeFormStep === 1 && "Pedirla toma menos de un minuto."}
+                      {activeFormStep === 2 && "¿A dónde te llevamos tu cesto?"}
+                    </p>
+                  </div>
+
+                  {/* Slider viewport */}
+                  <div 
+                    className="w-full overflow-hidden relative mt-3"
+                    style={{ 
+                      height: typeof sliderHeight === "number" ? `${sliderHeight}px` : sliderHeight,
+                      transition: 'height 250ms ease'
+                    }}
+                  >
+                    <div 
+                      className="flex w-[200%] transform-gpu"
+                      style={{
+                        transform: activeFormStep === 1 ? 'translateX(0%)' : 'translateX(-50%)',
+                        transition: 'transform 300ms cubic-bezier(0.32, 0.94, 0.6, 1)'
+                      }}
+                    >
+                      {/* Paso 1 */}
+                      <div ref={step1Ref} className="w-1/2 shrink-0 select-none px-0.5">
+                        <form onSubmit={goToStep2} className="space-y-4 flex flex-col">
+                          <div className="space-y-3">
+                            <div className="space-y-1">
+                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Nombre Completo</label>
+                              <div className="relative">
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <input
+                                  ref={nameInputRef}
+                                  type="text"
+                                  required
+                                  autoComplete="name"
+                                  value={name}
+                                  onChange={(e) => { setName(e.target.value); setFormError(null); }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      phoneInputRef.current?.focus();
+                                    }
+                                  }}
+                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                  placeholder=""
+                                />
+                              </div>
+                            </div>
+       
+                            <div className="space-y-1">
+                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Teléfono (WhatsApp)</label>
+                              <div className={`relative ${isShaking ? "animate-shake" : ""}`}>
+                                <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isPhoneError ? "text-red-500" : "text-slate-400"}`} />
+                                <input
+                                  ref={phoneInputRef}
+                                  type="tel"
+                                  required
+                                  autoComplete="tel"
+                                  value={phone}
+                                  onChange={(e) => { setPhone(e.target.value); setFormError(null); }}
+                                  onBlur={handlePhoneBlur}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      goToStep2(e);
+                                    }
+                                  }}
+                                  className={`w-full pl-9 pr-4 py-2 rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 ${
+                                    isPhoneError
+                                      ? "bg-red-50/30 border border-red-300 text-red-900 focus:border-red-500 focus:ring-red-100"
+                                      : "bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white focus:ring-blue-100 placeholder:text-slate-400"
+                                  }`}
+                                  placeholder=""
+                                />
+                              </div>
+                            </div>
+                          </div>
+ 
+                          <button
+                            type="submit"
+                            className="w-full py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10 cursor-pointer"
                           >
-                            <form onSubmit={goToStep2} className="space-y-3 h-full flex flex-col justify-between">
-                              <div className="space-y-3">
-                                <div className="space-y-1">
-                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Nombre Completo</label>
-                                  <div className="relative">
-                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <input
-                                      ref={nameInputRef}
-                                      type="text"
-                                      required
-                                      autoComplete="name"
-                                      value={name}
-                                      onChange={(e) => { setName(e.target.value); setFormError(null); }}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                          e.preventDefault();
-                                          phoneInputRef.current?.focus();
-                                        }
-                                      }}
-                                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
-                                      placeholder=""
-                                    />
-                                  </div>
-                                </div>
-           
-                                <div className="space-y-1">
-                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Teléfono (WhatsApp)</label>
-                                  <div className={`relative ${isShaking ? "animate-shake" : ""}`}>
-                                    <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isPhoneError ? "text-red-500" : "text-slate-400"}`} />
-                                    <input
-                                      ref={phoneInputRef}
-                                      type="tel"
-                                      required
-                                      autoComplete="tel"
-                                      value={phone}
-                                      onChange={(e) => { setPhone(e.target.value); setFormError(null); }}
-                                      onBlur={handlePhoneBlur}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                          e.preventDefault();
-                                          goToStep2(e);
-                                        }
-                                      }}
-                                      className={`w-full pl-9 pr-4 py-2 rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 ${
-                                        isPhoneError
-                                          ? "bg-red-50/30 border border-red-300 text-red-900 focus:border-red-500 focus:ring-red-100"
-                                          : "bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white focus:ring-blue-100 placeholder:text-slate-400"
-                                      }`}
-                                      placeholder=""
-                                    />
-                                  </div>
-                                </div>
-                              </div>
+                            <span className="font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>Continuar</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </button>
+                        </form>
+                      </div>
 
-                              <button
-                                type="submit"
-                                className="w-full py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10 cursor-pointer"
-                              >
-                                <span className="font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>Continuar</span>
-                                <ArrowRight className="w-4 h-4" />
-                              </button>
-                            </form>
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="step-form-2"
-                            initial={{ x: direction === "forward" ? "10%" : "-10%", opacity: 0 }}
-                            animate={{ x: "0%", opacity: 1 }}
-                            exit={{ x: direction === "forward" ? "-10%" : "10%", opacity: 0 }}
-                            transition={{ duration: 0.22, ease: "easeOut" }}
-                            className="w-full h-full flex flex-col justify-between select-none"
-                          >
-                            <form onSubmit={submitStep2AndVerify} className="space-y-3 h-full flex flex-col justify-between">
-                              <div className="space-y-3">
-                                <div className="space-y-1">
-                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
-                                  <div className="relative">
-                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <input
-                                      ref={calleInputRef}
-                                      type="text"
-                                      required
-                                      autoComplete="street-address"
-                                      value={addressCalle}
-                                      onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); }}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                          e.preventDefault();
-                                          coloniaInputRef.current?.focus();
-                                        }
-                                      }}
-                                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
-                                      placeholder=""
-                                    />
-                                  </div>
-                                </div>
-
-                                <div className="space-y-1">
-                                  <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Colonia</label>
-                                  <div className="relative">
-                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <input
-                                      ref={coloniaInputRef}
-                                      type="text"
-                                      required
-                                      autoComplete="address-level2"
-                                      value={addressColonia}
-                                      onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); }}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                          e.preventDefault();
-                                          submitStep2AndVerify(e);
-                                        }
-                                      }}
-                                      className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
-                                      placeholder=""
-                                    />
-                                  </div>
-                                </div>
+                      {/* Paso 2 */}
+                      <div ref={step2Ref} className="w-1/2 shrink-0 select-none px-0.5">
+                        <form onSubmit={submitStep2AndVerify} className="space-y-4 flex flex-col">
+                          <div className="space-y-3">
+                            <div className="space-y-1">
+                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
+                              <div className="relative">
+                                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <input
+                                  ref={calleInputRef}
+                                  type="text"
+                                  required
+                                  autoComplete="street-address"
+                                  value={addressCalle}
+                                  onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      coloniaInputRef.current?.focus();
+                                    }
+                                  }}
+                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                  placeholder=""
+                                />
                               </div>
-
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => { setFormError(null); setDirection("backward"); setActiveFormStep(1); }}
-                                  className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-sm font-geist transition-all active:scale-[0.95] shrink-0"
-                                  style={{ fontFamily: '"Geist", sans-serif' }}
-                                >
-                                  Atrás
-                                </button>
-                                <button
-                                  type="submit"
-                                  disabled={loading}
-                                  className="flex-1 py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.95] disabled:opacity-50 flex items-center justify-center gap-1.5"
-                                  style={{ fontFamily: '"Geist", sans-serif' }}
-                                >
-                                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
-                                    <>
-                                      <span>Quiero mi cesto</span>
-                                      <ArrowRight className="w-4 h-4" />
-                                    </>
-                                  )}
-                                </button>
+                            </div>
+ 
+                            <div className="space-y-1">
+                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Colonia</label>
+                              <div className="relative">
+                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <input
+                                  ref={coloniaInputRef}
+                                  type="text"
+                                  required
+                                  autoComplete="address-level2"
+                                  value={addressColonia}
+                                  onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      submitStep2AndVerify(e);
+                                    }
+                                  }}
+                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                  placeholder=""
+                                />
                               </div>
-                            </form>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                            </div>
+                          </div>
+ 
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => { setFormError(null); setDirection("backward"); setActiveFormStep(1); }}
+                              className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-sm font-geist transition-all active:scale-[0.95] shrink-0"
+                              style={{ fontFamily: '"Geist", sans-serif' }}
+                            >
+                              Atrás
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={loading}
+                              className="flex-1 py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.95] disabled:opacity-50 flex items-center justify-center gap-1.5"
+                              style={{ fontFamily: '"Geist", sans-serif' }}
+                            >
+                              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                <>
+                                  <span>Quiero mi cesto</span>
+                                  <ArrowRight className="w-4 h-4" />
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
+                  </div>
                 </motion.div>
               )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-      </AnimatePresence>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
 
       {/* Spacer to prevent Safari rubber-band snap glitch on the last section */}
       <div className="h-[2vh] w-full shrink-0 bg-transparent snap-end" style={{ scrollSnapAlign: 'end' }} />
