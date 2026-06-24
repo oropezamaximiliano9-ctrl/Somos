@@ -191,7 +191,7 @@ const TypewriterTitle = () => {
   }, [index]);
 
   return (
-    <div className="w-full text-center pt-8 pb-10 select-none" id="rotating-title-container">
+    <div className="w-full text-center pt-8 pb-4 select-none" id="rotating-title-container">
       <h1 
         className="text-[28px] sm:text-[34px] font-semibold text-gray-900 tracking-tight flex items-center justify-center leading-tight h-[40px] sm:h-[48px]"
         style={{ fontFamily: '"Geist", sans-serif' }}
@@ -774,7 +774,7 @@ export default function Landing() {
               <div className="flex items-start gap-3 pb-3">
                 <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
                 <div className="space-y-0.5 pt-1.5">
-                  <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                     Pide nuestro cesto gratis
                   </h4>
                   <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
@@ -791,7 +791,7 @@ export default function Landing() {
                 <div className="flex items-start gap-3 py-3">
                   <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
                   <div className="space-y-0.5 pt-1.5">
-                    <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Llénalo en casa
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
@@ -809,7 +809,7 @@ export default function Landing() {
                 <div className="flex items-start gap-3 pt-3">
                   <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>3</span>
                   <div className="space-y-0.5 pt-1.5">
-                    <h4 className="font-geist font-semibold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                       Déjalo en el punto de recolección
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
@@ -842,7 +842,7 @@ export default function Landing() {
                 </div>
               </div>
               <div className="flex flex-col text-left space-y-0.5 pt-1.5">
-                <p className="font-geist font-semibold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                <p className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
                   Tu ropa limpia a domicilio
                 </p>
                 <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
@@ -881,32 +881,35 @@ export default function Landing() {
           {/* Título de la sección */}
           <div className="w-full">
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Nuestro cesto
+              Nuestro servicio
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
+            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
+              Lo que quepa en el cesto por <span className="text-[#0f55d8] font-bold">$95</span>
             </p>
           </div>
 
-          {/* Cesto grande centrado en ambiente real minimal */}
+          {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-4 sm:px-0 mt-4">
-            <div className="relative w-full h-[310px] select-none overflow-hidden rounded-lg shadow-[0_10px_35px_rgba(0,0,0,0.04)] bg-slate-50/20">
-              <img 
-                src="https://i.postimg.cc/9MMvCSqC/IMG-8321.jpg" 
-                alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                className="w-full h-full object-cover object-center pointer-events-none select-none"
-                onError={(e) => {
-                  e.currentTarget.src = canvasLaundryBag;
-                }}
-              />
-            </div>
-          </div>
+            <div className="bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+              {/* Imagen del cesto */}
+              <div className="relative w-full h-[310px] select-none overflow-hidden bg-slate-50/20">
+                <img 
+                  src="https://i.postimg.cc/9MMvCSqC/IMG-8321.jpg" 
+                  alt="Cesto de lona premium SOMOS en ambiente real minimal" 
+                  className="w-full h-full object-cover object-center pointer-events-none select-none"
+                  onError={(e) => {
+                    e.currentTarget.src = canvasLaundryBag;
+                  }}
+                />
+              </div>
 
-          {/* Texto descriptivo del cesto */}
-          <div className="w-full mt-6 text-left px-4 sm:px-0 select-none" id="cesto-description-text">
-            <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-relaxed text-justify" style={{ fontFamily: '"Geist", sans-serif' }}>
-              El mismo precio siempre, no importa el peso ni las prendas. Tiene espacio para toda tu ropa de la semana. Cuando esté lleno, solo ciérralo y déjalo con nosotros.
-            </p>
+              {/* Texto descriptivo del cesto */}
+              <div className="py-3.5 px-3.5 select-none" id="cesto-description-text">
+                <p className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
+                  Toda tu ropa de la semana por el mismo precio, siempre, sin importar el peso o el número de prendas.
+                </p>
+              </div>
+            </div>
           </div>
         </motion.div>
       </section>
@@ -1027,11 +1030,11 @@ export default function Landing() {
                 )}
               </button>
 
-              {/* Información rápida en dos líneas separadas (uno debajo del otro) */}
-              <div className="w-full flex flex-col gap-y-1 mt-3.5 px-1 select-none text-[16px] font-geist text-[#6A6A6A] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }} id="quick-info-container">
+              {/* Información rápida en una sola línea */}
+              <div className="w-full flex flex-row items-center justify-between mt-3.5 px-1 select-none text-[15px] sm:text-[16px] font-geist text-[#6A6A6A] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }} id="quick-info-container">
                 {/* Horario */}
                 <div id="quick-info-horario">
-                  Horario: 9:00 am - 6:00 pm
+                  Horario: 9 am - 6 pm
                 </div>
 
                 {/* Contacto */}
