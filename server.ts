@@ -361,11 +361,7 @@ app.get("/api/maps/distance-matrix", async (req, res) => {
   // If address is provided instead of lat/lng, forward geocode it first!
   if (address && (!finalLat || !finalLng)) {
     try {
-      const isColonia = address.toString().toLowerCase().includes("colonia");
-      const queryStr = isColonia 
-        ? `${address}, Coatzacoalcos, Veracruz`
-        : `Colonia ${address}, Coatzacoalcos, Veracruz`;
-        
+      const queryStr = `${address}, Coatzacoalcos, Veracruz`;
       if (apiKey) {
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(queryStr)}&key=${apiKey}&language=es`;
         const geocodeRes = await fetch(url);
