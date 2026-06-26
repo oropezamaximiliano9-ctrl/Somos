@@ -307,22 +307,32 @@ const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: numb
     if (!fetchSuccess) {
       try {
         const clientApiKey = "AIzaSyAiAQXG7cEBvUFBOF5EW1p4HRzpq1_b-Cc";
-        const originStr = `${ORIGEN_LAVANDERIA.lat},${ORIGEN_LAVANDERIA.lng}`;
-        const destStr = `${coords.lat},${coords.lon}`;
-        const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destStr}&mode=driving&key=${clientApiKey}`;
         
-        const response = await fetch(url);
+        const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Goog-Api-Key': clientApiKey,
+            'X-Goog-FieldMask': 'routes.distanceMeters'
+          },
+          body: JSON.stringify({
+            origin: { location: { latLng: { latitude: ORIGEN_LAVANDERIA.lat, longitude: ORIGEN_LAVANDERIA.lng } } },
+            destination: { location: { latLng: { latitude: coords.lat, longitude: coords.lon } } },
+            travelMode: 'DRIVE'
+          })
+        });
+
         if (response.ok) {
           const data = await response.json();
-          if (data.status === "OK" && data.rows?.[0]?.elements?.[0]?.status === "OK") {
-            const element = data.rows[0].elements[0];
-            const distMeters = element.distance.value;
+          if (data.routes && data.routes.length > 0 && data.routes[0].distanceMeters != null) {
+            const distMeters = data.routes[0].distanceMeters;
             distanceKm = parseFloat((distMeters / 1000).toFixed(2));
             fetchSuccess = true;
           }
         }
       } catch (err) {
-        console.error("Direct client-side Distance Matrix failed:", err);
+        console.error("Direct client-side Routes API failed:", err);
       }
     }
 
@@ -375,18 +385,29 @@ const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: numb
         if (geocodeData.status === "OK" && geocodeData.results?.[0]) {
           const loc = geocodeData.results[0].geometry.location;
           
-          // 2. Compute distance to those coords
-          const originStr = `${ORIGEN_LAVANDERIA.lat},${ORIGEN_LAVANDERIA.lng}`;
-          const destStr = `${loc.lat},${loc.lng}`;
-          const distUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destStr}&mode=driving&key=${clientApiKey}`;
+          // 2. Compute distance to those coords using Routes API (CORS friendly)
+          const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
+          const distRes = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Goog-Api-Key': clientApiKey,
+              'X-Goog-FieldMask': 'routes.distanceMeters'
+            },
+            body: JSON.stringify({
+              origin: { location: { latLng: { latitude: ORIGEN_LAVANDERIA.lat, longitude: ORIGEN_LAVANDERIA.lng } } },
+              destination: { location: { latLng: { latitude: loc.lat, longitude: loc.lng } } },
+              travelMode: 'DRIVE'
+            })
+          });
           
-          const distRes = await fetch(distUrl);
-          const distData = await distRes.json();
-          if (distData.status === "OK" && distData.rows?.[0]?.elements?.[0]?.status === "OK") {
-            const element = distData.rows[0].elements[0];
-            const distMeters = element.distance.value;
-            distanceKm = parseFloat((distMeters / 1000).toFixed(2));
-            fetchSuccess = true;
+          if (distRes.ok) {
+            const distData = await distRes.json();
+            if (distData.routes && distData.routes.length > 0 && distData.routes[0].distanceMeters != null) {
+              const distMeters = distData.routes[0].distanceMeters;
+              distanceKm = parseFloat((distMeters / 1000).toFixed(2));
+              fetchSuccess = true;
+            }
           }
         }
       } catch (err) {
