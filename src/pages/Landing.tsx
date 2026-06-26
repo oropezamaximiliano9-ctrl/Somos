@@ -232,52 +232,56 @@ const TypewriterTitle = () => {
   );
 };
 
-const getColoniaDistance = (coloniaName: string): number => {
-  const normalized = coloniaName.trim().toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove accents
+const distancesKm: Record<string, number> = {
+  "las palmas": 0.5,
+  "palmas": 0.5,
+  "rancho alegre": 2.2,
+  "vistalmar": 2.0,
+  "petrolera": 1.5,
+  "maria de la piedad": 2.5,
+  "la piedad": 2.5,
+  "piedad": 2.5,
+  "playa sol": 2.8,
+  "benito juarez sur": 2.6,
+  "fovissste": 3.0,
+  "centro": 4.2,
+  "el tesoro": 3.8,
+  "guadalupe victoria": 3.5,
+  "santa isabel": 4.5,
+  "manuel avila camacho": 3.6,
+  "avila camacho": 3.6,
+  "benito juarez norte": 3.4,
+  "teresa morales": 8.5,
+  "ciudad olmeca": 13.0,
+  "olmeca": 13.0,
+  "san martin": 15.0,
+  "praderas del jaguey": 5.2,
+  "jaguey": 5.2,
+  "lomas de coatzacoalcos": 8.0,
+  "adolfo lopez mateos": 4.8,
+  "lopez mateos": 4.8,
+  "tropico de la rivera": 6.0,
+  "puerto esmeralda": 7.2,
+  "lomas de barrillas": 10.5,
+  "barrillas": 10.5
+};
 
-  // Explicit distances (in km) from Paseo de las Palmas 209
-  const distancesKm: Record<string, number> = {
-    "las palmas": 0.5,
-    "palmas": 0.5,
-    "rancho alegre": 2.2,
-    "vistalmar": 2.0,
-    "petrolera": 1.5,
-    "maria de la piedad": 2.5,
-    "la piedad": 2.5,
-    "piedad": 2.5,
-    "playa sol": 2.8,
-    "benito juarez sur": 2.6,
-    "fovissste": 3.0,
-    "centro": 4.2,
-    "el tesoro": 3.8,
-    "guadalupe victoria": 3.5,
-    "santa isabel": 4.5,
-    "manuel avila camacho": 3.6,
-    "avila camacho": 3.6,
-    "benito juarez norte": 3.4,
-    "teresa morales": 8.5,
-    "ciudad olmeca": 13.0,
-    "olmeca": 13.0,
-    "san martin": 15.0,
-    "praderas del jaguey": 5.2,
-    "jaguey": 5.2,
-    "lomas de coatzacoalcos": 8.0,
-    "adolfo lopez mateos": 4.8,
-    "lopez mateos": 4.8,
-    "tropico de la rivera": 6.0,
-    "puerto esmeralda": 7.2,
-    "lomas de barrillas": 10.5,
-    "barrillas": 10.5
-  };
-
+const getHardcodedDistance = (coloniaName: string): number | null => {
+  if (!coloniaName) return null;
+  const normalized = coloniaName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   for (const [key, value] of Object.entries(distancesKm)) {
     if (normalized.includes(key)) {
       return value;
     }
   }
+  return null;
+};
 
-  // Fallback hash distance estimation (3 to 8 km) for custom colonias not in list
+const getColoniaDistance = (coloniaName: string): number => {
+  const explicitDistance = getHardcodedDistance(coloniaName);
+  if (explicitDistance !== null) return explicitDistance;
+
+  const normalized = coloniaName.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   let hash = 0;
   for (let i = 0; i < normalized.length; i++) {
     hash = normalized.charCodeAt(i) + ((hash << 5) - hash);
@@ -919,7 +923,7 @@ export default function Landing() {
     } catch (e) {
       distance = getColoniaDistance(addressColonia);
     }
-    const eligible = distance <= 1.0;
+    const eligible = distance <= 1.5;
     setCalculatedDistance(distance);
 
     // Timed step-by-step verification phases
@@ -983,7 +987,7 @@ export default function Landing() {
 
     setLoading(true);
     const distance = await asyncGetColoniaDistance(addressColonia, gpsCoords);
-    const eligible = distance <= 1.0;
+    const eligible = distance <= 1.5;
     setCalculatedDistance(distance);
 
     try {
