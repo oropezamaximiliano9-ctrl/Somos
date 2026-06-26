@@ -295,19 +295,46 @@ const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: numb
   // If coords are available, query Google Maps directly via client side first
   if (coords) {
     try {
-      const originStr = `${ORIGEN_LAVANDERIA.lat},${ORIGEN_LAVANDERIA.lng}`;
-      const destStr = `${coords.lat},${coords.lon}`;
-      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destStr}&mode=driving&key=${clientApiKey}`;
-      const gmRes = await fetch(url);
+      const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
+      const body = {
+        origin: {
+          location: {
+            latLng: {
+              latitude: ORIGEN_LAVANDERIA.lat,
+              longitude: ORIGEN_LAVANDERIA.lng
+            }
+          }
+        },
+        destination: {
+          location: {
+            latLng: {
+              latitude: coords.lat,
+              longitude: coords.lon
+            }
+          }
+        },
+        travelMode: "DRIVE"
+      };
+
+      const gmRes = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": clientApiKey,
+          "X-Goog-FieldMask": "routes.distanceMeters"
+        },
+        body: JSON.stringify(body)
+      });
+      
       if (gmRes.ok) {
         const gmData = await gmRes.json();
-        if (gmData.status === "OK" && gmData.rows?.[0]?.elements?.[0]?.status === "OK") {
-          const distanceMeters = gmData.rows[0].elements[0].distance.value;
+        if (gmData.routes && gmData.routes.length > 0) {
+          const distanceMeters = gmData.routes[0].distanceMeters;
           return parseFloat((distanceMeters / 1000).toFixed(2));
         }
       }
     } catch (clientErr) {
-      console.warn("Client-side distance matrix failed, trying server proxy:", clientErr);
+      console.warn("Client-side Routes API v2 failed, trying server proxy:", clientErr);
     }
 
     try {
@@ -350,21 +377,49 @@ const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: numb
         const geocodeData = await geocodeRes.json();
         if (geocodeData.status === "OK" && geocodeData.results?.[0]) {
           const loc = geocodeData.results[0].geometry.location;
-          const originStr = `${ORIGEN_LAVANDERIA.lat},${ORIGEN_LAVANDERIA.lng}`;
-          const destStr = `${loc.lat},${loc.lng}`;
-          const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destStr}&mode=driving&key=${clientApiKey}`;
-          const gmRes = await fetch(url);
+          
+          const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
+          const body = {
+            origin: {
+              location: {
+                latLng: {
+                  latitude: ORIGEN_LAVANDERIA.lat,
+                  longitude: ORIGEN_LAVANDERIA.lng
+                }
+              }
+            },
+            destination: {
+              location: {
+                latLng: {
+                  latitude: loc.lat,
+                  longitude: loc.lng
+                }
+              }
+            },
+            travelMode: "DRIVE"
+          };
+
+          const gmRes = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": clientApiKey,
+              "X-Goog-FieldMask": "routes.distanceMeters"
+            },
+            body: JSON.stringify(body)
+          });
+          
           if (gmRes.ok) {
             const gmData = await gmRes.json();
-            if (gmData.status === "OK" && gmData.rows?.[0]?.elements?.[0]?.status === "OK") {
-              const distanceMeters = gmData.rows[0].elements[0].distance.value;
+            if (gmData.routes && gmData.routes.length > 0) {
+              const distanceMeters = gmData.routes[0].distanceMeters;
               return parseFloat((distanceMeters / 1000).toFixed(2));
             }
           }
         }
       }
     } catch (clientErr) {
-      console.warn("Client-side geocode+distance fallback failed, trying server:", clientErr);
+      console.warn("Client-side geocode+Routes API v2 fallback failed, trying server:", clientErr);
     }
 
     try {
