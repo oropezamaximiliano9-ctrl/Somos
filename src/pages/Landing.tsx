@@ -7,6 +7,8 @@ import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
 
+declare const process: any;
+
 const ORIGEN_LAVANDERIA = { lat: 18.1372216, lng: -94.4771462 };
 
 const AnimatedTruck = () => (
@@ -388,10 +390,114 @@ export default function Landing() {
         setGpsCoords({ lat: latitude, lon: longitude });
 
         try {
-          const response = await fetch(`/api/maps/reverse-geocode?lat=${latitude}&lng=${longitude}`);
-          if (response.ok) {
-            const data = await response.json();
-            
+          let data: any = null;
+          let fetchSuccess = false;
+
+          // 1. Try server-side secure proxy first
+          try {
+            const response = await fetch(`/api/maps/reverse-geocode?lat=${latitude}&lng=${longitude}`);
+            if (response.ok) {
+              data = await response.json();
+              fetchSuccess = true;
+            }
+          } catch (err) {
+            console.warn("Server proxy failed, trying direct client-side geocoding:", err);
+          }
+
+          // 2. Direct client-side Google Maps API query using process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+          if (!fetchSuccess) {
+            let clientApiKey = undefined;
+            try {
+              clientApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+            } catch (e) {}
+
+            // Try fallback if undefined
+            if (!clientApiKey) {
+              try {
+                clientApiKey = (import.meta.env as any).VITE_NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || (import.meta.env as any).NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+              } catch (e) {}
+            }
+
+            if (clientApiKey) {
+              try {
+                const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${clientApiKey}&language=es`;
+                const response = await fetch(url);
+                if (response.ok) {
+                  const gData = await response.json();
+                  if (gData.status === "OK" && gData.results && gData.results.length > 0) {
+                    const firstResult = gData.results[0];
+                    const components = firstResult.address_components || [];
+                    
+                    let street_number = "";
+                    let route = "";
+                    let sublocality = "";
+                    let neighborhood = "";
+
+                    for (const comp of components) {
+                      const types = comp.types || [];
+                      if (types.includes("street_number")) {
+                        street_number = comp.long_name;
+                      } else if (types.includes("route")) {
+                        route = comp.long_name;
+                      } else if (types.includes("sublocality") || types.includes("sublocality_level_1")) {
+                        sublocality = comp.long_name;
+                      } else if (types.includes("neighborhood")) {
+                        neighborhood = comp.long_name;
+                      }
+                    }
+
+                    data = {
+                      calle: route,
+                      numero: street_number,
+                      colonia: sublocality || neighborhood || "Centro",
+                      source: "client-google"
+                    };
+                    fetchSuccess = true;
+                  }
+                }
+              } catch (clientErr) {
+                console.error("Direct Google reverse geocode failed:", clientErr);
+              }
+            }
+          }
+
+          // 3. Fallback to client-side OSM Nominatim if Google Maps API key is not available or fails
+          if (!fetchSuccess) {
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+                {
+                  headers: {
+                    "User-Agent": "SomosLaundryApp/1.0 (oropezamaximiliano9@gmail.com)"
+                  }
+                }
+              );
+              if (response.ok) {
+                const osmData = await response.json();
+                let colonia = "Centro";
+                let calle = "";
+                let numero = "";
+
+                if (osmData.address) {
+                  const addr = osmData.address;
+                  colonia = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || addr.village || "Centro";
+                  calle = addr.road || "";
+                  numero = addr.house_number || "";
+                }
+                data = {
+                  calle,
+                  numero,
+                  colonia,
+                  source: "nominatim"
+                };
+                fetchSuccess = true;
+              }
+            } catch (err) {
+              console.error("OSM direct fallback failed:", err);
+            }
+          }
+
+          if (fetchSuccess && data) {
             let colonia = data.colonia || "Centro";
             let calle = data.calle || "";
             let numero = data.numero || "";
