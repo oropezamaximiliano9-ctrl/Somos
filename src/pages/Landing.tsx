@@ -404,19 +404,9 @@ export default function Landing() {
             console.warn("Server proxy failed, trying direct client-side geocoding:", err);
           }
 
-          // 2. Direct client-side Google Maps API query using process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+          // 2. Direct client-side Google Maps API query using hardcoded key
           if (!fetchSuccess) {
-            let clientApiKey = undefined;
-            try {
-              clientApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-            } catch (e) {}
-
-            // Try fallback if undefined
-            if (!clientApiKey) {
-              try {
-                clientApiKey = (import.meta.env as any).VITE_NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || (import.meta.env as any).NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-              } catch (e) {}
-            }
+            let clientApiKey = "AIzaSyAiAQXG7cEBvUFBOF5EW1p4HRzpq1_b-Cc";
 
             if (clientApiKey) {
               try {

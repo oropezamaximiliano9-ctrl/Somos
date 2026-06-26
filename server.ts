@@ -201,7 +201,7 @@ app.use(express.json());
 app.get("/api/maps/reverse-geocode", async (req, res) => {
   const { lat, lng, address } = req.query;
   
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_PLATFORM_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = "AIzaSyAiAQXG7cEBvUFBOF5EW1p4HRzpq1_b-Cc";
 
   if (address) {
     // Forward geocoding of a typed address string
@@ -353,7 +353,7 @@ app.get("/api/maps/distance-matrix", async (req, res) => {
   let { lat, lng, address } = req.query;
 
   const ORIGEN_LAVANDERIA = { lat: 18.1372216, lng: -94.4771462 };
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_PLATFORM_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = "AIzaSyAiAQXG7cEBvUFBOF5EW1p4HRzpq1_b-Cc";
 
   let finalLat = lat ? parseFloat(lat as string) : null;
   let finalLng = lng ? parseFloat(lng as string) : null;
