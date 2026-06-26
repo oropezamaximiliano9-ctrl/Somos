@@ -527,7 +527,7 @@ export default function Landing() {
           setGpsAutofillError("No se pudo obtener tu ubicación actual.");
         }
       },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+      { enableHighAccuracy: true }
     );
   };
 
@@ -576,11 +576,7 @@ export default function Landing() {
             setGeoError("No se pudo obtener tu ubicación actual. Se abrió la ruta estándar hacia Paseo de las Palmas 209.");
           }
         },
-        { 
-          enableHighAccuracy: true, // Forces exact hardware GPS positioning
-          timeout: 10000, 
-          maximumAge: 0 // Disable cache for 100% real-time coordinates
-        }
+        { enableHighAccuracy: true }
       );
     }, 600);
   };
