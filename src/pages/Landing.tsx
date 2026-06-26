@@ -288,56 +288,16 @@ const getColoniaDistance = (coloniaName: string): number => {
 const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: number; lon: number } | null): Promise<number> => {
   // If coords are available, query our server-side distance-matrix route directly!
   if (coords) {
-    let fetchSuccess = false;
-    let distanceKm = 0;
-
     try {
       const response = await fetch(`/api/maps/distance-matrix?lat=${coords.lat}&lng=${coords.lon}`);
       if (response.ok) {
         const data = await response.json();
         if (typeof data.distanceKm === "number") {
-          distanceKm = data.distanceKm;
-          fetchSuccess = true;
+          return data.distanceKm;
         }
       }
     } catch (error) {
-      console.warn("Server distance-matrix proxy with coords failed, trying direct client-side:", error);
-    }
-
-    if (!fetchSuccess) {
-      try {
-        const clientApiKey = "AIzaSyAiAQXG7cEBvUFBOF5EW1p4HRzpq1_b-Cc";
-        
-        const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Goog-Api-Key': clientApiKey,
-            'X-Goog-FieldMask': 'routes.distanceMeters'
-          },
-          body: JSON.stringify({
-            origin: { location: { latLng: { latitude: ORIGEN_LAVANDERIA.lat, longitude: ORIGEN_LAVANDERIA.lng } } },
-            destination: { location: { latLng: { latitude: coords.lat, longitude: coords.lon } } },
-            travelMode: 'DRIVE'
-          })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.routes && data.routes.length > 0 && data.routes[0].distanceMeters != null) {
-            const distMeters = data.routes[0].distanceMeters;
-            distanceKm = parseFloat((distMeters / 1000).toFixed(2));
-            fetchSuccess = true;
-          }
-        }
-      } catch (err) {
-        console.error("Direct client-side Routes API failed:", err);
-      }
-    }
-
-    if (fetchSuccess) {
-      return distanceKm;
+      console.warn("Server distance-matrix proxy with coords failed, trying offline mathematical model:", error);
     }
 
     // Mathematical fallback to ORIGEN_LAVANDERIA
@@ -357,66 +317,16 @@ const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: numb
 
   // If coords are not provided, we query using the typed address/colonia name
   if (coloniaName.trim()) {
-    let fetchSuccess = false;
-    let distanceKm = 0;
-
     try {
       const response = await fetch(`/api/maps/distance-matrix?address=${encodeURIComponent(coloniaName)}`);
       if (response.ok) {
         const data = await response.json();
         if (typeof data.distanceKm === "number") {
-          distanceKm = data.distanceKm;
-          fetchSuccess = true;
+          return data.distanceKm;
         }
       }
     } catch (error) {
-      console.warn("Server distance-matrix proxy with address failed, trying direct client-side:", error);
-    }
-
-    if (!fetchSuccess) {
-      try {
-        const clientApiKey = "AIzaSyAiAQXG7cEBvUFBOF5EW1p4HRzpq1_b-Cc";
-        
-        // 1. Geocode the address first
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(coloniaName + ", Coatzacoalcos")}&key=${clientApiKey}&language=es`;
-        const geocodeRes = await fetch(geocodeUrl);
-        const geocodeData = await geocodeRes.json();
-        
-        if (geocodeData.status === "OK" && geocodeData.results?.[0]) {
-          const loc = geocodeData.results[0].geometry.location;
-          
-          // 2. Compute distance to those coords using Routes API (CORS friendly)
-          const url = `https://routes.googleapis.com/directions/v2:computeRoutes`;
-          const distRes = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Goog-Api-Key': clientApiKey,
-              'X-Goog-FieldMask': 'routes.distanceMeters'
-            },
-            body: JSON.stringify({
-              origin: { location: { latLng: { latitude: ORIGEN_LAVANDERIA.lat, longitude: ORIGEN_LAVANDERIA.lng } } },
-              destination: { location: { latLng: { latitude: loc.lat, longitude: loc.lng } } },
-              travelMode: 'DRIVE'
-            })
-          });
-          
-          if (distRes.ok) {
-            const distData = await distRes.json();
-            if (distData.routes && distData.routes.length > 0 && distData.routes[0].distanceMeters != null) {
-              const distMeters = distData.routes[0].distanceMeters;
-              distanceKm = parseFloat((distMeters / 1000).toFixed(2));
-              fetchSuccess = true;
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Direct client-side geocode+distance failed:", err);
-      }
-    }
-
-    if (fetchSuccess) {
-      return distanceKm;
+      console.warn("Server distance-matrix proxy with address failed:", error);
     }
   }
 
@@ -617,7 +527,7 @@ export default function Landing() {
           setGpsAutofillError("No se pudo obtener tu ubicación actual.");
         }
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true }
     );
   };
 
@@ -666,7 +576,7 @@ export default function Landing() {
             setGeoError("No se pudo obtener tu ubicación actual. Se abrió la ruta estándar hacia Paseo de las Palmas 209.");
           }
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true }
       );
     }, 600);
   };
@@ -963,7 +873,7 @@ export default function Landing() {
     } catch (e) {
       distance = getColoniaDistance(addressColonia);
     }
-    const eligible = distance <= 1.0;
+    const eligible = distance <= 1.5;
     setCalculatedDistance(distance);
 
     // Timed step-by-step verification phases
@@ -1027,7 +937,7 @@ export default function Landing() {
 
     setLoading(true);
     const distance = await asyncGetColoniaDistance(addressColonia, gpsCoords);
-    const eligible = distance <= 1.0;
+    const eligible = distance <= 1.5;
     setCalculatedDistance(distance);
 
     try {
