@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDown, Sparkles, Loader2, ArrowRight, Package, Clock, Plus, Minus, Info, Shirt, User, Phone, MapPin, Truck, Gift, Map, Building, Banknote, Coins, DollarSign, Tag, ShoppingBag, X, FileText, Car, Star, BadgeCheck, Award, Trophy, Check, CheckCheck, CheckCircle, CheckSquare } from "lucide-react";
+import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDown, Sparkles, Loader2, ArrowRight, Package, Clock, Plus, Minus, Info, Shirt, User, Phone, MapPin, Truck, Gift, Map, Building, Banknote, Coins, DollarSign, Tag, ShoppingBag, X, FileText, Car, Star, BadgeCheck, Award, Trophy, Check, CheckCheck, CheckCircle, CheckSquare, Compass, Navigation } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import { motion, AnimatePresence } from "motion/react";
 import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
+
+const ORIGEN_LAVANDERIA = { lat: 18.1372216, lng: -94.4771462 };
 
 const AnimatedTruck = () => (
   <div className="relative w-16 h-16 flex items-center justify-center mb-1">
@@ -228,6 +230,108 @@ const TypewriterTitle = () => {
   );
 };
 
+const getColoniaDistance = (coloniaName: string): number => {
+  const normalized = coloniaName.trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove accents
+
+  // Explicit distances (in km) from Paseo de las Palmas 209
+  const distancesKm: Record<string, number> = {
+    "las palmas": 0.5,
+    "palmas": 0.5,
+    "rancho alegre": 2.2,
+    "vistalmar": 2.0,
+    "petrolera": 1.5,
+    "maria de la piedad": 2.5,
+    "la piedad": 2.5,
+    "piedad": 2.5,
+    "playa sol": 2.8,
+    "benito juarez sur": 2.6,
+    "fovissste": 3.0,
+    "centro": 4.2,
+    "el tesoro": 3.8,
+    "guadalupe victoria": 3.5,
+    "santa isabel": 4.5,
+    "manuel avila camacho": 3.6,
+    "avila camacho": 3.6,
+    "benito juarez norte": 3.4,
+    "teresa morales": 8.5,
+    "ciudad olmeca": 13.0,
+    "olmeca": 13.0,
+    "san martin": 15.0,
+    "praderas del jaguey": 5.2,
+    "jaguey": 5.2,
+    "lomas de coatzacoalcos": 8.0,
+    "adolfo lopez mateos": 4.8,
+    "lopez mateos": 4.8,
+    "tropico de la rivera": 6.0,
+    "puerto esmeralda": 7.2,
+    "lomas de barrillas": 10.5,
+    "barrillas": 10.5
+  };
+
+  for (const [key, value] of Object.entries(distancesKm)) {
+    if (normalized.includes(key)) {
+      return value;
+    }
+  }
+
+  // Fallback hash distance estimation (3 to 8 km) for custom colonias not in list
+  let hash = 0;
+  for (let i = 0; i < normalized.length; i++) {
+    hash = normalized.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return 3 + (Math.abs(hash) % 6) + parseFloat(((Math.abs(hash) % 10) / 10).toFixed(1));
+};
+
+const asyncGetColoniaDistance = async (coloniaName: string, coords?: { lat: number; lon: number } | null): Promise<number> => {
+  // If coords are available, query our server-side distance-matrix route directly!
+  if (coords) {
+    try {
+      const response = await fetch(`/api/maps/distance-matrix?lat=${coords.lat}&lng=${coords.lon}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (typeof data.distanceKm === "number") {
+          return data.distanceKm;
+        }
+      }
+    } catch (error) {
+      console.warn("Server distance-matrix proxy with coords failed, trying offline mathematical model:", error);
+    }
+
+    // Mathematical fallback to ORIGEN_LAVANDERIA
+    const targetLat = ORIGEN_LAVANDERIA.lat;
+    const targetLon = ORIGEN_LAVANDERIA.lng;
+    const R = 6371; // Earth's radius in km
+    const dLat = (coords.lat - targetLat) * Math.PI / 180;
+    const dLon = (coords.lon - targetLon) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(targetLat * Math.PI / 180) * Math.cos(coords.lat * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distanceInKm = R * c;
+    return parseFloat(distanceInKm.toFixed(2));
+  }
+
+  // If coords are not provided, we query using the typed address/colonia name
+  if (coloniaName.trim()) {
+    try {
+      const response = await fetch(`/api/maps/distance-matrix?address=${encodeURIComponent(coloniaName)}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (typeof data.distanceKm === "number") {
+          return data.distanceKm;
+        }
+      }
+    } catch (error) {
+      console.warn("Server distance-matrix proxy with address failed:", error);
+    }
+  }
+
+  // Local fallback calculations for offline testing
+  return getColoniaDistance(coloniaName);
+};
+
 export default function Landing() {
   const { role } = useContext(RoleContext);
   const navigate = useNavigate();
@@ -245,7 +349,9 @@ export default function Landing() {
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(() => localStorage.getItem("user_registered") === "true");
   const [isWaitlisted, setIsWaitlisted] = useState(() => localStorage.getItem("user_is_waitlisted") === "true");
-  const [formStep, setFormStep] = useState<1 | 2 | "eligible_result" | "not_eligible_result">(1);
+  const [formStep, setFormStep] = useState<1 | 2 | "verifying" | "not_eligible_result">(1);
+  const [verificationProgress, setVerificationProgress] = useState(0);
+  const [calculatedDistance, setCalculatedDistance] = useState<number>(() => getColoniaDistance(addressColonia || ""));
 
   useEffect(() => {
     localStorage.setItem("user_name", name);
@@ -262,6 +368,72 @@ export default function Landing() {
   const [isNavigatingGPS, setIsNavigatingGPS] = useState(false);
   const [gpsLoadingStep, setGpsLoadingStep] = useState<string | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
+
+  const [gpsCoords, setGpsCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [gpsAutofillLoading, setGpsAutofillLoading] = useState(false);
+  const [gpsAutofillError, setGpsAutofillError] = useState<string | null>(null);
+
+  const handleAutofillGPS = () => {
+    if (!navigator.geolocation) {
+      setGpsAutofillError("Tu dispositivo o navegador no soporta geolocalización directa.");
+      return;
+    }
+
+    setGpsAutofillLoading(true);
+    setGpsAutofillError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setGpsCoords({ lat: latitude, lon: longitude });
+
+        try {
+          const response = await fetch(`/api/maps/reverse-geocode?lat=${latitude}&lng=${longitude}`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            let colonia = data.colonia || "Centro";
+            let calle = data.calle || "";
+            let numero = data.numero || "";
+
+            // Format address
+            let calleYNum = calle;
+            if (numero) {
+              calleYNum = `${calle} ${numero}`;
+            }
+
+            // Filter out Coatzacoalcos as colonia name
+            if (!colonia || colonia.toLowerCase() === "coatzacoalcos" || colonia.toLowerCase() === "coatzacoalcos centro") {
+              colonia = "Centro";
+            }
+
+            setAddressColonia(colonia);
+            if (calleYNum) {
+              setAddressCalle(calleYNum);
+            }
+            
+            setFormError(null);
+          } else {
+            setGpsAutofillError("Error al obtener la dirección desde el servidor de mapas.");
+          }
+        } catch (err) {
+          console.error("GPS Autofill error:", err);
+          setGpsAutofillError("No se pudo conectar con el servicio de geocodificación.");
+        } finally {
+          setGpsAutofillLoading(false);
+        }
+      },
+      (error) => {
+        setGpsAutofillLoading(false);
+        if (error.code === error.PERMISSION_DENIED) {
+          setGpsAutofillError("Permiso de ubicación denegado. Por favor, actívalo en tu navegador.");
+        } else {
+          setGpsAutofillError("No se pudo obtener tu ubicación actual.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  };
 
   const handleNavigationAndGPS = () => {
     const DEST_ADDRESS = "Paseo de las Palmas 209, Coatzacoalcos, Veracruz";
@@ -599,8 +771,29 @@ export default function Landing() {
       return;
     }
 
+    setFormStep("verifying");
+    setVerificationProgress(0);
     setLoading(true);
-    const eligible = addressColonia.toLowerCase().includes("palmas");
+
+    let distance = 5.0;
+    try {
+      distance = await asyncGetColoniaDistance(addressColonia, gpsCoords);
+    } catch (e) {
+      distance = getColoniaDistance(addressColonia);
+    }
+    const eligible = distance <= 1.0;
+    setCalculatedDistance(distance);
+
+    // Timed step-by-step verification phases
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+      setVerificationProgress(1);
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+      setVerificationProgress(2);
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+      setVerificationProgress(3);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } catch (e) {}
 
     try {
       await dbPreregister();
@@ -651,7 +844,9 @@ export default function Landing() {
     }
 
     setLoading(true);
-    const eligible = addressColonia.toLowerCase().includes("palmas");
+    const distance = await asyncGetColoniaDistance(addressColonia, gpsCoords);
+    const eligible = distance <= 1.0;
+    setCalculatedDistance(distance);
 
     try {
       await dbPreregister();
@@ -778,7 +973,7 @@ export default function Landing() {
                     Pide nuestro cesto gratis
                   </h4>
                   <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Sin costo de envío
+                    Envío sin costo
                   </p>
                 </div>
               </div>
@@ -795,7 +990,7 @@ export default function Landing() {
                       Llénalo en casa
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Con tu ropa de la semana
+                      A tu propio ritmo
                     </p>
                   </div>
                 </div>
@@ -813,7 +1008,7 @@ export default function Landing() {
                       Déjalo en el punto de recolección
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Sin pesar, sin esperar
+                      Sin pesar ni esperar
                     </p>
                   </div>
                 </div>
@@ -846,7 +1041,7 @@ export default function Landing() {
                   Tu ropa limpia a domicilio
                 </p>
                 <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Al día siguiente y sin costo extra
+                  Entrega al día siguiente sin costo
                 </p>
               </div>
             </div>
@@ -906,7 +1101,7 @@ export default function Landing() {
               {/* Texto descriptivo del cesto */}
               <div className="py-3.5 px-3.5 select-none" id="cesto-description-text">
                 <p className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
-                  Toda tu ropa de la semana por el mismo precio, siempre, sin importar el peso o el número de prendas.
+                  Toda tu ropa de la semana por un precio único, sin importar el peso o el número de prendas.
                 </p>
               </div>
             </div>
@@ -1197,6 +1392,95 @@ export default function Landing() {
                     </>
                   )}
                 </motion.div>
+              ) : formStep === "verifying" ? (
+                <motion.div
+                  key="step-verifying"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-center flex flex-col items-center justify-center w-full py-6 select-none"
+                >
+                  <div className="relative w-20 h-20 flex items-center justify-center mb-6">
+                    {/* Animated pulsing target ring representing the routing check */}
+                    <motion.div
+                      className="absolute inset-0 border-[2.5px] border-dashed border-[#0f55d8]/40 rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                    />
+                    <motion.div
+                      className="absolute inset-2 bg-[#0f55d8]/5 rounded-full"
+                      animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <MapPin className="w-8 h-8 text-[#0f55d8] relative z-10 animate-bounce" />
+                  </div>
+
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-1.5 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    Verificando Cobertura
+                  </h3>
+                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-5">
+                    Análisis de Ruta en Tiempo Real
+                  </p>
+
+                  <div className="w-full max-w-sm space-y-3 bg-slate-50 border border-slate-150 rounded-xl p-4 text-left font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    {/* Step 1 */}
+                    <div className="flex items-center gap-3">
+                      {verificationProgress >= 1 ? (
+                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                      ) : (
+                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0" />
+                      )}
+                      <p className={`text-xs font-semibold ${verificationProgress >= 1 ? 'text-emerald-700' : 'text-slate-600'}`}>
+                        Geolocalizando dirección ({addressColonia})...
+                      </p>
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className="flex items-center gap-3">
+                      {verificationProgress >= 2 ? (
+                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                      ) : verificationProgress === 1 ? (
+                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border border-slate-300 shrink-0" />
+                      )}
+                      <p className={`text-xs font-semibold ${verificationProgress >= 2 ? 'text-emerald-700' : verificationProgress === 1 ? 'text-slate-600' : 'text-slate-400'}`}>
+                        Trazando ruta óptima y vías de acceso...
+                      </p>
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className="flex items-center gap-3">
+                      {verificationProgress >= 3 ? (
+                        <CheckCircle className="w-4 h-4 text-[#0f55d8] shrink-0" />
+                      ) : verificationProgress === 2 ? (
+                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border border-slate-300 shrink-0" />
+                      )}
+                      <p className={`text-xs font-semibold ${verificationProgress >= 3 ? 'text-emerald-700' : verificationProgress === 2 ? 'text-slate-600' : 'text-slate-400'}`}>
+                        {verificationProgress >= 3 
+                          ? `Distancia de traslado calculada: ~${calculatedDistance.toFixed(1)} km` 
+                          : "Estimando distancia de traslado..."}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="w-full bg-slate-200 h-1 rounded-full overflow-hidden mt-6 max-w-sm">
+                    <motion.div
+                      className="bg-[#0f55d8] h-full"
+                      initial={{ width: "0%" }}
+                      animate={{
+                        width:
+                          verificationProgress === 0 ? "15%" :
+                          verificationProgress === 1 ? "45%" :
+                          verificationProgress === 2 ? "75%" : "100%"
+                      }}
+                      transition={{ duration: 0.8 }}
+                    />
+                  </div>
+                </motion.div>
               ) : formStep === "not_eligible_result" ? (
                 <motion.div 
                   key="step-not-eligible"
@@ -1204,7 +1488,7 @@ export default function Landing() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
-                  className="text-center flex flex-col items-center justify-center w-full py-4"
+                  className="text-center flex flex-col items-center justify-center w-full py-4 animate-in fade-in zoom-in-95 duration-200"
                 >
                   <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 shadow-sm shrink-0">
                     <MapPin className="w-6 h-6 text-blue-500" />
@@ -1384,6 +1668,34 @@ export default function Landing() {
                       {/* Paso 2 */}
                       <div ref={step2Ref} className="w-1/2 shrink-0 select-none px-0.5">
                         <form onSubmit={submitStep2AndVerify} className="space-y-4 flex flex-col">
+                          {/* GPS Autofill Button */}
+                          <div className="space-y-2">
+                            <button
+                              type="button"
+                              onClick={handleAutofillGPS}
+                              disabled={gpsAutofillLoading}
+                              className="w-full py-2.5 px-4 bg-blue-50/50 hover:bg-blue-50 border border-dashed border-blue-300 text-[#0f55d8] rounded-xl flex items-center justify-center gap-2 text-xs font-bold font-geist transition-all active:scale-[0.98] disabled:opacity-75"
+                              style={{ fontFamily: '"Geist", sans-serif' }}
+                            >
+                              {gpsAutofillLoading ? (
+                                <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                              ) : (
+                                <Navigation className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+                              )}
+                              <span>{gpsAutofillLoading ? "Obteniendo ubicación GPS..." : "📍 Usar mi ubicación GPS actual"}</span>
+                            </button>
+                            
+                            {gpsAutofillError && (
+                              <motion.p 
+                                initial={{ opacity: 0, y: -5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-red-500 text-[11px] font-bold text-center leading-tight bg-red-50 border border-red-100 py-1.5 px-3 rounded-lg"
+                              >
+                                {gpsAutofillError}
+                              </motion.p>
+                            )}
+                          </div>
+
                           <div className="space-y-3">
                             <div className="space-y-1">
                               <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
@@ -1395,7 +1707,7 @@ export default function Landing() {
                                   required
                                   autoComplete="street-address"
                                   value={addressCalle}
-                                  onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); }}
+                                  onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); setGpsCoords(null); }}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       e.preventDefault();
@@ -1418,7 +1730,7 @@ export default function Landing() {
                                   required
                                   autoComplete="address-level2"
                                   value={addressColonia}
-                                  onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); }}
+                                  onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); setGpsCoords(null); }}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       e.preventDefault();

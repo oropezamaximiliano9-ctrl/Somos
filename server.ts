@@ -197,6 +197,283 @@ bootstrapDb();
 const app = express();
 app.use(express.json());
 
+// -- GOOGLE MAPS SECURE PROXIES (CORS-SAFE, SERVER-SIDE) --
+app.get("/api/maps/reverse-geocode", async (req, res) => {
+  const { lat, lng, address } = req.query;
+  
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_PLATFORM_KEY;
+
+  if (address) {
+    // Forward geocoding of a typed address string
+    if (!apiKey) {
+      // Nominatim forward geocoding fallback
+      try {
+        const queryStr = `${address}, Coatzacoalcos, Veracruz`;
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(queryStr)}`,
+          {
+            headers: {
+              "User-Agent": "SomosLaundryApp/1.0 (oropezamaximiliano9@gmail.com)"
+            }
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            const latitude = parseFloat(data[0].lat);
+            const longitude = parseFloat(data[0].lon);
+            return res.json({ lat: latitude, lng: longitude, source: "nominatim" });
+          }
+        }
+      } catch (e) {
+        console.error("OSM forward geocode error:", e);
+      }
+      // Fixed fallback coordinates
+      return res.json({ lat: 18.1404, lng: -94.4632, source: "mock" });
+    }
+
+    try {
+      const queryStr = `${address}, Coatzacoalcos, Veracruz`;
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(queryStr)}&key=${apiKey}&language=es`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Google Geocode failed: ${response.statusText}`);
+      const data = await response.json();
+      if (data.status !== "OK" || !data.results || data.results.length === 0) {
+        throw new Error(`Google Geocode status: ${data.status}`);
+      }
+      const loc = data.results[0].geometry.location;
+      return res.json({ lat: loc.lat, lng: loc.lng, source: "google" });
+    } catch (err: any) {
+      console.error("Google forward geocode error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  // Reverse geocoding of coordinates (lat, lng)
+  if (!lat || !lng) {
+    return res.status(400).json({ error: "Faltan parámetros de consulta (lat/lng o address)." });
+  }
+
+  if (!apiKey) {
+    // Robust Nominatim fallback
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+        {
+          headers: {
+            "User-Agent": "SomosLaundryApp/1.0 (oropezamaximiliano9@gmail.com)"
+          }
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        let colonia = "Centro";
+        let calle = "";
+        let numero = "";
+
+        if (data.address) {
+          const addr = data.address;
+          colonia = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || addr.village || "Centro";
+          calle = addr.road || "";
+          numero = addr.house_number || "";
+        }
+        return res.json({
+          calle,
+          numero,
+          colonia,
+          source: "nominatim"
+        });
+      }
+    } catch (e) {
+      console.error("OSM Fallback error:", e);
+    }
+    return res.json({
+      calle: "Paseo de las Palmas",
+      numero: "209",
+      colonia: "Palmas",
+      source: "mock"
+    });
+  }
+
+  try {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}&language=es`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Google Geocoding failed: ${response.statusText}`);
+    }
+    const data = await response.json();
+    if (data.status !== "OK" || !data.results || data.results.length === 0) {
+      throw new Error(`Google Geocoding status: ${data.status}`);
+    }
+
+    const firstResult = data.results[0];
+    const components = firstResult.address_components || [];
+
+    let street_number = "";
+    let route = "";
+    let sublocality = "";
+    let neighborhood = "";
+
+    for (const comp of components) {
+      const types = comp.types || [];
+      if (types.includes("street_number")) {
+        street_number = comp.long_name;
+      } else if (types.includes("route")) {
+        route = comp.long_name;
+      } else if (types.includes("sublocality_level_1") || types.includes("sublocality")) {
+        sublocality = comp.long_name;
+      } else if (types.includes("neighborhood")) {
+        neighborhood = comp.long_name;
+      }
+    }
+
+    const colonia = sublocality || neighborhood || "Centro";
+    const calle = route || "";
+    const numero = street_number || "";
+
+    res.json({
+      calle,
+      numero,
+      colonia,
+      source: "google"
+    });
+  } catch (err: any) {
+    console.error("Google Geocoding error:", err);
+    res.json({
+      calle: "",
+      numero: "",
+      colonia: "Centro",
+      error: err.message,
+      source: "fallback"
+    });
+  }
+});
+
+app.get("/api/maps/distance-matrix", async (req, res) => {
+  let { lat, lng, address } = req.query;
+
+  const ORIGEN_LAVANDERIA = { lat: 18.1372216, lng: -94.4771462 };
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_PLATFORM_KEY;
+
+  let finalLat = lat ? parseFloat(lat as string) : null;
+  let finalLng = lng ? parseFloat(lng as string) : null;
+
+  // If address is provided instead of lat/lng, forward geocode it first!
+  if (address && (!finalLat || !finalLng)) {
+    try {
+      const queryStr = `${address}, Coatzacoalcos, Veracruz`;
+      if (apiKey) {
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(queryStr)}&key=${apiKey}&language=es`;
+        const geocodeRes = await fetch(url);
+        const geocodeData = await geocodeRes.json();
+        if (geocodeData.status === "OK" && geocodeData.results?.[0]) {
+          const loc = geocodeData.results[0].geometry.location;
+          finalLat = loc.lat;
+          finalLng = loc.lng;
+        }
+      } else {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(queryStr)}`;
+        const geocodeRes = await fetch(url, {
+          headers: { "User-Agent": "SomosLaundryApp/1.0 (oropezamaximiliano9@gmail.com)" }
+        });
+        const geocodeData = await geocodeRes.json();
+        if (Array.isArray(geocodeData) && geocodeData.length > 0) {
+          finalLat = parseFloat(geocodeData[0].lat);
+          finalLng = parseFloat(geocodeData[0].lon);
+        }
+      }
+    } catch (e) {
+      console.error("Geocoding address inside distance matrix failed:", e);
+    }
+  }
+
+  if (finalLat === null || finalLng === null || isNaN(finalLat) || isNaN(finalLng)) {
+    return res.status(400).json({ error: "No se pudieron obtener coordenadas para calcular la distancia." });
+  }
+
+  if (!apiKey) {
+    // Haversine formula distance with a custom driving estimate
+    const R = 6371; // Earth's radius in km
+    const dLat = (finalLat - ORIGEN_LAVANDERIA.lat) * Math.PI / 180;
+    const dLon = (finalLng - ORIGEN_LAVANDERIA.lng) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(ORIGEN_LAVANDERIA.lat * Math.PI / 180) * Math.cos(finalLat * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distanceInKm = R * c;
+
+    // Estimate driving time (average 28km/h) + factor grid
+    let estimatedTime = (distanceInKm / 28) * 60 * 1.4;
+    if (distanceInKm < 0.8) {
+      estimatedTime = Math.max(1, (distanceInKm / 20) * 60 * 1.25);
+    }
+    const durationMinutes = Math.max(1, Math.round(estimatedTime));
+
+    return res.json({
+      durationMinutes,
+      distanceKm: parseFloat(distanceInKm.toFixed(2)),
+      source: "haversine_fallback"
+    });
+  }
+
+  try {
+    const originStr = `${ORIGEN_LAVANDERIA.lat},${ORIGEN_LAVANDERIA.lng}`;
+    const destStr = `${finalLat},${finalLng}`;
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destStr}&mode=driving&key=${apiKey}`;
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Distance Matrix failed: ${response.statusText}`);
+    }
+    const data = await response.json();
+    if (data.status !== "OK" || !data.rows || data.rows.length === 0) {
+      throw new Error(`Distance Matrix status: ${data.status}`);
+    }
+
+    const row = data.rows[0];
+    if (!row.elements || row.elements.length === 0) {
+      throw new Error("No elements found in Distance Matrix response.");
+    }
+
+    const element = row.elements[0];
+    if (element.status !== "OK") {
+      throw new Error(`Distance Matrix element status: ${element.status}`);
+    }
+
+    const durationSeconds = element.duration.value;
+    const durationMinutes = Math.max(1, Math.round(durationSeconds / 60));
+    const distanceMeters = element.distance.value;
+
+    res.json({
+      durationMinutes,
+      distanceKm: parseFloat((distanceMeters / 1000).toFixed(2)),
+      source: "google"
+    });
+  } catch (err: any) {
+    console.error("Google Distance Matrix error:", err);
+    // Haversine fallback on error
+    const R = 6371;
+    const dLat = (finalLat - ORIGEN_LAVANDERIA.lat) * Math.PI / 180;
+    const dLon = (finalLng - ORIGEN_LAVANDERIA.lng) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(ORIGEN_LAVANDERIA.lat * Math.PI / 180) * Math.cos(finalLat * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distanceInKm = R * c;
+    let estimatedTime = (distanceInKm / 28) * 60 * 1.4;
+    const durationMinutes = Math.max(1, Math.round(estimatedTime));
+
+    res.json({
+      durationMinutes,
+      distanceKm: parseFloat(distanceInKm.toFixed(2)),
+      source: "haversine_error_fallback",
+      error: err.message
+    });
+  }
+});
+
 const PORT = 3000;
 
 // -- API ROUTES FOR LAUNDRY PROCESSES --
