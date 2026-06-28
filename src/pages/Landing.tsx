@@ -479,6 +479,14 @@ export default function Landing() {
   const [gpsCoords, setGpsCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [gpsAutofillLoading, setGpsAutofillLoading] = useState(false);
   const [gpsAutofillError, setGpsAutofillError] = useState<string | null>(null);
+  const [hasRequestedGps, setHasRequestedGps] = useState(false);
+
+  const handleAddressInputClick = () => {
+    if (!hasRequestedGps && !addressCalle && !addressColonia && !gpsAutofillLoading) {
+      setHasRequestedGps(true);
+      handleAutofillGPS();
+    }
+  };
 
   const handleAutofillGPS = () => {
     if (!navigator.geolocation) {
@@ -978,7 +986,7 @@ export default function Landing() {
     } catch (e) {
       distance = getColoniaDistance(addressColonia);
     }
-    const eligible = distance <= 1.5;
+    const eligible = distance <= 1.0;
     setCalculatedDistance(distance);
 
     // Timed step-by-step verification phases
@@ -1042,7 +1050,7 @@ export default function Landing() {
 
     setLoading(true);
     const distance = await asyncGetColoniaDistance(addressColonia, gpsCoords);
-    const eligible = distance <= 1.5;
+    const eligible = distance <= 1.0;
     setCalculatedDistance(distance);
 
     try {
@@ -1276,13 +1284,13 @@ export default function Landing() {
               Nuestro servicio
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Lo que quepa en el cesto por <span className="text-[#0f55d8] font-bold">$95</span>
+              Tu ropa limpia a un precio fijo
             </p>
           </div>
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-4 sm:px-0 mt-6">
-            <div className="bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+            <div id="basket-container" className="relative bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
               {/* Imagen del cesto */}
               <div className="relative w-full h-[300px] select-none overflow-hidden bg-slate-50/20">
                 <img 
@@ -1298,8 +1306,17 @@ export default function Landing() {
               {/* Texto descriptivo del cesto */}
               <div className="py-3.5 px-3.5 select-none" id="cesto-description-text">
                 <p className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
-                  Toda tu ropa de la semana por un precio único, sin importar el peso o el número de prendas.
+                  Cesto de capacidad semanal incluido
                 </p>
+              </div>
+            </div>
+
+            {/* Beneficios ultra-compactos fuera de la tarjeta */}
+            <div className="mt-3">
+              <div className="bg-white border border-[#181818]/5 rounded-xl p-3.5 shadow-[0_4px_16px_rgba(0,0,0,0.03)] flex items-center justify-start text-left">
+                <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-left block w-full" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
+                  Toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>, sin importar el peso o la cantidad.
+                </span>
               </div>
             </div>
           </div>
@@ -1865,45 +1882,33 @@ export default function Landing() {
                       {/* Paso 2 */}
                       <div ref={step2Ref} className="w-1/2 shrink-0 select-none px-0.5">
                         <form onSubmit={submitStep2AndVerify} className="space-y-4 flex flex-col">
-                          {/* GPS Autofill Button */}
-                          <div className="space-y-2">
-                            <button
-                              type="button"
-                              onClick={handleAutofillGPS}
-                              disabled={gpsAutofillLoading}
-                              className="w-full py-2.5 px-4 bg-blue-50/50 hover:bg-blue-50 border border-dashed border-blue-300 text-[#0f55d8] rounded-xl flex items-center justify-center gap-2 text-xs font-bold font-geist transition-all active:scale-[0.98] disabled:opacity-75"
-                              style={{ fontFamily: '"Geist", sans-serif' }}
+                          
+                          {gpsAutofillError && (
+                            <motion.p 
+                              initial={{ opacity: 0, y: -5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="text-red-500 text-[11px] font-bold text-center leading-tight bg-red-50 border border-red-100 py-1.5 px-3 rounded-lg"
                             >
-                              {gpsAutofillLoading ? (
-                                <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                              ) : (
-                                <Navigation className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-                              )}
-                              <span>{gpsAutofillLoading ? "Obteniendo ubicación GPS..." : "📍 Usar mi ubicación GPS actual"}</span>
-                            </button>
-                            
-                            {gpsAutofillError && (
-                              <motion.p 
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-red-500 text-[11px] font-bold text-center leading-tight bg-red-50 border border-red-100 py-1.5 px-3 rounded-lg"
-                              >
-                                {gpsAutofillError}
-                              </motion.p>
-                            )}
-                          </div>
+                              {gpsAutofillError}
+                            </motion.p>
+                          )}
 
                           <div className="space-y-3">
                             <div className="space-y-1">
                               <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
                               <div className="relative">
-                                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                {gpsAutofillLoading ? (
+                                  <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
+                                ) : (
+                                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                )}
                                 <input
                                   ref={calleInputRef}
                                   type="text"
                                   required
                                   autoComplete="street-address"
                                   value={addressCalle}
+                                  onClick={handleAddressInputClick}
                                   onChange={(e) => { setAddressCalle(e.target.value); setFormError(null); setGpsCoords(null); }}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
@@ -1920,13 +1925,18 @@ export default function Landing() {
                             <div className="space-y-1">
                               <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Colonia</label>
                               <div className="relative">
-                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                {gpsAutofillLoading ? (
+                                  <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
+                                ) : (
+                                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                )}
                                 <input
                                   ref={coloniaInputRef}
                                   type="text"
                                   required
                                   autoComplete="address-level2"
                                   value={addressColonia}
+                                  onClick={handleAddressInputClick}
                                   onChange={(e) => { setAddressColonia(e.target.value); setFormError(null); setGpsCoords(null); }}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
