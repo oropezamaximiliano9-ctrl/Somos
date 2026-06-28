@@ -1290,16 +1290,14 @@ export default function Landing() {
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-4 sm:px-0 mt-6">
-            {/* Tarjeta superior: Cesto de capacidad semanal incluido */}
-            <div className="mb-3">
-              <div className="bg-white border border-[#181818]/5 rounded-xl p-3.5 shadow-[0_4px_16px_rgba(0,0,0,0.03)] flex items-center justify-center text-center">
+            <div id="basket-container" className="relative bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+              {/* Texto superior del cesto */}
+              <div className="py-3.5 px-3.5 select-none border-b border-[#181818]/5">
                 <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
                   Cesto de capacidad semanal incluido
                 </span>
               </div>
-            </div>
 
-            <div id="basket-container" className="relative bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
               {/* Imagen del cesto */}
               <div className="relative w-full h-[300px] select-none overflow-hidden bg-slate-50/20">
                 <img 
