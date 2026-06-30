@@ -51,7 +51,6 @@ function MainLayout() {
     }
   };
 
-  const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleClick = (e: MouseEvent) => {
@@ -68,13 +67,11 @@ function MainLayout() {
 
   const isLandingPage = location.pathname === "/";
   const showAlwaysNavbar = role === 'associate' || role === 'admin' || location.pathname === '/login' || !isLandingPage;
-  const isNavbarVisible = showAlwaysNavbar || scrollY > 80;
 
   return (
     <div 
       className="h-[100dvh] w-full overflow-y-auto overflow-x-hidden flex flex-col bg-[#f6eedd] snap-y snap-mandatory"
       style={{ scrollBehavior: 'smooth', scrollPaddingTop: '56px' }}
-      onScroll={(e) => setScrollY((e.target as HTMLDivElement).scrollTop)}
     >
       {/* Top Banner removed */}
 

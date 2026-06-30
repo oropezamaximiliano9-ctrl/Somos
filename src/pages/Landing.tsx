@@ -1276,7 +1276,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="pt-4 px-4 sm:px-0">
+          <div className="pt-6 px-4 sm:px-0">
             <button 
               onClick={openBottomSheet}
               className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_15px_rgba(15,85,216,0.15)] disabled:opacity-85 hover:brightness-110 active:scale-[0.98] transition-all"
@@ -1293,7 +1293,7 @@ export default function Landing() {
 
       {/* Nueva Sección: Ubicación Dinámica Interactiva sin Clave de API */}
       <section className="w-full px-0 pt-5 flex flex-col justify-start pb-10 bg-[#f6eedd] snap-start snap-always" id="editorial-location-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
-        <div className="w-full max-w-sm mx-auto space-y-4 text-left">
+        <div className="w-full max-w-sm mx-auto text-left">
           
           {/* Header directly in the layout, extremely bold and crisp */}
           <div id="location-editorial-head" className="w-full pb-4">
