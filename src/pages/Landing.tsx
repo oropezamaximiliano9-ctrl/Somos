@@ -181,48 +181,16 @@ const drillTransition = {
   duration: 0.12,
 };
 
-const ROTATING_WORDS = ["haz más", "disfruta", "relájate", "descansa"];
-
 const TypewriterTitle = () => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const delay = ROTATING_WORDS[index] === "haz más" ? 3500 : 1500; // "haz más" is prioritized for 3.5s, others for 1.5s
-    const timer = setTimeout(() => {
-      setIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [index]);
-
   return (
-    <div className="w-full text-center pt-8 pb-4 select-none" id="rotating-title-container">
+    <div className="w-full text-center pt-4 pb-4 select-none" id="rotating-title-container">
       <h1 
         className="text-[28px] sm:text-[34px] font-semibold text-gray-900 tracking-tight flex items-center justify-center leading-tight h-[40px] sm:h-[48px]"
         style={{ fontFamily: '"Geist", sans-serif' }}
       >
         <span>Lava menos,</span>
-        <span 
-          className="relative inline-flex h-[60px] sm:h-[70px] items-center overflow-hidden w-[126px] sm:w-[145px] text-left justify-start ml-1.5 transform-gpu"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%)',
-            maskImage: 'linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%)'
-          }}
-        >
-          <AnimatePresence initial={false}>
-            <motion.span
-              key={index}
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -40, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              className={`absolute left-0 text-[#0f55d8] whitespace-nowrap ${
-                ROTATING_WORDS[index] === "haz más" ? "font-bold" : "font-medium"
-              }`}
-              style={{ willChange: "transform, opacity" }}
-            >
-              {ROTATING_WORDS[index]}
-            </motion.span>
-          </AnimatePresence>
+        <span className="text-[#0f55d8] font-bold ml-1.5">
+          haz más
         </span>
       </h1>
       <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
@@ -1167,129 +1135,8 @@ export default function Landing() {
 
           <TypewriterTitle />
 
-          {/* Tarjeta Unica de Pasos */}
-          <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] mt-6 text-left relative overflow-hidden">
-            <div className="flex flex-col">
-              {/* Item 1 */}
-              <div className="flex items-start gap-3 pb-3">
-                <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
-                <div className="space-y-0.5 pt-1.5">
-                  <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Pide nuestro cesto gratis
-                  </h4>
-                  <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                    Envío sin costo
-                  </p>
-                </div>
-              </div>
-
-               {/* Item 2 */}
-              <div className="w-full flex flex-col">
-                {/* Separador 1 */}
-                <div className="border-t border-[#EDE9E0] w-full" />
-
-                <div className="flex items-start gap-3 py-3">
-                  <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
-                  <div className="space-y-0.5 pt-1.5">
-                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Llénalo en casa
-                    </h4>
-                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      A tu propio ritmo
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Item 3 */}
-              <div className="w-full flex flex-col">
-                {/* Separador 2 */}
-                <div className="border-t border-[#EDE9E0] w-full" />
-
-                <div className="flex items-start gap-3 pt-3">
-                  <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>3</span>
-                  <div className="space-y-0.5 pt-1.5">
-                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Déjalo en el punto de recolección
-                    </h4>
-                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Sin pesar ni esperar
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative w-full">
-            {/* Underlay to bridge the straight white card with the rounded blue card corners */}
-            <div className="absolute top-0 left-0 right-0 h-5 bg-white border-x border-[#eaeaea] z-0 pointer-events-none" />
-
-            <div 
-              style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
-              className="w-full bg-[#f8fbff] border border-[#0f55d8]/30 rounded-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_2px_8px_rgba(15,85,216,0.08)] mt-0 mb-6 text-left flex items-start gap-3 select-none transform-gpu relative z-10 overflow-hidden" 
-              id="flow-reward-banner"
-            >
-              <div 
-                className="shrink-0 w-9 h-9 flex items-center justify-center" 
-                id="flow-reward-icon-container"
-              >
-                <div 
-                  className="w-7 h-7 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu"
-                  style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
-                >
-                  <Check className="w-[15px] h-[15px]" strokeWidth={2.5} />
-                </div>
-              </div>
-              <div className="flex flex-col text-left space-y-0.5 pt-1.5">
-                <p className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Tu ropa limpia a domicilio
-                </p>
-                <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Entrega al día siguiente sin costo
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-4 px-4 sm:px-0">
-            <button 
-              onClick={openBottomSheet}
-              className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_15px_rgba(15,85,216,0.15)] disabled:opacity-85 hover:brightness-110 active:scale-[0.98] transition-all"
-              style={{ fontFamily: '"Geist", sans-serif' }}
-            >
-              <div className="flex items-center space-x-2">
-                <span>Quiero mi cesto</span>
-                <ArrowRight className="w-5 h-5" />
-              </div>
-            </button>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* Sección Exclusiva: El cesto SOMOS */}
-      <section className="w-full pt-4 pb-12 flex flex-col justify-start bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-full max-w-sm mx-auto pt-0 font-sans"
-        >
-          {/* Título de la sección */}
-          <div className="w-full pb-4">
-            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Nuestro servicio
-            </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Tu ropa limpia a un precio fijo
-            </p>
-          </div>
-
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
-          <div className="px-4 sm:px-0 mt-6">
+          <div className="px-4 sm:px-0 mt-6 mb-6">
             <div id="basket-container" className="relative bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
               {/* Texto superior del cesto */}
               <div className="py-3.5 px-3.5 select-none border-b border-[#181818]/5">
@@ -1317,6 +1164,129 @@ export default function Landing() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* Sección Exclusiva: El cesto SOMOS */}
+      <section className="w-full pt-4 pb-12 flex flex-col justify-start bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 w-full max-w-sm mx-auto pt-0 font-sans"
+        >
+          {/* Título de la sección */}
+          <div className="w-full pb-4">
+            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Nuestro servicio
+            </h2>
+            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
+              Lavandería a domicilio
+            </p>
+          </div>
+
+          {/* Tarjeta Unica de Pasos */}
+          <div className="px-4 sm:px-0 mt-6 w-full">
+            <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] text-left relative overflow-hidden">
+              <div className="flex flex-col">
+                {/* Item 1 */}
+                <div className="flex items-start gap-3 pb-3">
+                  <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
+                  <div className="space-y-0.5 pt-1.5">
+                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                      Pide nuestro cesto gratis
+                    </h4>
+                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                      Envío sin costo
+                    </p>
+                  </div>
+                </div>
+
+                 {/* Item 2 */}
+                <div className="w-full flex flex-col">
+                  {/* Separador 1 */}
+                  <div className="border-t border-[#EDE9E0] w-full" />
+
+                  <div className="flex items-start gap-3 py-3">
+                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
+                    <div className="space-y-0.5 pt-1.5">
+                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                        Llénalo en casa
+                      </h4>
+                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                        A tu propio ritmo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Item 3 */}
+                <div className="w-full flex flex-col">
+                  {/* Separador 2 */}
+                  <div className="border-t border-[#EDE9E0] w-full" />
+
+                  <div className="flex items-start gap-3 pt-3">
+                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>3</span>
+                    <div className="space-y-0.5 pt-1.5">
+                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                        Déjalo en el punto de recolección
+                      </h4>
+                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                        Sin pesar ni esperar
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative w-full">
+              {/* Underlay to bridge the straight white card with the rounded blue card corners */}
+              <div className="absolute top-0 left-0 right-0 h-5 bg-white border-x border-[#eaeaea] z-0 pointer-events-none" />
+
+              <div 
+                style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
+                className="w-full bg-[#f8fbff] border border-[#0f55d8]/30 rounded-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_2px_8px_rgba(15,85,216,0.08)] mt-0 mb-0 text-left flex items-start gap-3 select-none transform-gpu relative z-10 overflow-hidden" 
+                id="flow-reward-banner"
+              >
+                <div 
+                  className="shrink-0 w-9 h-9 flex items-center justify-center" 
+                  id="flow-reward-icon-container"
+                >
+                  <div 
+                    className="w-7 h-7 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu"
+                    style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
+                  >
+                    <Check className="w-[15px] h-[15px]" strokeWidth={2.5} />
+                  </div>
+                </div>
+                <div className="flex flex-col text-left space-y-0.5 pt-1.5">
+                  <p className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    Tu ropa limpia a domicilio
+                  </p>
+                  <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    Entrega al día siguiente sin costo
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4 px-4 sm:px-0">
+            <button 
+              onClick={openBottomSheet}
+              className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_15px_rgba(15,85,216,0.15)] disabled:opacity-85 hover:brightness-110 active:scale-[0.98] transition-all"
+              style={{ fontFamily: '"Geist", sans-serif' }}
+            >
+              <div className="flex items-center space-x-2">
+                <span>Quiero mi cesto</span>
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </button>
           </div>
         </motion.div>
       </section>
