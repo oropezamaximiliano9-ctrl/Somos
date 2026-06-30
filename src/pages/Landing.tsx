@@ -1148,7 +1148,7 @@ export default function Landing() {
               {/* Imagen del cesto */}
               <div className="relative w-full h-[300px] select-none overflow-hidden bg-slate-50/20">
                 <img 
-                  src="https://i.postimg.cc/9MMvCSqC/IMG-8321.jpg" 
+                  src="https://i.ibb.co/VcVSqJbP/A5-DFA592-E652-4373-9358-BA9-DC228-E0-D7.webp" 
                   alt="Cesto de lona premium SOMOS en ambiente real minimal" 
                   className="w-full h-full object-cover object-center pointer-events-none select-none"
                   onError={(e) => {
@@ -1182,7 +1182,7 @@ export default function Landing() {
           {/* Título de la sección */}
           <div className="w-full pb-4">
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Nuestro servicio
+              Empieza hoy
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
               Lavandería a domicilio
