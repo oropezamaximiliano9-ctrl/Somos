@@ -1136,8 +1136,8 @@ export default function Landing() {
           <TypewriterTitle />
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
-          <div className="px-4 sm:px-0 mt-6 mb-6">
-            <div id="basket-container" className="relative bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+          <div className="px-0 sm:px-0 mt-6 mb-6 w-full">
+            <div id="basket-container" className="relative w-full bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
               {/* Texto superior del cesto */}
               <div className="py-3.5 px-3.5 select-none border-b border-[#181818]/5">
                 <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
@@ -1190,7 +1190,7 @@ export default function Landing() {
           </div>
 
           {/* Tarjeta Unica de Pasos */}
-          <div className="px-4 sm:px-0 mt-6 w-full">
+          <div className="px-0 sm:px-0 mt-6 w-full">
             <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] text-left relative overflow-hidden">
               <div className="flex flex-col">
                 {/* Item 1 */}
@@ -1276,7 +1276,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="pt-6 px-4 sm:px-0">
+          <div className="mt-10 px-4 sm:px-0">
             <button 
               onClick={openBottomSheet}
               className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_15px_rgba(15,85,216,0.15)] disabled:opacity-85 hover:brightness-110 active:scale-[0.98] transition-all"
@@ -1308,7 +1308,7 @@ export default function Landing() {
 
 
           {/* Custom CSS Map Container matching the exact provided location image */}
-          <div className="px-4 sm:px-0 mt-6">
+          <div className="px-0 sm:px-0 mt-6 w-full">
             <a 
               href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
               target="_blank"
@@ -1390,7 +1390,7 @@ export default function Landing() {
           </div>
 
           {/* Navigation Route CTA helper */}
-          <div className="space-y-4 pt-6 px-4 sm:px-0 flex flex-col items-center">
+          <div className="space-y-4 mt-10 px-4 sm:px-0 flex flex-col items-center">
             <div className="w-full flex flex-col items-center gap-y-1.5" id="cta-info-wrapper">
               <button 
                 type="button"
