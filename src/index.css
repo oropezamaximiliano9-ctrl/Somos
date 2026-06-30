@@ -36,6 +36,16 @@ html, body, #root {
   overflow: hidden;
 }
 
+/* Ocultar barra de desplazamiento globalmente */
+::-webkit-scrollbar {
+  display: none !important;
+}
+
+* {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 56px;

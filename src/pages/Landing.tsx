@@ -185,13 +185,10 @@ const TypewriterTitle = () => {
   return (
     <div className="w-full text-center pt-4 pb-4 select-none" id="rotating-title-container">
       <h1 
-        className="text-[28px] sm:text-[34px] font-semibold text-gray-900 tracking-tight flex items-center justify-center leading-tight h-[40px] sm:h-[48px]"
+        className="text-[28px] sm:text-[34px] font-semibold text-gray-800 tracking-tight flex items-center justify-center leading-tight h-[40px] sm:h-[48px]"
         style={{ fontFamily: '"Geist", sans-serif' }}
       >
-        <span>Lava menos,</span>
-        <span className="text-[#0f55d8] font-bold ml-1.5">
-          haz más
-        </span>
+        Un problema menos
       </h1>
       <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
         Tu ropa limpia a un precio fijo
@@ -1185,7 +1182,7 @@ export default function Landing() {
               Empieza hoy
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
-              Lavandería a domicilio
+              Sin salir de casa
             </p>
           </div>
 
@@ -1298,7 +1295,7 @@ export default function Landing() {
           {/* Header directly in the layout, extremely bold and crisp */}
           <div id="location-editorial-head" className="w-full pb-4">
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
-              Nuestra ubicación
+              Recolección
             </h2>
             <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ fontFamily: '"Geist", sans-serif', textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
               Paseo de las Palmas 209, las Palmas
@@ -1809,7 +1806,18 @@ export default function Landing() {
                             </div>
        
                             <div className="space-y-1">
-                              <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Teléfono (WhatsApp)</label>
+                              <div className="flex justify-between items-center ml-0.5">
+                                <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Teléfono (WhatsApp)</label>
+                                <span className={`text-[11px] font-semibold tracking-wider transition-colors ${
+                                  phone.length === 10 
+                                    ? "text-emerald-600 font-bold" 
+                                    : phone.length > 10 
+                                      ? "text-red-600 font-bold" 
+                                      : "text-gray-400"
+                                }`} style={{ fontFamily: '"Geist", sans-serif' }}>
+                                  {phone.length}/10
+                                </span>
+                              </div>
                               <div className={`relative ${isShaking ? "animate-shake" : ""}`}>
                                 <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isPhoneError ? "text-red-500" : "text-slate-400"}`} />
                                 <input
