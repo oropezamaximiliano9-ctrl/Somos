@@ -1139,18 +1139,18 @@ export default function Landing() {
           <div className="px-0 sm:px-0 mt-6 mb-6 w-full">
             <div id="basket-container" className="relative w-full bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
               {/* Texto superior del cesto */}
-              <div className="py-3.5 px-3.5 select-none border-b border-[#181818]/5">
+              <div className="py-3.5 px-3.5 select-none">
                 <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.6' }}>
                   Cesto de capacidad semanal incluido
                 </span>
               </div>
 
               {/* Imagen del cesto */}
-              <div className="relative w-full h-[300px] select-none overflow-hidden bg-slate-50/20">
+              <div className="relative w-full h-[300px] px-3 select-none overflow-hidden bg-transparent">
                 <img 
                   src="https://i.ibb.co/VcVSqJbP/A5-DFA592-E652-4373-9358-BA9-DC228-E0-D7.webp" 
                   alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                  className="w-full h-full object-cover object-center pointer-events-none select-none"
+                  className="w-full h-full object-cover object-center rounded-lg pointer-events-none select-none"
                   onError={(e) => {
                     e.currentTarget.src = canvasLaundryBag;
                   }}
