@@ -188,7 +188,7 @@ const TypewriterTitle = () => {
         className="text-[28px] sm:text-[34px] font-semibold text-gray-800 tracking-tight flex items-center justify-center leading-tight h-[40px] sm:h-[48px]"
         style={{ fontFamily: '"Geist", sans-serif' }}
       >
-        Un problema menos
+        Hazlo fácil
       </h1>
       <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
         Tu ropa limpia a un precio fijo
