@@ -183,13 +183,16 @@ const drillTransition = {
 
 const TypewriterTitle = () => {
   return (
-    <div className="w-full text-left pt-4 pb-4 select-none px-4" id="rotating-title-container">
+    <div className="w-full text-center pt-4 pb-4 select-none px-4" id="rotating-title-container">
       <h1 
         className="text-[28px] sm:text-[34px] font-semibold text-gray-800 tracking-tight leading-tight"
         style={{ fontFamily: '"Geist", sans-serif' }}
       >
-        Tu ropa limpia a un precio fijo
+        Tu ropa limpia
       </h1>
+      <p className="text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-1.5" style={{ fontFamily: '"Geist", sans-serif' }}>
+        A un precio fijo
+      </p>
     </div>
   );
 };
@@ -1159,21 +1162,7 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Checkmarks de inclusión */}
-            <div className="flex flex-col gap-2.5 mt-8 px-1 select-none">
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
-                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Entrega a domicilio incluido
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
-                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Lavado, secado, doblado incluido
-                </span>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
@@ -1194,7 +1183,7 @@ export default function Landing() {
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
               Empieza hoy
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
+            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
               Sin salir de casa
             </p>
           </div>
@@ -1310,8 +1299,8 @@ export default function Landing() {
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
               Recolección
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-medium px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ fontFamily: '"Geist", sans-serif', textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
-              Paseo de las Palmas 209, las Palmas
+            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ fontFamily: '"Geist", sans-serif', textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
+              Paseo de las Palmas 209
             </p>
           </div>
 
@@ -1770,7 +1759,7 @@ export default function Landing() {
                       {activeFormStep === 1 && "Tu cesto SOMOS te espera"}
                       {activeFormStep === 2 && "Tu dirección de entrega"}
                     </h2>
-                    <p className="text-gray-550 text-xs mt-0.5 font-medium">
+                    <p className="text-gray-550 text-xs mt-0.5 font-semibold">
                       {activeFormStep === 1 && "Pedirla toma menos de un minuto."}
                       {activeFormStep === 2 && "¿A dónde te llevamos tu cesto?"}
                     </p>
