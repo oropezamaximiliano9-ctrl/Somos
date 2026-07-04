@@ -1157,7 +1157,7 @@ export default function Landing() {
               {/* Texto descriptivo del cesto pegado a la parte inferior */}
               <div className="py-2.5 px-3.5 select-none shrink-0" id="cesto-description-text">
                 <p className="font-geist text-[#6A6A6A] text-[15px] font-medium text-center" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.5' }}>
-                  Toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>, sin importar peso o cantidad.
+                  Lavamos toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
                 </p>
               </div>
             </div>
