@@ -1162,7 +1162,27 @@ export default function Landing() {
               </div>
             </div>
 
-
+            {/* Checkmarks de inclusión */}
+            <div className="flex flex-col gap-2.5 mt-8 px-1 select-none">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
+                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  Entrega a domicilio (incluido)
+                </span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
+                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  Recolección en punto (incluido)
+                </span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Plus className="w-[18px] h-[18px] text-[#6A6A6A] shrink-0" />
+                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  Recolección a domicilio (+$25)
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
