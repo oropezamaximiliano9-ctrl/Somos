@@ -1134,46 +1134,52 @@ export default function Landing() {
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-0 sm:px-0 mt-6 mb-6 w-full">
-            <div id="basket-container" className="relative w-full h-[340px] flex flex-col bg-white border border-[#181818]/5 rounded-xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.03)]">
+            <div id="basket-container" className="relative w-full h-[300px] flex flex-col bg-white rounded-xl overflow-hidden">
               {/* Texto superior del cesto */}
               <div className="py-2.5 px-3.5 select-none shrink-0">
                 <span className="font-geist text-[#6A6A6A] text-[15px] font-medium text-center block w-full" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.5' }}>
-                  Cesto de capacidad semanal incluido
+                  Lavamos toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
                 </span>
               </div>
 
               {/* Imagen del cesto */}
-              <div className="relative w-full flex-1 px-3 select-none overflow-hidden bg-transparent flex items-center justify-center">
+              <div className="relative w-full flex-1 select-none overflow-hidden bg-transparent flex items-center justify-center">
                 <img 
                   src="https://i.ibb.co/VcVSqJbP/A5-DFA592-E652-4373-9358-BA9-DC228-E0-D7.webp" 
                   alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                  className="w-full h-full object-cover object-[center_60%] rounded-lg pointer-events-none select-none"
+                  className="w-full h-full object-cover object-[center_60%] pointer-events-none select-none"
                   onError={(e) => {
                     e.currentTarget.src = canvasLaundryBag;
                   }}
                 />
               </div>
 
-              {/* Texto descriptivo del cesto pegado a la parte inferior */}
-              <div className="py-2.5 px-3.5 select-none shrink-0" id="cesto-description-text">
-                <p className="font-geist text-[#6A6A6A] text-[15px] font-medium text-center" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.5' }}>
-                  Lavamos toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
-                </p>
-              </div>
+              {/* Espacio inferior vacío */}
             </div>
 
+            {/* Texto debajo del cesto */}
+            <p className="text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-4 text-left px-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+              Incluye
+            </p>
+
             {/* Checkmarks de inclusión */}
-            <div className="flex flex-col gap-2.5 mt-8 px-1 select-none">
+            <div className="flex flex-col gap-2.5 mt-3 px-1 select-none">
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
                 <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Entrega a domicilio (incluido)
+                  Cesto de capacidad semanal
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
                 <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Recolección en punto (incluido)
+                  Entrega a domicilio
+                </span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
+                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  Recolección en punto
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
