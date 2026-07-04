@@ -1157,36 +1157,39 @@ export default function Landing() {
               {/* Espacio inferior vacío */}
             </div>
 
-            {/* Texto debajo del cesto */}
-            <p className="text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-4 text-left px-1" style={{ fontFamily: '"Geist", sans-serif' }}>
+            {/* Texto de incluye */}
+            <p className="text-[17px] sm:text-[19px] text-[#6A6A6A] font-semibold font-geist text-center mt-4 mb-2 px-1" style={{ fontFamily: '"Geist", sans-serif' }}>
               Incluye
             </p>
 
-            {/* Checkmarks de inclusión */}
-            <div className="flex flex-col gap-2.5 mt-3 px-1 select-none">
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
-                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Cesto de capacidad semanal
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
-                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Entrega a domicilio
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-[18px] h-[18px] text-[#0f55d8] shrink-0" />
-                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Recolección en punto
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Plus className="w-[18px] h-[18px] text-[#6A6A6A] shrink-0" />
-                <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                  Recolección a domicilio (+$25)
-                </span>
+            {/* Tarjeta de beneficios */}
+            <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.03)] p-4 w-full border border-gray-100/50">
+              {/* Checkmarks de inclusión */}
+              <div className="flex flex-col gap-2.5 select-none text-left">
+                <div className="flex items-center gap-3">
+                  <div className="shrink-0 w-9 flex items-center justify-center">
+                    <Check className="w-[20px] h-[20px] text-[#0f55d8]" strokeWidth={3} />
+                  </div>
+                  <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    Cesto de capacidad semanal
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="shrink-0 w-9 flex items-center justify-center">
+                    <Check className="w-[20px] h-[20px] text-[#0f55d8]" strokeWidth={3} />
+                  </div>
+                  <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    Entrega a domicilio
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="shrink-0 w-9 flex items-center justify-center">
+                    <Check className="w-[20px] h-[20px] text-[#0f55d8]" strokeWidth={3} />
+                  </div>
+                  <span className="font-geist text-[#4A4A4A] text-[15px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    Recolección en punto
+                  </span>
+                </div>
               </div>
             </div>
           </div>
