@@ -174,7 +174,7 @@ export default function AssociateAssignPreRegistered() {
             } else {
                 navigate("/scanner");
             }
-         }} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center active:scale-95 transition-transform">
+         }} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center transition-transform">
            <ArrowLeft className="w-5 h-5 text-gray-700" />
          </button>
       </div>
@@ -208,7 +208,7 @@ export default function AssociateAssignPreRegistered() {
               <button
                  type="submit"
                  disabled={loading || !phoneSearch}
-                 className="w-full p-4 mt-6 rounded-2xl bg-[#0f55d8] text-white font-bold text-lg hover:bg-[#0d4bc0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center shadow-lg shadow-[#0f55d8]/20"
+                 className="w-full p-4 mt-6 rounded-2xl bg-[#0f55d8] text-white font-bold text-lg hover:bg-[#0d4bc0] transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center"
                >
                  {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Buscar"}
                </button>
@@ -237,7 +237,7 @@ export default function AssociateAssignPreRegistered() {
                         setScanning(true);
                       }
                     }}
-                    className="w-full bg-[#0f55d8] text-white p-5 rounded-2xl font-bold flex flex-col items-center justify-center shadow-lg shadow-[#0f55d8]/20 hover:-translate-y-1 hover:shadow-[#0f55d8]/30 active:scale-[0.98] transition-all disabled:opacity-50 text-lg cursor-pointer select-none outline-none"
+                    className="w-full bg-[#0f55d8] text-white p-5 rounded-2xl font-bold flex flex-col items-center justify-center hover:-translate-y-1 hover:/30 transition-all disabled:opacity-50 text-lg cursor-pointer select-none outline-none"
                   >
                     {prefilledBagId ? (
                       <div className="flex flex-col items-center gap-0.5">
@@ -251,7 +251,7 @@ export default function AssociateAssignPreRegistered() {
                   {prefilledBagId && (
                     <button
                       onClick={() => setScanning(true)}
-                      className="w-full py-4 mt-3 rounded-2xl border border-dashed border-gray-300 text-gray-500 font-bold text-sm hover:bg-gray-50 hover:text-gray-750 active:scale-95 transition-all outline-none flex items-center justify-center gap-2"
+                      className="w-full py-4 mt-3 rounded-2xl border border-dashed border-gray-300 text-gray-500 font-bold text-sm hover:bg-gray-50 hover:text-gray-750 transition-all outline-none flex items-center justify-center gap-2"
                     >
                       <Camera className="w-4 h-4" />
                       <span>Escanear otra bolsa</span>
@@ -265,14 +265,14 @@ export default function AssociateAssignPreRegistered() {
         {scanning && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex-1 flex flex-col pt-6 h-full pb-6">
              <div className="mb-6 text-center shrink-0">
-                <div className="inline-flex w-16 h-16 bg-blue-50 rounded-full items-center justify-center mb-4 border border-blue-100 shadow-sm">
+                <div className="inline-flex w-16 h-16 bg-blue-50 rounded-full items-center justify-center mb-4 border border-blue-100">
                    <Camera className="w-8 h-8 text-blue-600" />
                 </div>
                 <h2 className="text-2xl font-bold">Escanear Bolsa</h2>
                 <p className="text-gray-500 text-sm mt-1">Escanea el código QR de una bolsa vacía para asignársela a {foundUser?.name.split(' ')[0]}.</p>
              </div>
 
-             <div className="flex-1 w-full bg-black rounded-none overflow-hidden relative shadow-2xl">
+             <div className="flex-1 w-full bg-black rounded-none overflow-hidden relative">
                {loading && (
                  <div className="absolute inset-0 z-10 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                    <Loader2 className="w-8 h-8 text-white animate-spin" />

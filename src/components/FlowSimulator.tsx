@@ -429,7 +429,7 @@ export default function FlowSimulator() {
                 <button
                   onClick={runStep1}
                   disabled={loading}
-                  className="text-[10px] font-bold px-2.5 py-1 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white rounded-lg transition-colors flex items-center gap-1 active:scale-95 disabled:opacity-45 cursor-pointer select-none"
+                  className="text-[10px] font-bold px-2.5 py-1 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white rounded-lg transition-colors flex items-center gap-1 disabled:opacity-45 cursor-pointer select-none"
                 >
                   <span>Pre-registrar</span>
                   <ArrowRight className="w-2.5 h-2.5" />

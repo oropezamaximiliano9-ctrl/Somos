@@ -1,8 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { QrCode, ClipboardList, CheckCircle2, ChevronDown, ChevronsDown, ArrowDown, Sparkles, Loader2, ArrowRight, Package, Clock, Plus, Minus, Info, Shirt, User, Phone, MapPin, Truck, Gift, Map, Building, Banknote, Coins, DollarSign, Tag, ShoppingBag, X, FileText, Car, Star, BadgeCheck, Award, Trophy, Check, CheckCheck, CheckCircle, CheckSquare, Compass, Navigation } from "lucide-react";
+import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
-import { motion, AnimatePresence } from "motion/react";
 import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs, updateDoc, setDoc, query, where } from "firebase/firestore";
@@ -14,7 +13,7 @@ const ORIGEN_LAVANDERIA = { lat: 18.1372216, lng: -94.4771462 };
 const AnimatedTruck = () => (
   <div className="relative w-16 h-16 flex items-center justify-center mb-1">
     {/* Clean gradient background pulse */}
-    <motion.div 
+    <div 
       className="absolute inset-0 bg-blue-50/60 rounded-full -z-10"
       animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.7, 0.3] }}
       transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
@@ -22,20 +21,16 @@ const AnimatedTruck = () => (
     
     {/* Micro motion speed lines behind truck */}
     <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 pt-1">
-      <motion.div 
-        className="w-4 h-1 bg-gradient-to-r from-blue-100 to-[#0f55d8]/40 rounded-full"
+      <div 
+        className="w-4 h-1 bg-[#0f55d8]/40 rounded-full"
         animate={{ x: [0, -15], opacity: [0, 0.8, 0], scaleX: [0.6, 1, 0.4] }}
         transition={{ repeat: Infinity, duration: 1.2, ease: "easeOut" }}
       />
-      <motion.div 
-        className="w-3 h-[3px] bg-gradient-to-r from-blue-100 to-[#0f55d8]/30 rounded-full"
-        animate={{ x: [3, -12], opacity: [0, 0.7, 0], scaleX: [0.5, 1, 0.3] }}
-        transition={{ repeat: Infinity, duration: 0.9, ease: "easeOut", delay: 0.3 }}
-      />
+      <div className="w-3 h-[3px] bg-[#0f55d8]/30 rounded-full " />
     </div>
 
     {/* Elegant Truck Icon with bobbing effect */}
-    <motion.div
+    <div
       animate={{ 
         y: [0, -2, 0, -1, 0],
         rotate: [0, 1, -1, 0]
@@ -46,28 +41,20 @@ const AnimatedTruck = () => (
         ease: "easeInOut" 
       }}
     >
-      <Truck className="w-8 h-8 text-[#0f55d8] filter drop-shadow-[0_2px_4px_rgba(15,85,216,0.15)]" />
-    </motion.div>
+      <Truck className="w-8 h-8 text-[#0f55d8]" />
+    </div>
   </div>
 );
 
 const AnimatedClock = () => (
   <div className="relative w-16 h-16 flex items-center justify-center mb-1">
     {/* Glowing spinning aura ring */}
-    <motion.div 
-      className="absolute inset-1 border border-dashed border-[#0f55d8]/20 rounded-full -z-10"
-      animate={{ rotate: 360 }}
-      transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-    />
+    <div className="absolute inset-1 border border-dashed border-[#0f55d8]/20 rounded-full -z-10 -slow" />
     
-    <motion.div 
-      className="absolute inset-0 bg-blue-50/60 rounded-full -z-10"
-      animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.6, 0.4] }}
-      transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-    />
+    <div className="absolute inset-0 bg-blue-50/60 rounded-full -z-10 " />
 
     {/* Beautifully rotating clock face representation */}
-    <motion.div
+    <div
       animate={{ 
         scale: [1, 1.04, 1],
         rotate: [0, 3, -3, 0]
@@ -79,29 +66,21 @@ const AnimatedClock = () => (
       }}
       className="relative flex items-center justify-center"
     >
-      <Clock className="w-8 h-8 text-[#0f55d8] filter drop-shadow-[0_2px_4px_rgba(15,85,216,0.15)]" />
-    </motion.div>
+      <Clock className="w-8 h-8 text-[#0f55d8]" />
+    </div>
   </div>
 );
 
 const AnimatedLocation = () => (
   <div className="relative w-16 h-16 flex items-center justify-center mb-1">
     {/* Glowing background pulsing aura */}
-    <motion.div 
-      className="absolute inset-0 bg-blue-50/70 rounded-full -z-10"
-      animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.8, 0.3] }}
-      transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
-    />
+    <div className="absolute inset-0 bg-blue-50/70 rounded-full -z-10 -fast" />
 
     {/* Location ripple rings underneath */}
-    <motion.div 
-      className="absolute bottom-2 w-8 h-2 bg-blue-500/10 rounded-full"
-      animate={{ scale: [0.7, 1.5], opacity: [0.8, 0] }}
-      transition={{ repeat: Infinity, duration: 1.8, ease: "easeOut" }}
-    />
+    <div className="absolute bottom-2 w-8 h-2 bg-blue-500/10 rounded-full " />
 
     {/* Elegant Pin bounce animation */}
-    <motion.div
+    <div
       animate={{ 
         y: [-3, 3, -3],
       }}
@@ -111,39 +90,27 @@ const AnimatedLocation = () => (
         ease: "easeInOut" 
       }}
     >
-      <MapPin className="w-8 h-8 text-[#0f55d8] filter drop-shadow-[0_2.5px_5px_rgba(15,85,216,0.2)]" />
-    </motion.div>
+      <MapPin className="w-8 h-8 text-[#0f55d8]" />
+    </div>
   </div>
 );
 
 const AnimatedMoney = () => (
   <div className="relative w-16 h-16 flex items-center justify-center mb-1">
     {/* Glowing background pulsing aura */}
-    <motion.div 
-      className="absolute inset-0 bg-emerald-50/80 rounded-full -z-10"
-      animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.8, 0.3] }}
-      transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
-    />
+    <div className="absolute inset-0 bg-emerald-50/80 rounded-full -z-10 -fast" />
 
     {/* Floating tiny shiny sparkles */}
-    <motion.div 
-      className="absolute top-2 right-2 flex items-center justify-center"
-      animate={{ scale: [0, 1.2, 0], opacity: [0, 1, 0], y: [0, -6] }}
-      transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-    >
+    <div className="absolute top-2 right-2 flex items-center justify-center ">
       <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-    </motion.div>
+    </div>
 
-    <motion.div 
-      className="absolute bottom-1 left-2 flex items-center justify-center"
-      animate={{ scale: [0, 1, 0], opacity: [0, 0.9, 0], y: [0, -4] }}
-      transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut", delay: 0.6 }}
-    >
+    <div className="absolute bottom-1 left-2 flex items-center justify-center ">
       <Sparkles className="w-2.5 h-2.5 text-emerald-400" />
-    </motion.div>
+    </div>
 
     {/* Premium Banknote cash icon floating and tilting */}
-    <motion.div
+    <div
       animate={{ 
         y: [-2, 2, -2],
         rotate: [-3, 3, -3],
@@ -155,8 +122,8 @@ const AnimatedMoney = () => (
         ease: "easeInOut" 
       }}
     >
-      <Banknote className="w-8 h-8 text-emerald-600 filter drop-shadow-[0_2.5px_5px_rgba(16,185,129,0.2)]" />
-    </motion.div>
+      <Banknote className="w-8 h-8 text-emerald-600" />
+    </div>
   </div>
 );
 
@@ -185,12 +152,12 @@ const TypewriterTitle = () => {
   return (
     <div className="w-full text-center pt-4 pb-4 select-none px-4" id="rotating-title-container">
       <h1 
-        className="text-[28px] sm:text-[34px] font-semibold text-gray-800 tracking-tight leading-tight"
-        style={{ fontFamily: '"Geist", sans-serif' }}
+        className="text-[28px] sm:text-[34px] font-semibold text-gray-800 tracking-tight leading-tight font-geist"
+       
       >
         Tu ropa limpia
       </h1>
-      <p className="text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-1.5" style={{ fontFamily: '"Geist", sans-serif' }}>
+      <p className="text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-1.5">
         A un precio fijo
       </p>
     </div>
@@ -1134,11 +1101,11 @@ export default function Landing() {
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-0 sm:px-0 mt-6 mb-6 w-full">
-            <div className="rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.03)] border border-gray-100/50 overflow-hidden bg-white">
+            <div className="rounded-xl border border-gray-100/50 overflow-hidden bg-white">
               <div id="basket-container" className="relative w-full h-[300px] flex flex-col">
                 {/* Texto superior del cesto */}
                 <div className="py-2.5 px-3.5 select-none shrink-0">
-                  <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ fontFamily: '"Geist", sans-serif', lineHeight: '1.5' }}>
+                  <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ lineHeight: '1.5' }}>
                     Toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
                   </span>
                 </div>
@@ -1149,6 +1116,8 @@ export default function Landing() {
                     src="https://i.ibb.co/VcVSqJbP/A5-DFA592-E652-4373-9358-BA9-DC228-E0-D7.webp" 
                     alt="Cesto de lona premium SOMOS en ambiente real minimal" 
                     className="w-full h-full object-cover object-[center_60%] pointer-events-none select-none"
+                    fetchPriority="high"
+                    decoding="sync"
                     onError={(e) => {
                       e.currentTarget.src = canvasLaundryBag;
                     }}
@@ -1161,27 +1130,27 @@ export default function Landing() {
                 {/* Textos de inclusión */}
                 <div className="flex flex-col gap-2.5 select-none text-left">
                   <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-9 flex items-center justify-center">
-                      <Check className="w-[18px] h-[18px] text-[#0f55d8]" strokeWidth={3} />
+                    <div className="shrink-0 w-5 h-5 ml-2 mr-2 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu">
+                      <Check className="w-3 h-3 text-[#0f55d8]" strokeWidth={2.5} />
                     </div>
-                    <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
                       Cesto de capacidad semanal
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-9 flex items-center justify-center">
-                      <Check className="w-[18px] h-[18px] text-[#0f55d8]" strokeWidth={3} />
+                    <div className="shrink-0 w-5 h-5 ml-2 mr-2 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu">
+                      <Check className="w-3 h-3 text-[#0f55d8]" strokeWidth={2.5} />
                     </div>
-                    <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Entrega a domicilio
+                    <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
+                      Recolección en punto
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-9 flex items-center justify-center">
-                      <Check className="w-[18px] h-[18px] text-[#0f55d8]" strokeWidth={3} />
+                    <div className="shrink-0 w-5 h-5 ml-2 mr-2 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu">
+                      <Check className="w-3 h-3 text-[#0f55d8]" strokeWidth={2.5} />
                     </div>
-                    <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
-                      Recolección en punto
+                    <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
+                      Entrega a domicilio
                     </span>
                   </div>
                 </div>
@@ -1195,35 +1164,29 @@ export default function Landing() {
 
       {/* Sección Exclusiva: El cesto SOMOS */}
       <section className="w-full pt-4 pb-12 flex flex-col justify-start bg-transparent snap-start snap-always" id="conoce-tu-cesto-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-full max-w-sm mx-auto pt-0 font-sans"
-        >
+        <div className="relative z-10 w-full max-w-sm mx-auto pt-0 font-sans ">
           {/* Título de la sección */}
           <div className="w-full pb-4">
-            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist">
               Empieza hoy
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist whitespace-nowrap" style={{ fontFamily: '"Geist", sans-serif', marginTop: '6px' }}>
+            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist whitespace-nowrap" style={{ marginTop: '6px' }}>
               Sin salir de casa
             </p>
           </div>
 
           {/* Tarjeta Unica de Pasos */}
           <div className="px-0 sm:px-0 mt-6 w-full">
-            <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_1.5px_4px_rgba(0,0,0,0.04)] text-left relative overflow-hidden">
+            <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 text-left relative overflow-hidden">
               <div className="flex flex-col">
                 {/* Item 1 */}
                 <div className="flex items-start gap-3 pb-3">
-                  <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>1</span>
+                  <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">1</span>
                   <div className="space-y-0.5 pt-1.5">
-                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
                       Pide nuestro cesto gratis
                     </h4>
-                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                    <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug">
                       Envío sin costo
                     </p>
                   </div>
@@ -1235,12 +1198,12 @@ export default function Landing() {
                   <div className="border-t border-[#EDE9E0] w-full" />
 
                   <div className="flex items-start gap-3 py-3">
-                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>2</span>
+                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">2</span>
                     <div className="space-y-0.5 pt-1.5">
-                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
                         Llénalo en casa
                       </h4>
-                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug">
                         A tu propio ritmo
                       </p>
                     </div>
@@ -1253,12 +1216,12 @@ export default function Landing() {
                   <div className="border-t border-[#EDE9E0] w-full" />
 
                   <div className="flex items-start gap-3 pt-3">
-                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none" style={{ fontFamily: '"Inter", sans-serif' }}>3</span>
+                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">3</span>
                     <div className="space-y-0.5 pt-1.5">
-                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
                         Déjalo en el punto de recolección
                       </h4>
-                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug">
                         Sin pesar ni esperar
                       </p>
                     </div>
@@ -1272,8 +1235,8 @@ export default function Landing() {
               <div className="absolute top-0 left-0 right-0 h-5 bg-white border-x border-[#eaeaea] z-0 pointer-events-none" />
 
               <div 
-                style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
-                className="w-full bg-[#f8fbff] border border-[#0f55d8]/30 rounded-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 shadow-[0_2px_8px_rgba(15,85,216,0.08)] mt-0 mb-0 text-left flex items-start gap-3 select-none transform-gpu relative z-10 overflow-hidden" 
+               
+                className="w-full bg-[#f8fbff] border border-[#0f55d8]/30 rounded-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 mt-0 mb-0 text-left flex items-start gap-3 select-none transform-gpu relative z-10 overflow-hidden" 
                 id="flow-reward-banner"
               >
                 <div 
@@ -1282,16 +1245,16 @@ export default function Landing() {
                 >
                   <div 
                     className="w-7 h-7 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu"
-                    style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
+                   
                   >
                     <Check className="w-[15px] h-[15px]" strokeWidth={2.5} />
                   </div>
                 </div>
                 <div className="flex flex-col text-left space-y-0.5 pt-1.5">
-                  <p className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  <p className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight">
                     Tu ropa limpia a domicilio
                   </p>
-                  <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug">
                     Entrega al día siguiente sin costo
                   </p>
                 </div>
@@ -1302,8 +1265,8 @@ export default function Landing() {
           <div className="mt-10 px-4 sm:px-0">
             <button 
               onClick={openBottomSheet}
-              className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none shadow-[0_5px_15px_rgba(15,85,216,0.15)] disabled:opacity-85 hover:brightness-110 active:scale-[0.98] transition-all"
-              style={{ fontFamily: '"Geist", sans-serif' }}
+              className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none disabled:opacity-85 hover:brightness-110  "
+             
             >
               <div className="flex items-center space-x-2">
                 <span>Quiero mi cesto</span>
@@ -1311,7 +1274,7 @@ export default function Landing() {
               </div>
             </button>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Nueva Sección: Ubicación Dinámica Interactiva sin Clave de API */}
@@ -1320,10 +1283,10 @@ export default function Landing() {
           
           {/* Header directly in the layout, extremely bold and crisp */}
           <div id="location-editorial-head" className="w-full pb-4">
-            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist">
               Recolección
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ fontFamily: '"Geist", sans-serif', textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
+            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
               Paseo de las Palmas 209
             </p>
           </div>
@@ -1336,7 +1299,7 @@ export default function Landing() {
               href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative w-full h-[300px] border border-slate-200/55 rounded-lg overflow-hidden bg-[#f4f5f5] shadow-sm flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:shadow-md transition-shadow" 
+              className="relative w-full h-[300px] border border-slate-200/55 rounded-lg overflow-hidden bg-[#f4f5f5] flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:" 
               id="location-dynamic-map-frame-container"
             >
               {/* Abstract Buildings */}
@@ -1380,33 +1343,32 @@ export default function Landing() {
               
               {/* Lions Boot Camp */}
               <div className="absolute top-[18%] left-[10%] flex items-center z-10 transition-transform cursor-pointer">
-                <span translate="no" className="text-black text-[12px] font-medium mr-2 tracking-tight drop-shadow-sm notranslate">Lions Boot Camp</span>
-                <div className="w-[28px] h-[28px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-[2.5px] border-white shadow-sm">
+                <span translate="no" className="text-black text-[12px] font-medium mr-2 tracking-tight notranslate">Lions Boot Camp</span>
+                <div className="w-[28px] h-[28px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-[2.5px] border-white">
                   <div className="w-[8px] h-[8px] bg-white rounded-full"></div>
                 </div>
               </div>
 
               {/* Red Pin - Location */}
-              <motion.div 
-                className="absolute top-[24%] left-[40%] z-20 drop-shadow-md cursor-pointer origin-bottom"
+              <div 
+                className="absolute top-[24%] left-[40%] z-20 drop- cursor-pointer origin-bottom"
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                whileHover={{ scale: 1.15 }}
               >
                 <div className="text-[#ea4335] relative">
-                  <svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-sm">
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="drop-">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
                   <div className="absolute top-[9px] left-1/2 w-3 h-3 bg-[#a50f03] rounded-full -translate-x-1/2 opacity-30"></div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* OXXO Santa Isabel */}
-              <div className="absolute bottom-[2%] right-[25%] flex flex-col items-center z-10 transition-transform hover:-translate-y-1 cursor-pointer">
-                <div className="bg-[#9ca3af] w-[26px] h-[26px] rounded-[6px] border-2 border-white shadow-sm flex items-center justify-center text-white mb-1">
+              <div className="absolute bottom-[2%] right-[25%] flex flex-col items-center z-10 transition-transform cursor-pointer">
+                <div className="bg-[#9ca3af] w-[26px] h-[26px] rounded-[6px] border-2 border-white flex items-center justify-center text-white mb-1">
                   <ShoppingBag size={14} strokeWidth={2.5}/>
                 </div>
-                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight drop-shadow-sm notranslate">OXXO Santa Isabel</span>
+                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight notranslate">OXXO Santa Isabel</span>
               </div>
 
             </a>
@@ -1419,8 +1381,8 @@ export default function Landing() {
                 type="button"
                 onClick={handleNavigationAndGPS}
                 disabled={isNavigatingGPS}
-                className="w-full py-4 bg-[#0f55d8] hover:bg-[#0d4bc0] active:scale-[0.98] text-white rounded-2xl font-bold text-lg font-geist transition-all flex items-center justify-center gap-2 select-none shadow-[0_5px_20px_rgba(15,85,216,0.18)] cursor-pointer disabled:opacity-85"
-                style={{ fontFamily: '"Geist", sans-serif' }}
+                className="w-full py-4 bg-[#0f55d8] hover:bg-[#0d4bc0]  text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none cursor-pointer disabled:opacity-85"
+               
                 id="location-cta-navigation-button"
               >
                 {isNavigatingGPS ? (
@@ -1431,7 +1393,7 @@ export default function Landing() {
               </button>
 
               {/* Información rápida en una sola línea */}
-              <div className="w-full flex flex-row items-center justify-between mt-3.5 px-1 select-none text-[15px] sm:text-[16px] font-geist text-[#6A6A6A] font-medium leading-snug" style={{ fontFamily: '"Geist", sans-serif' }} id="quick-info-container">
+              <div className="w-full flex flex-row items-center justify-between mt-3.5 px-1 select-none text-[15px] sm:text-[16px] font-geist text-[#6A6A6A] font-medium leading-snug" id="quick-info-container">
                 {/* Horario */}
                 <div id="quick-info-horario">
                   Horario: 9 am - 6 pm
@@ -1444,7 +1406,7 @@ export default function Landing() {
                     href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#6A6A6A] underline hover:no-underline font-bold active:scale-[0.98] transition-all inline-block"
+                    className="text-[#6A6A6A] underline hover:no-underline font-bold  inline-block"
                     id="row-whatsapp-contact"
                   >
                     WhatsApp
@@ -1454,7 +1416,7 @@ export default function Landing() {
             </div>
 
             {isNavigatingGPS && gpsLoadingStep && (
-              <div className="w-full p-3 bg-blue-50/60 border border-blue-100 rounded-2xl text-center text-[12px] text-[#0f55d8] font-bold animate-pulse flex items-center justify-center gap-2 select-none">
+              <div className="w-full p-3 bg-blue-50/60 border border-blue-100 rounded-2xl text-center text-[12px] text-[#0f55d8] font-bold flex items-center justify-center gap-2 select-none">
                 <span className="w-2 h-2 rounded-full bg-[#0f55d8]" />
                 <span>{gpsLoadingStep}</span>
               </div>
@@ -1502,9 +1464,9 @@ export default function Landing() {
         {/* Form Inner Content Scroller with static height */}
         <div className="w-full relative mt-3">
           <div className="form-content-inner w-full flex flex-col">
-            <AnimatePresence mode="wait" initial={false}>
+            
               {registered ? (
-                <motion.div 
+                <div 
                   key="step-registered"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1554,7 +1516,7 @@ export default function Landing() {
                       <button
                         type="button"
                         onClick={() => setIsBottomSheetOpen(false)}
-                        className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all mt-4 select-none active:scale-[0.98]"
+                        className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm mt-4 select-none "
                       >
                         Entendido, ¡gracias!
                       </button>
@@ -1590,15 +1552,15 @@ export default function Landing() {
                        <button
                          type="button"
                          onClick={() => setIsBottomSheetOpen(false)}
-                         className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all mt-4 select-none active:scale-[0.98]"
+                         className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm mt-4 select-none "
                        >
                          Listo, ¡muchas gracias!
                        </button>
                     </>
                   )}
-                </motion.div>
+                </div>
               ) : formStep === "verifying" ? (
-                <motion.div
+                <div
                   key="step-verifying"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1608,33 +1570,25 @@ export default function Landing() {
                 >
                   <div className="relative w-20 h-20 flex items-center justify-center mb-6">
                     {/* Animated pulsing target ring representing the routing check */}
-                    <motion.div
-                      className="absolute inset-0 border-[2.5px] border-dashed border-[#0f55d8]/40 rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    />
-                    <motion.div
-                      className="absolute inset-2 bg-[#0f55d8]/5 rounded-full"
-                      animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                    <MapPin className="w-8 h-8 text-[#0f55d8] relative z-10 animate-bounce" />
+                    <div className="absolute inset-0 border-[2.5px] border-dashed border-[#0f55d8]/40 rounded-full -slower" />
+                    <div className="absolute inset-2 bg-[#0f55d8]/5 rounded-full " />
+                    <MapPin className="w-8 h-8 text-[#0f55d8] relative z-10 " />
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-1.5 font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-1.5 font-geist">
                     Verificando Cobertura
                   </h3>
                   <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-5">
                     Análisis de Ruta en Tiempo Real
                   </p>
 
-                  <div className="w-full max-w-sm space-y-3 bg-slate-50 border border-slate-150 rounded-xl p-4 text-left font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>
+                  <div className="w-full max-w-sm space-y-3 bg-slate-50 border border-slate-150 rounded-xl p-4 text-left font-geist">
                     {/* Step 1 */}
                     <div className="flex items-center gap-3">
                       {verificationProgress >= 1 ? (
                         <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                       ) : (
-                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0" />
+                        <Loader2 className="w-4 h-4 text-blue-500 shrink-0" />
                       )}
                       <p className={`text-xs font-semibold ${verificationProgress >= 1 ? 'text-emerald-700' : 'text-slate-600'}`}>
                         Geolocalizando dirección ({addressColonia})...
@@ -1646,7 +1600,7 @@ export default function Landing() {
                       {verificationProgress >= 2 ? (
                         <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                       ) : verificationProgress === 1 ? (
-                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0" />
+                        <Loader2 className="w-4 h-4 text-blue-500 shrink-0" />
                       ) : (
                         <div className="w-4 h-4 rounded-full border border-slate-300 shrink-0" />
                       )}
@@ -1660,7 +1614,7 @@ export default function Landing() {
                       {verificationProgress >= 3 ? (
                         <CheckCircle className="w-4 h-4 text-[#0f55d8] shrink-0" />
                       ) : verificationProgress === 2 ? (
-                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0" />
+                        <Loader2 className="w-4 h-4 text-blue-500 shrink-0" />
                       ) : (
                         <div className="w-4 h-4 rounded-full border border-slate-300 shrink-0" />
                       )}
@@ -1673,7 +1627,7 @@ export default function Landing() {
                   </div>
 
                   <div className="w-full bg-slate-200 h-1 rounded-full overflow-hidden mt-6 max-w-sm">
-                    <motion.div
+                    <div
                       className="bg-[#0f55d8] h-full"
                       initial={{ width: "0%" }}
                       animate={{
@@ -1685,17 +1639,17 @@ export default function Landing() {
                       transition={{ duration: 0.8 }}
                     />
                   </div>
-                </motion.div>
+                </div>
               ) : formStep === "not_eligible_result" ? (
-                <motion.div 
+                <div 
                   key="step-not-eligible"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
-                  className="text-center flex flex-col items-center justify-center w-full py-4 animate-in fade-in zoom-in-95 duration-200"
+                  className="text-center flex flex-col items-center justify-center w-full py-4 zoom-in-95 duration-200"
                 >
-                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 shadow-sm shrink-0">
+                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 shrink-0">
                     <MapPin className="w-6 h-6 text-blue-500" />
                   </div>
 
@@ -1711,10 +1665,10 @@ export default function Landing() {
                     type="button"
                     onClick={handleConfirmWaitlist}
                     disabled={loading}
-                    className="w-full py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.95] disabled:opacity-50 flex items-center justify-center gap-1.5 pointer-events-auto"
-                    style={{ fontFamily: '"Geist", sans-serif' }}
+                    className="w-full py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist disabled:opacity-50 flex items-center justify-center gap-1.5 pointer-events-auto"
+                   
                   >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                    {loading ? <Loader2 className="w-4 h-4 " /> : (
                       <>
                         <span>Quiero mi cesto</span>
                         <ArrowRight className="w-4 h-4" />
@@ -1726,13 +1680,13 @@ export default function Landing() {
                     type="button"
                     onClick={() => { setDirection("backward"); setFormStep(1); setActiveFormStep(2); setTimeout(() => { coloniaInputRef.current?.focus(); }, 40); }}
                     className="text-gray-400 hover:text-gray-650 text-xs font-semibold mt-3.5 font-geist transition-colors text-center pointer-events-auto w-full block"
-                    style={{ fontFamily: '"Geist", sans-serif' }}
+                   
                   >
                     Probar con otra dirección
                   </button>
-                </motion.div>
+                </div>
               ) : (
-                <motion.div
+                <div
                   key="active-steps-slider"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1763,13 +1717,8 @@ export default function Landing() {
                           className="h-5 flex-1 relative group focus:outline-none pointer-events-auto"
                           title={`Ir al Paso ${step}`}
                         >
-                          <div className="h-1.5 w-full bg-slate-105 rounded-full overflow-hidden transition-all duration-300 group-hover:bg-slate-200">
-                            <motion.div
-                              className="h-full bg-[#0f55d8] rounded-full"
-                              initial={{ width: isActive ? "100%" : "0%" }}
-                              animate={{ width: isActive ? "100%" : "0%" }}
-                              transition={{ duration: step === 1 ? 0 : 0.35, ease: "easeInOut" }}
-                            />
+                          <div className="h-1.5 w-full bg-slate-105 rounded-full overflow-hidden group-hover:bg-slate-200">
+                            <div className={`h-full bg-[#0f55d8] rounded-full ${step === 1 ? "" : ""}`} style={{ width: isActive ? "100%" : "0%" }} />
                           </div>
                           <span className="sr-only">Paso {step}</span>
                         </button>
@@ -1825,7 +1774,7 @@ export default function Landing() {
                                       phoneInputRef.current?.focus();
                                     }
                                   }}
-                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
                                   placeholder=""
                                 />
                               </div>
@@ -1834,17 +1783,17 @@ export default function Landing() {
                             <div className="space-y-1">
                               <div className="flex justify-between items-center ml-0.5">
                                 <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Teléfono (WhatsApp)</label>
-                                <span className={`text-[11px] font-semibold tracking-wider transition-colors ${
+                                <span className={`text-[11px] font-semibold tracking-wider transition-colors font-geist ${
                                   phone.length === 10 
                                     ? "text-emerald-600 font-bold" 
                                     : phone.length > 10 
                                       ? "text-red-600 font-bold" 
                                       : "text-gray-400"
-                                }`} style={{ fontFamily: '"Geist", sans-serif' }}>
+                                }`}>
                                   {phone.length}/10
                                 </span>
                               </div>
-                              <div className={`relative ${isShaking ? "animate-shake" : ""}`}>
+                              <div className={`relative ${isShaking ? "" : ""}`}>
                                 <Phone className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isPhoneError ? "text-red-500" : "text-slate-400"}`} />
                                 <input
                                   ref={phoneInputRef}
@@ -1860,7 +1809,7 @@ export default function Landing() {
                                       goToStep2(e);
                                     }
                                   }}
-                                  className={`w-full pl-9 pr-4 py-2 rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 ${
+                                  className={`w-full pl-9 pr-4 py-2 rounded-xl outline-none font-semibold text-base focus:ring-2 ${
                                     isPhoneError
                                       ? "bg-red-50/30 border border-red-300 text-red-900 focus:border-red-500 focus:ring-red-100"
                                       : "bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white focus:ring-blue-100 placeholder:text-slate-400"
@@ -1873,9 +1822,9 @@ export default function Landing() {
  
                           <button
                             type="submit"
-                            className="w-full py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-md shadow-[#0f55d8]/10 cursor-pointer"
+                            className="w-full py-2.5 rounded-xl bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-extrabold text-sm flex items-center justify-center gap-1.5/10 cursor-pointer"
                           >
-                            <span className="font-geist" style={{ fontFamily: '"Geist", sans-serif' }}>Continuar</span>
+                            <span className="font-geist">Continuar</span>
                             <ArrowRight className="w-4 h-4" />
                           </button>
                         </form>
@@ -1886,13 +1835,9 @@ export default function Landing() {
                         <form onSubmit={submitStep2AndVerify} className="space-y-4 flex flex-col">
                           
                           {gpsAutofillError && (
-                            <motion.p 
-                              initial={{ opacity: 0, y: -5 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="text-red-500 text-[11px] font-bold text-center leading-tight bg-red-50 border border-red-100 py-1.5 px-3 rounded-lg"
-                            >
+                            <p className="text-red-500 text-[11px] font-bold text-center leading-tight bg-red-50 border border-red-100 py-1.5 px-3 rounded-lg ">
                               {gpsAutofillError}
-                            </motion.p>
+                            </p>
                           )}
 
                           <div className="space-y-3">
@@ -1900,7 +1845,7 @@ export default function Landing() {
                               <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Calle y número</label>
                               <div className="relative">
                                 {gpsAutofillLoading ? (
-                                  <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
+                                  <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 " />
                                 ) : (
                                   <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 )}
@@ -1918,7 +1863,7 @@ export default function Landing() {
                                       coloniaInputRef.current?.focus();
                                     }
                                   }}
-                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
                                   placeholder=""
                                 />
                               </div>
@@ -1928,7 +1873,7 @@ export default function Landing() {
                               <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider ml-0.5">Colonia</label>
                               <div className="relative">
                                 {gpsAutofillLoading ? (
-                                  <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
+                                  <Loader2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 " />
                                 ) : (
                                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 )}
@@ -1946,7 +1891,7 @@ export default function Landing() {
                                       submitStep2AndVerify(e);
                                     }
                                   }}
-                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl transition-all outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
+                                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-800 focus:border-[#0f55d8] focus:bg-white rounded-xl outline-none font-semibold text-base focus:ring-2 focus:ring-blue-100 placeholder:text-slate-400"
                                   placeholder=""
                                 />
                               </div>
@@ -1957,18 +1902,18 @@ export default function Landing() {
                             <button
                               type="button"
                               onClick={() => { setFormError(null); setDirection("backward"); setActiveFormStep(1); }}
-                              className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-sm font-geist transition-all active:scale-[0.95] shrink-0"
-                              style={{ fontFamily: '"Geist", sans-serif' }}
+                              className="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-sm font-geist shrink-0"
+                             
                             >
                               Atrás
                             </button>
                             <button
                               type="submit"
                               disabled={loading}
-                              className="flex-1 py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist transition-all active:scale-[0.95] disabled:opacity-50 flex items-center justify-center gap-1.5"
-                              style={{ fontFamily: '"Geist", sans-serif' }}
+                              className="flex-1 py-2.5 rounded-xl bg-[#0f55d8] text-white font-extrabold text-sm font-geist disabled:opacity-50 flex items-center justify-center gap-1.5"
+                             
                             >
-                              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                              {loading ? <Loader2 className="w-4 h-4 " /> : (
                                 <>
                                   <span>Quiero mi cesto</span>
                                   <ArrowRight className="w-4 h-4" />
@@ -1980,9 +1925,9 @@ export default function Landing() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
+            
           </div>
         </div>
       </div>

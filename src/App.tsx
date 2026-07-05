@@ -94,7 +94,7 @@ function MainLayout() {
             {(role === 'associate' || role === 'admin') && (
                <button 
                  onClick={() => { setRole('customer'); setIsMenuOpen(false); navigate('/'); }}
-                 className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 uppercase tracking-wider text-slate-600 transition-all duration-200 active:scale-95"
+                 className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 uppercase tracking-wider text-slate-600 transition-all duration-200"
                >
                  Salir
                </button>
@@ -102,7 +102,7 @@ function MainLayout() {
             {role === 'associate' && (
                <button 
                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                 className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors active:scale-95 animate-pulse"
+                 className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors animate-pulse"
                  title="Opciones de Asociado (Simulador)"
                >
                  <MoreVertical className="w-4 h-4" />
@@ -146,7 +146,7 @@ function MainLayout() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 240 }}
-              className="fixed right-0 top-0 bottom-0 w-[88%] sm:w-[380px] bg-white border-l border-slate-100 shadow-2xl z-[101] flex flex-col h-full text-slate-800 overflow-hidden"
+              className="fixed right-0 top-0 bottom-0 w-[88%] sm:w-[380px] bg-white border-l border-slate-100 z-[101] flex flex-col h-full text-slate-800 overflow-hidden"
             >
               {/* Encabezado del menú */}
               <div className="flex items-center justify-between p-4 border-b border-slate-100 shrink-0 select-none">
@@ -156,7 +156,7 @@ function MainLayout() {
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-400 hover:text-slate-700 transition-all active:scale-90 cursor-pointer"
+                  className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-50 border border-slate-100 text-slate-400 hover:text-slate-700 transition-all cursor-pointer"
                   title="Cerrar menú"
                 >
                   <X className="w-5 h-5" />
@@ -175,7 +175,7 @@ function MainLayout() {
                           setIsMenuOpen(false);
                           navigate('/schedule');
                         }}
-                        className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all active:scale-[0.98] cursor-pointer"
+                        className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all cursor-pointer"
                       >
                         <Calendar className="w-4 h-4 text-[#0f55d8]" />
                         <span>Elegir horarios de la semana</span>
@@ -187,7 +187,7 @@ function MainLayout() {
                             setIsMenuOpen(false);
                             navigate('/scanner');
                           }}
-                          className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all active:scale-[0.98] cursor-pointer"
+                          className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all cursor-pointer"
                         >
                           <Menu className="w-4 h-4 text-emerald-650" />
                           <span>Ir al Escáner de Bolsas</span>
@@ -199,7 +199,7 @@ function MainLayout() {
                           setIsMenuOpen(false);
                           navigate('/simulator');
                         }}
-                        className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all active:scale-[0.98] cursor-pointer"
+                        className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all cursor-pointer"
                       >
                         <Play className="w-4 h-4 text-amber-500 animate-pulse" />
                         <span>Acceder al simulador de flujos</span>

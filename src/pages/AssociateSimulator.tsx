@@ -15,7 +15,7 @@ export default function AssociateSimulator() {
         </p>
 
         {/* Content Card Wrapper */}
-        <div className="overflow-hidden bg-white rounded-none border border-gray-100 shadow-sm">
+        <div className="overflow-hidden bg-white rounded-none border border-gray-100">
           <FlowSimulator />
         </div>
       </div>

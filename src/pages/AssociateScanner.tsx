@@ -28,7 +28,7 @@ export default function AssociateScanner() {
       <div className="mb-4 mt-2 shrink-0">
         <Link 
           to="/associate/link" 
-          className="flex items-center justify-center px-6 py-3 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#0f55d8]/20 active:scale-95 w-full text-sm"
+          className="flex items-center justify-center px-6 py-3 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-bold rounded-xl transition-all w-full text-sm"
         >
           <span>Vincular Pre-registro</span>
         </Link>
@@ -36,7 +36,7 @@ export default function AssociateScanner() {
 
       {/* Title */}
       <div className="mb-4 text-center shrink-0">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-full mb-3 shadow-sm border border-blue-100">
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-full mb-3 border border-blue-100">
           <Camera className="w-5 h-5 animate-pulse" />
         </div>
         <h1 className="text-xl font-bold text-gray-900 mb-1">Escanear Bolsa</h1>
@@ -47,7 +47,7 @@ export default function AssociateScanner() {
       <div className="w-full max-w-md mx-auto space-y-6">
         
         {/* Physical Camera Block */}
-        <div className="bg-black rounded-2xl overflow-hidden relative shadow-xl shadow-slate-200/50 border border-slate-900 h-72 flex flex-col items-center justify-center w-full">
+        <div className="bg-black rounded-2xl overflow-hidden relative border border-slate-900 h-72 flex flex-col items-center justify-center w-full">
           {isCameraActive ? (
             <>
               <button 
@@ -86,7 +86,7 @@ export default function AssociateScanner() {
               </div>
               <button 
                 onClick={() => setIsCameraActive(true)}
-                className="px-6 py-3 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#0f55d8]/20 active:scale-95 text-sm"
+                className="px-6 py-3 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white font-bold rounded-xl transition-all text-sm"
               >
                 Activar Cámara
               </button>

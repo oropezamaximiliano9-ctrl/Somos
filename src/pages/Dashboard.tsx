@@ -933,7 +933,7 @@ export default function Dashboard() {
           onClick={() => setActiveTab('general')}
           className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
             activeTab === 'general' 
-              ? 'bg-white text-blue-700 shadow-sm border border-gray-200/50' 
+              ? 'bg-white text-blue-700 border border-gray-200/50' 
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
           }`}
         >
@@ -944,7 +944,7 @@ export default function Dashboard() {
           onClick={() => setActiveTab('orders')}
           className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
             activeTab === 'orders' 
-              ? 'bg-white text-blue-700 shadow-sm border border-gray-200/50' 
+              ? 'bg-white text-blue-700 border border-gray-200/50' 
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
           }`}
         >
@@ -955,7 +955,7 @@ export default function Dashboard() {
           onClick={() => { setActiveTab('customers'); setSelectedCustomer(null); }}
           className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
             activeTab === 'customers' 
-              ? 'bg-white text-blue-700 shadow-sm border border-gray-200/50' 
+              ? 'bg-white text-blue-700 border border-gray-200/50' 
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
           }`}
         >
@@ -966,7 +966,7 @@ export default function Dashboard() {
           onClick={() => setActiveTab('locations')}
           className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
             activeTab === 'locations' 
-              ? 'bg-white text-blue-700 shadow-sm border border-gray-200/50' 
+              ? 'bg-white text-blue-700 border border-gray-200/50' 
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
           }`}
         >
@@ -977,7 +977,7 @@ export default function Dashboard() {
           onClick={() => setActiveTab('qrcodes')}
           className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
             activeTab === 'qrcodes' 
-              ? 'bg-white text-blue-700 shadow-sm border border-gray-200/50' 
+              ? 'bg-white text-blue-700 border border-gray-200/50' 
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
           }`}
         >
@@ -1003,7 +1003,7 @@ export default function Dashboard() {
                   <select
                     value={timeRange}
                     onChange={(e) => setTimeRange(e.target.value as '7d' | '4w' | '6m' | 'all')}
-                    className="appearance-none bg-white border border-gray-200 px-3 py-1.5 pr-8 rounded-lg text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-xs leading-none"
+                    className="appearance-none bg-white border border-gray-200 px-3 py-1.5 pr-8 rounded-lg text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer leading-none"
                   >
                     <option value="7d">Últimos 7 Días</option>
                     <option value="4w">Últimos 4 Semanas</option>
@@ -1020,7 +1020,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Metric 2: Completadas */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'completed' ? null : 'completed')}
                 >
                   <div className="flex items-center justify-between">
@@ -1042,7 +1042,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'completed' && (
-                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Total de órdenes con estado "Completado" en el período seleccionado.</p>
                     </div>
                   )}
@@ -1050,7 +1050,7 @@ export default function Dashboard() {
 
                 {/* Metric 2.5: Kilos Carga Procesada */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'kilos' ? null : 'kilos')}
                 >
                   <div className="flex items-center justify-between">
@@ -1077,7 +1077,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'kilos' && (
-                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Equivalente estimado basado en órdenes completadas.</p>
                     </div>
                   )}
@@ -1085,7 +1085,7 @@ export default function Dashboard() {
 
                 {/* Metric 3: Ingresos Est. */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'revenue' ? null : 'revenue')}
                 >
                   <div className="flex items-center justify-between">
@@ -1112,7 +1112,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'revenue' && (
-                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Valor monetario generado por las órdenes completadas.</p>
                     </div>
                   )}
@@ -1120,7 +1120,7 @@ export default function Dashboard() {
 
                 {/* Metric 4: Bolsas Asignadas */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'bags' ? null : 'bags')}
                 >
                   <div className="flex items-center justify-between">
@@ -1142,7 +1142,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'bags' && (
-                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Bolsas actualmente en posesión de los clientes en este período o en general.</p>
                     </div>
                   )}
@@ -1150,7 +1150,7 @@ export default function Dashboard() {
 
                 {/* Metric 5: Clientes */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'customers' ? null : 'customers')}
                 >
                   <div className="flex items-center justify-between">
@@ -1172,7 +1172,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'customers' && (
-                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Nuevos clientes registrados vs el período anterior.</p>
                     </div>
                   )}
@@ -1180,7 +1180,7 @@ export default function Dashboard() {
 
                 {/* Metric 6: Clientes Recurrentes */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 shadow-sm text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'recurrentes' ? null : 'recurrentes')}
                 >
                   <div className="flex items-center justify-between">
@@ -1202,7 +1202,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'recurrentes' && (
-                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Clientes que han completado 2 o más órdenes.</p>
                     </div>
                   )}
@@ -1212,7 +1212,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
                 {/* Gráfico circular de preferencias de servicio */}
                 <div 
-                  className="relative bg-white border border-gray-100 px-5 py-3 shadow-sm rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 px-5 py-3 rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'services' ? null : 'services')}
                 >
                   <div>
@@ -1227,7 +1227,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'services' && (
-                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Distribución de los servicios completados según la preferencia de entrega en el período.</p>
                     </div>
                   )}
@@ -1238,7 +1238,7 @@ export default function Dashboard() {
 
                 {/* Cliente Frecuencia Frecuencia de Pedidos por Cliente */}
                 <div 
-                  className="relative bg-white border border-gray-100 px-5 py-3 shadow-sm rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border border-gray-100 px-5 py-3 rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'frequencies' ? null : 'frequencies')}
                 >
                   <div>
@@ -1253,7 +1253,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'frequencies' && (
-                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 shadow-lg border border-slate-700">
+                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Clasificación de clientes según las órdenes completadas en este período.</p>
                     </div>
                   )}
@@ -1295,7 +1295,7 @@ export default function Dashboard() {
                     <select
                       value={orderFilter}
                       onChange={(e) => setOrderFilter(e.target.value as any)}
-                      className="appearance-none bg-white border border-gray-200 px-3 py-1.5 pr-8 rounded-lg text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-xs leading-none"
+                      className="appearance-none bg-white border border-gray-200 px-3 py-1.5 pr-8 rounded-lg text-xs font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer leading-none"
                     >
                       <option value="all">Todas ({countAll})</option>
                       <option value="pending">Pendientes ({countPending})</option>
@@ -1318,7 +1318,7 @@ export default function Dashboard() {
                     {filteredOrders.map((o) => (
                       <div 
                         key={o.id} 
-                        className="p-4 bg-white hover:bg-slate-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-none border border-slate-100 shadow-sm text-left"
+                        className="p-4 bg-white hover:bg-slate-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-none border border-slate-100 text-left"
                       >
                         <div className="space-y-2 text-left w-full sm:w-auto">
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pb-0.5">
@@ -1332,7 +1332,7 @@ export default function Dashboard() {
                                   value={o.status}
                                   onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
                                   disabled={updatingOrderId === o.id}
-                                  className={`text-[10px] uppercase font-bold px-2 py-0.5 pr-5.5 rounded-full border cursor-pointer appearance-none outline-none transition-all shadow-sm ${
+                                  className={`text-[10px] uppercase font-bold px-2 py-0.5 pr-5.5 rounded-full border cursor-pointer appearance-none outline-none transition-all ${
                                     o.status === 'completed'
                                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/50'
                                       : o.status === 'processing'
@@ -1384,7 +1384,7 @@ export default function Dashboard() {
               transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-4 w-full"
             >
-              <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4 shadow-sm">
+              <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4">
                 <div>
                   <h3 className="font-semibold text-gray-900 text-left">Sucursales Activas</h3>
                   <p className="text-xs text-gray-500 text-left">Administra los puntos de recolección</p>
@@ -1402,7 +1402,7 @@ export default function Dashboard() {
                 {locations.map((loc) => (
                   <div 
                     key={loc.id} 
-                    className="bg-white border text-left border-gray-100 rounded-none p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-blue-200 hover:shadow-md transition-all group"
+                    className="bg-white border text-left border-gray-100 rounded-none p-4 flex items-center justify-between cursor-pointer hover:border-blue-200 hover: transition-all group"
                     onClick={() => setSelectedLocation(loc)}
                   >
                     <div>
@@ -1510,7 +1510,7 @@ export default function Dashboard() {
                 </div>
               </div>
               
-              <div className="bg-white border border-gray-100 rounded-none p-5 shadow-sm space-y-4">
+              <div className="bg-white border border-gray-100 rounded-none p-5 space-y-4">
                 <h4 className="font-medium text-sm text-gray-700 border-b border-gray-50 pb-2 text-left">
                   Órdenes en esta ubicación (Simulado)
                 </h4>
@@ -1532,7 +1532,7 @@ export default function Dashboard() {
                                 value={o.status}
                                 onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
                                 disabled={updatingOrderId === o.id}
-                                className={`text-[10px] font-bold border px-1.5 py-0.5 pr-5.5 rounded tracking-wide capitalize cursor-pointer appearance-none outline-none transition-all shadow-sm ${
+                                className={`text-[10px] font-bold border px-1.5 py-0.5 pr-5.5 rounded tracking-wide capitalize cursor-pointer appearance-none outline-none transition-all ${
                                   o.status === 'completed'
                                     ? 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100/50'
                                     : o.status === 'processing'
@@ -1582,7 +1582,7 @@ export default function Dashboard() {
               transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-6 pb-12 w-full"
             >
-              <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4 shadow-sm">
+              <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4">
                 <div>
                   <h3 className="font-semibold text-gray-900 text-left">Generador de QR para Bolsas</h3>
                   <p className="text-xs text-gray-500 text-left">Imprime los siguientes códigos para pegarlos en las bolsas físicas.</p>
@@ -1597,7 +1597,7 @@ export default function Dashboard() {
                 </button>
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-none p-5 shadow-sm space-y-4">
+              <div className="bg-white border border-gray-100 rounded-none p-5 space-y-4">
                 <h4 className="font-medium text-gray-800 text-left border-b border-gray-100 pb-2">Bolsas Sin Asignar</h4>
                 {bags.filter(b => b.status === "unassigned").length === 0 ? (
                   <p className="text-sm text-gray-400 text-left py-4">No hay bolsas sin asignar.</p>
@@ -1606,8 +1606,8 @@ export default function Dashboard() {
                     {bags.filter(b => b.status === "unassigned").map((bag) => {
                       const qrUrl = `${window.location.origin}/bolsa/${bag.id}`;
                       return (
-                        <div key={bag.id} onClick={() => setSelectedQRBag(bag)} className="flex flex-col items-center justify-center p-4 border border-gray-100 rounded-none bg-gray-50 hover:shadow-md transition-shadow cursor-pointer hover:border-blue-200">
-                          <div className="p-2 bg-white rounded-none shadow-sm mb-2 pointer-events-none">
+                        <div key={bag.id} onClick={() => setSelectedQRBag(bag)} className="flex flex-col items-center justify-center p-4 border border-gray-100 rounded-none bg-gray-50 hover: cursor-pointer hover:border-blue-200">
+                          <div className="p-2 bg-white rounded-none mb-2 pointer-events-none">
                             <QRCodeSVG value={qrUrl} size={80} />
                           </div>
                           <span className="font-mono text-xs font-semibold text-gray-800">{bag.id}</span>
@@ -1619,7 +1619,7 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-none p-5 shadow-sm space-y-4">
+              <div className="bg-white border border-gray-100 rounded-none p-5 space-y-4">
                 <h4 className="font-medium text-gray-800 text-left border-b border-gray-100 pb-2">Bolsas Asignadas</h4>
                 {bags.filter(b => b.status === "assigned").length === 0 ? (
                   <p className="text-sm text-gray-400 text-left py-4">No hay bolsas asignadas a órdenes actualmente.</p>
@@ -1628,8 +1628,8 @@ export default function Dashboard() {
                     {bags.filter(b => b.status === "assigned").map((bag) => {
                       const qrUrl = `${window.location.origin}/bolsa/${bag.id}`;
                       return (
-                        <div key={bag.id} onClick={() => setSelectedQRBag(bag)} className="flex flex-col items-center justify-center p-4 border border-blue-50 rounded-none bg-blue-50/30 hover:shadow-md transition-shadow cursor-pointer hover:border-blue-200">
-                          <div className="p-2 bg-white rounded-none shadow-sm mb-2 pointer-events-none">
+                        <div key={bag.id} onClick={() => setSelectedQRBag(bag)} className="flex flex-col items-center justify-center p-4 border border-blue-50 rounded-none bg-blue-50/30 hover: cursor-pointer hover:border-blue-200">
+                          <div className="p-2 bg-white rounded-none mb-2 pointer-events-none">
                             <QRCodeSVG value={qrUrl} size={80} />
                           </div>
                           <span className="font-mono text-xs font-semibold text-gray-800">{bag.id}</span>
@@ -1666,7 +1666,7 @@ export default function Dashboard() {
                     <div 
                       key={cust.id} 
                       onClick={() => handleSelectCustomer(cust)}
-                      className="group p-4 bg-white hover:bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-xl border border-slate-100 shadow-sm hover:shadow-md cursor-pointer text-left"
+                      className="group p-4 bg-white hover:bg-slate-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-xl border border-slate-100 hover: cursor-pointer text-left"
                     >
                       {/* Left: Monogram and Client info */}
                       <div className="flex items-center gap-3.5 text-left w-full sm:flex-1 min-w-0">
@@ -1736,7 +1736,7 @@ export default function Dashboard() {
                 {/* LEFT COLUMN: Profile details, saved refs & credits adjustment */}
                 <div className="md:col-span-5 space-y-6">
                   {/* Profile Address */}
-                  <div className="bg-white border border-gray-100 p-5 shadow-sm space-y-4">
+                  <div className="bg-white border border-gray-100 p-5 space-y-4">
                     <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                       <h4 className="font-semibold text-xs text-gray-500 uppercase tracking-widest font-mono">Datos de Cliente</h4>
                       <button
@@ -1777,7 +1777,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* RIGHT COLUMN: History list */}
-                <div className="md:col-span-7 bg-white border border-gray-100 p-5 shadow-sm space-y-4">
+                <div className="md:col-span-7 bg-white border border-gray-100 p-5 space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                     <h4 className="font-semibold text-xs text-gray-700 uppercase tracking-wider font-mono">
                       Historial de Órdenes ({customerOrders.length})
@@ -1797,7 +1797,7 @@ export default function Dashboard() {
                       {customerOrders.map((o) => (
                         <div 
                           key={o.id} 
-                          className="p-4 border border-gray-150/80 bg-slate-50/50 hover:bg-slate-50/90 hover:border-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-xl shadow-sm"
+                          className="p-4 border border-gray-150/80 bg-slate-50/50 hover:bg-slate-50/90 hover:border-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-xl"
                         >
                           <div className="space-y-2">
                             <div className="flex flex-wrap items-center gap-2.5">
@@ -1839,7 +1839,7 @@ export default function Dashboard() {
               {/* Editing Customer Modal */}
               {editingCustomer && (
                 <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-                  <div className="bg-white rounded-none w-full max-w-md p-6 shadow-2xl animate-in zoom-in-95 flex flex-col items-stretch text-left">
+                  <div className="bg-white rounded-none w-full max-w-md p-6 animate-in zoom-in-95 flex flex-col items-stretch text-left">
                     <h2 className="text-sm font-bold mb-4 font-mono uppercase tracking-widest text-slate-800">Editar Perfil de Cliente</h2>
                     <form 
                       onSubmit={async (e) => {
@@ -1917,10 +1917,10 @@ export default function Dashboard() {
 
       {selectedQRBag && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in" onClick={() => setSelectedQRBag(null)}>
-          <div className="bg-white rounded-none w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in-95 p-8" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-none w-full max-w-sm overflow-hidden animate-in zoom-in-95 p-8" onClick={(e) => e.stopPropagation()}>
             <div className="flex flex-col items-center justify-center space-y-6">
               <h2 className="text-2xl font-bold text-gray-900 font-mono tracking-tight">{selectedQRBag.id}</h2>
-              <div className="p-6 bg-white border border-gray-100 rounded-none shadow-sm relative">
+              <div className="p-6 bg-white border border-gray-100 rounded-none relative">
                 <QRCodeSVG value={`${window.location.origin}/bolsa/${selectedQRBag.id}`} size={240} />
                 {/* Hidden high-res canvas used for generating crisp PDF vector graphics */}
                 <div style={{ display: "none" }}>
@@ -1951,7 +1951,7 @@ export default function Dashboard() {
               <div className="w-full space-y-2 mt-4">
                 <button
                   onClick={() => handleExportBagLabelPdf(selectedQRBag.id)}
-                  className="w-full py-3 bg-[#0f55d8] text-white font-bold rounded-xl hover:bg-[#0d4bc0] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md text-sm"
+                  className="w-full py-3 bg-[#0f55d8] text-white font-bold rounded-xl hover:bg-[#0d4bc0] transition-all flex items-center justify-center gap-2 text-sm"
                 >
                   <Download className="w-4 h-4" />
                   Descargar Etiqueta PDF

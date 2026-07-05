@@ -39,7 +39,7 @@ export default function AssociateSchedule() {
         </div>
         <p className="text-sm text-gray-500 mb-4 leading-relaxed">Selecciona los turnos en los que estarás disponible esta semana (bloques de 6 y 3 horas).</p>
         
-        <div className="bg-white rounded-none border border-gray-100 shadow-sm overflow-hidden text-left mb-6">
+        <div className="bg-white rounded-none border border-gray-100 overflow-hidden text-left mb-6">
           {days.map((day) => (
              <div key={day} className="border-b border-gray-50 last:border-0 p-4">
                <h3 className="font-semibold text-gray-800 mb-3 text-sm uppercase tracking-wider">{day}</h3>
@@ -50,7 +50,7 @@ export default function AssociateSchedule() {
                      <button
                        key={slot}
                        onClick={() => toggleSchedule(day, index)}
-                       className={`flex-1 flex items-center justify-between p-3 rounded-xl border text-sm font-medium transition-all active:scale-[0.98] ${
+                       className={`flex-1 flex items-center justify-between p-3 rounded-xl border text-sm font-medium transition-all ${
                          isSelected 
                           ? "bg-blue-50 border-blue-200 text-blue-700"
                           : "bg-gray-50 border-gray-100 text-gray-600 hover:bg-gray-100 hover:border-gray-200"
@@ -68,7 +68,7 @@ export default function AssociateSchedule() {
           ))}
         </div>
         
-        <button className="w-full bg-black text-white p-4 rounded-xl font-bold flex items-center justify-center shadow-xl shadow-gray-200 hover:-translate-y-1 active:scale-[0.98] transition-all text-lg mb-8">
+        <button className="w-full bg-black text-white p-4 rounded-xl font-bold flex items-center justify-center hover:-translate-y-1 transition-all text-lg mb-8">
           Guardar Horarios
         </button>
       </div>

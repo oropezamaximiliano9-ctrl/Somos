@@ -243,7 +243,7 @@ export default function BagFlow() {
           initial={{ scale: 0.5, rotate: -15 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
-          className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center shadow-lg shadow-emerald-100 border border-emerald-200"
+          className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-200"
         >
           <CheckCircle2 className="w-12 h-12 text-emerald-600" />
         </motion.div>
@@ -291,7 +291,7 @@ export default function BagFlow() {
               </p>
               <button
                 onClick={() => setRole('associate')}
-                className="w-full bg-[#0f55d8] text-white py-3 px-4 rounded-xl font-bold text-sm shadow-md shadow-blue-500/10 hover:-translate-y-0.5 transition-all outline-none"
+                className="w-full bg-[#0f55d8] text-white py-3 px-4 rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-all outline-none"
               >
                 Activar Panel Asociado
               </button>
@@ -316,7 +316,7 @@ export default function BagFlow() {
         </div>
          <button 
            onClick={() => navigate(`/associate/link?bagId=${encodeURIComponent(id || "")}`, { state: { prefilledBagId: id } })} 
-           className="w-full bg-[#0f55d8] text-white p-4 rounded-xl font-bold flex items-center justify-center shadow-lg shadow-[#0f55d8]/20 mt-4 hover:-translate-y-1 hover:shadow-[#0f55d8]/30 active:scale-95 transition-all"
+           className="w-full bg-[#0f55d8] text-white p-4 rounded-xl font-bold flex items-center justify-center mt-4 hover:-translate-y-1 hover:/30 transition-all"
         >
           Asignar a Cliente
         </button>
@@ -328,7 +328,7 @@ export default function BagFlow() {
   if (role === 'customer') {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in">
-        <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-2 shadow-sm border border-green-100">
+        <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-2 border border-green-100">
           <Package className="w-10 h-10 text-green-600" />
         </div>
         <div className="space-y-3">
@@ -341,9 +341,9 @@ export default function BagFlow() {
           </p>
         </div>
         
-        <div className="card w-full max-w-sm mt-4 p-5 border border-gray-100 rounded-none bg-white shadow-xl shadow-gray-100 space-y-3">
+        <div className="card w-full max-w-sm mt-4 p-5 border border-gray-100 rounded-none bg-white space-y-3">
           <label className="text-[10px] uppercase tracking-widest font-semibold text-gray-400 block text-center">Tus Datos de Entrega</label>
-          <div className="bg-blue-50 text-blue-700 py-3 rounded-none text-center border border-blue-100 shadow-inner">
+          <div className="bg-blue-50 text-blue-700 py-3 rounded-none text-center border border-blue-100">
             <p className="font-bold notranslate" translate="no">{bag.user?.deliveryPreference || 'Estándar (48 h)'}</p>
             {(bag.user?.addressColonia || bag.user?.addressCalle) && (
               <div className="mt-2 pt-2 border-t border-blue-200/50 flex flex-col items-center px-4">
@@ -364,7 +364,7 @@ export default function BagFlow() {
             </p>
             <button
               onClick={() => setRole('associate')}
-              className="w-full bg-[#0f55d8] text-white py-3 px-4 rounded-xl font-bold text-sm shadow-md shadow-blue-500/10 hover:-translate-y-0.5 transition-all outline-none"
+              className="w-full bg-[#0f55d8] text-white py-3 px-4 rounded-xl font-bold text-sm hover:-translate-y-0.5 transition-all outline-none"
             >
               Activar Panel Asociado
             </button>
@@ -445,7 +445,7 @@ export default function BagFlow() {
 
 
         {/* Customer Information Card */}
-        <div className="w-full border border-gray-100 p-5 rounded-3xl bg-white shadow-xl shadow-slate-100 text-left space-y-4">
+        <div className="w-full border border-gray-100 p-5 rounded-3xl bg-white text-left space-y-4">
           <div className="space-y-1.5 border-b border-gray-100 pb-4">
             <span className="text-[10px] uppercase tracking-widest font-semibold text-gray-400 block">Cliente</span>
             <h3 className="text-lg font-bold text-slate-900 leading-tight">{bag.user?.name || "Cliente Registrado"}</h3>
@@ -475,7 +475,7 @@ export default function BagFlow() {
             type="button"
             onClick={handleDeliverBag}
             disabled={delivering}
-            className="w-full py-4 bg-[#0f55d8] hover:bg-[#0c4ab9] disabled:bg-blue-300 font-extrabold tracking-wide text-white rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-blue-500/10 active:scale-[0.98] cursor-pointer text-base"
+            className="w-full py-4 bg-[#0f55d8] hover:bg-[#0c4ab9] disabled:bg-blue-300 font-extrabold tracking-wide text-white rounded-2xl flex items-center justify-center transition-all cursor-pointer text-base"
           >
             {delivering ? "Entregando..." : "Entregar"}
           </button>
@@ -502,7 +502,7 @@ export default function BagFlow() {
               initial={{ height: 4, opacity: 0.3 }}
               animate={{ height: 28, opacity: 1 }}
               transition={{ duration: 0.7, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-              className="w-16 bg-slate-200 border-x-2 border-b-2 border-slate-300 mt-2 rounded-b-md shadow-sm"
+              className="w-16 bg-slate-200 border-x-2 border-b-2 border-slate-300 mt-2 rounded-b-md"
             />
           </div>
           <div className="space-y-1">
@@ -516,7 +516,7 @@ export default function BagFlow() {
     return (
       <div className="flex-1 flex flex-col items-center justify-start text-center py-2 px-4 space-y-6 animate-in fade-in max-w-sm mx-auto w-full animate-out duration-300">
         {/* Confirmed Indicator */}
-        <div className="flex items-center space-x-2 text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 shadow-sm animate-bounce mt-2">
+        <div className="flex items-center space-x-2 text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 animate-bounce mt-2">
           <CheckCircle2 className="w-4 h-4" />
           <span className="text-xs font-bold uppercase tracking-wider">Recepción Confirmada</span>
         </div>
@@ -527,14 +527,14 @@ export default function BagFlow() {
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", damping: 15 }}
-          className="w-full bg-[#f6eedd] border border-[#0c3ab5]/15 shadow-2xl rounded-sm p-5 text-left relative overflow-hidden flex flex-col items-stretch text-[#0c3ab5] font-sans text-sm leading-relaxed"
+          className="w-full bg-[#f6eedd] border border-[#0c3ab5]/15 rounded-sm p-5 text-left relative overflow-hidden flex flex-col items-stretch text-[#0c3ab5] font-sans text-sm leading-relaxed"
           style={{
             boxShadow: '0 20px 40px -15px rgba(12,58,181,0.08), 0 15px 20px -10px rgba(0,0,0,0.05)'
           }}
         >
           {/* Adhesive Tape on Top Center (mimicking the original image) */}
           <div 
-            className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-28 h-6 bg-white/20 backdrop-blur-[0.5px] border border-white/10 shadow-[0_1px_4px_rgba(255,255,255,0.1)] rotate-[-1deg] pointer-events-none select-none z-20" 
+            className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-28 h-6 bg-white/20 backdrop-blur-[0.5px] border border-white/10 rotate-[-1deg] pointer-events-none select-none z-20" 
             style={{ 
               clipPath: 'polygon(2% 18%, 8% 0%, 92% 4%, 98% 15%, 100% 88%, 91% 100%, 9% 95%, 0% 80%)'
             }} 
@@ -660,7 +660,7 @@ export default function BagFlow() {
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-emerald-50 text-emerald-800 border border-emerald-200 p-3 rounded-2xl text-xs flex flex-col items-center space-y-1 shadow-sm leading-normal text-slate-700"
+              className="bg-emerald-50 text-emerald-800 border border-emerald-200 p-3 rounded-2xl text-xs flex flex-col items-center space-y-1 leading-normal text-slate-700"
             >
               <span className="font-bold text-emerald-700 flex items-center gap-1">✨ ¡Prisino Ticket Copiado!</span>
               <span className="text-[11px] text-slate-500">Al abrir WhatsApp, mantén presionado el chat del cliente y selecciona *Pegar* (o presiona *Ctrl+V*) para mandar la imagen del Ticket.</span>
@@ -678,7 +678,7 @@ export default function BagFlow() {
             type="button"
             onClick={handleSendTicketImage}
             disabled={isGeneratingImage}
-            className="w-full p-4.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-400 active:scale-[0.98] transition-all text-white rounded-2xl font-black flex items-center justify-center gap-2.5 text-base shadow-lg shadow-emerald-500/15 border-b-4 border-emerald-700 hover:border-emerald-800 select-none cursor-pointer"
+            className="w-full p-4.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-400 transition-all text-white rounded-2xl font-black flex items-center justify-center gap-2.5 text-base border-b-4 border-emerald-700 hover:border-emerald-800 select-none cursor-pointer"
           >
             {isGeneratingImage ? (
               <>
@@ -713,7 +713,7 @@ export default function BagFlow() {
                 console.error(e);
               }
             }}
-            className="w-full py-3.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-all text-xs border border-gray-200 select-none cursor-pointer"
+            className="w-full py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-all text-xs border border-gray-200 select-none cursor-pointer"
           >
             <span>💾 Descargar Imagen en Galería</span>
           </button>
@@ -739,7 +739,7 @@ export default function BagFlow() {
         <h1 className="text-2xl font-medium tracking-widest text-gray-900 uppercase tracking-tight">Confirmar Recepción</h1>
       </div>
 
-      <div className="card p-6 border border-gray-100 shadow-xl shadow-gray-100 space-y-4 rounded-none bg-white">
+      <div className="card p-6 border border-gray-100 space-y-4 rounded-none bg-white">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 w-full">
           <div className="text-left space-y-4 w-full">
             {isFirstVisit && (
@@ -775,7 +775,7 @@ export default function BagFlow() {
                   onClick={() => setPrefSpeed("Estándar (48 h)")}
                   className={`relative py-3 px-3 rounded-xl border text-center transition-all duration-300 focus:outline-none flex flex-col items-center justify-center min-h-[4rem] cursor-pointer ${
                     prefSpeed === "Estándar (48 h)"
-                      ? "bg-blue-50/70 border-[#0f55d8] border-2 shadow-sm"
+                      ? "bg-blue-50/70 border-[#0f55d8] border-2"
                       : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
                   }`}
                 >
@@ -795,7 +795,7 @@ export default function BagFlow() {
                   onClick={() => setPrefSpeed("Express (24 h)")}
                   className={`relative py-3 px-3 rounded-xl border text-center transition-all duration-300 focus:outline-none flex flex-col items-center justify-center min-h-[4rem] cursor-pointer ${
                     prefSpeed === "Express (24 h)"
-                      ? "bg-blue-50/70 border-[#0f55d8] border-2 shadow-sm"
+                      ? "bg-blue-50/70 border-[#0f55d8] border-2"
                       : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
                   }`}
                 >
@@ -826,7 +826,7 @@ export default function BagFlow() {
                     onClick={() => setPrefTime("Mañana (8:00 AM – 10:00 AM)")}
                     className={`relative py-3 px-3 rounded-xl border text-center transition-all duration-300 focus:outline-none flex flex-col items-center justify-center min-h-[4rem] cursor-pointer ${
                       prefTime === "Mañana (8:00 AM – 10:00 AM)"
-                        ? "bg-blue-50/70 border-[#0f55d8] border-2 shadow-sm"
+                        ? "bg-blue-50/70 border-[#0f55d8] border-2"
                         : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
@@ -846,7 +846,7 @@ export default function BagFlow() {
                     onClick={() => setPrefTime("Noche (8:00 PM – 10:00 PM)")}
                     className={`relative py-3 px-3 rounded-xl border text-center transition-all duration-300 focus:outline-none flex flex-col items-center justify-center min-h-[4rem] cursor-pointer ${
                       prefTime === "Noche (8:00 PM – 10:00 PM)"
-                        ? "bg-blue-50/70 border-[#0f55d8] border-2 shadow-sm"
+                        ? "bg-blue-50/70 border-[#0f55d8] border-2"
                         : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
@@ -893,7 +893,7 @@ export default function BagFlow() {
                   onClick={() => {
                     setPrefSpeed(p => p === "Express (24 h)" ? "Estándar (48 h)" : "Express (24 h)");
                   }}
-                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white rounded-lg font-bold text-[9px] sm:text-[10px] active:scale-[0.97] transition-all cursor-pointer uppercase border border-slate-200/60 hover:border-slate-900 shrink-0"
+                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white rounded-lg font-bold text-[9px] sm:text-[10px] transition-all cursor-pointer uppercase border border-slate-200/60 hover:border-slate-900 shrink-0"
                 >
                   Cambiar
                 </button>
@@ -923,7 +923,7 @@ export default function BagFlow() {
                     onClick={() => {
                       setPrefTime(p => p === "Mañana (8:00 AM – 10:00 AM)" ? "Noche (8:00 PM – 10:00 PM)" : "Mañana (8:00 AM – 10:00 AM)");
                     }}
-                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white rounded-lg font-bold text-[9px] sm:text-[10px] active:scale-[0.97] transition-all cursor-pointer uppercase border border-slate-200/60 hover:border-slate-900 shrink-0"
+                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-900 text-slate-900 hover:text-white rounded-lg font-bold text-[9px] sm:text-[10px] transition-all cursor-pointer uppercase border border-slate-200/60 hover:border-slate-900 shrink-0"
                   >
                     Cambiar
                   </button>
@@ -949,7 +949,7 @@ export default function BagFlow() {
           <button 
             onClick={() => handleReceiveBag(prefSpeed, isEligibleForDelivery ? prefTime : "")}
             disabled={receiving}
-            className="w-full bg-[#0f55d8] text-white p-5 rounded-2xl font-bold flex items-center justify-center shadow-lg shadow-[#0f55d8]/20 hover:-translate-y-1 hover:shadow-[#0f55d8]/30 active:scale-[0.98] transition-all disabled:opacity-50 text-lg cursor-pointer select-none"
+            className="w-full bg-[#0f55d8] text-white p-5 rounded-2xl font-bold flex items-center justify-center hover:-translate-y-1 hover:/30 transition-all disabled:opacity-50 text-lg cursor-pointer select-none"
           >
             {receiving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Guardar y Confirmar Recepción"}
           </button>
@@ -957,7 +957,7 @@ export default function BagFlow() {
           <button 
             onClick={() => handleReceiveBag(prefSpeed, isEligibleForDelivery ? prefTime : "")}
             disabled={receiving}
-            className="w-full bg-[#0f55d8] text-white p-5 rounded-2xl font-bold flex items-center justify-center shadow-lg shadow-[#0f55d8]/20 hover:-translate-y-1 hover:shadow-[#0f55d8]/30 active:scale-[0.98] transition-all disabled:opacity-50 text-lg cursor-pointer select-none"
+            className="w-full bg-[#0f55d8] text-white p-5 rounded-2xl font-bold flex items-center justify-center hover:-translate-y-1 hover:/30 transition-all disabled:opacity-50 text-lg cursor-pointer select-none"
           >
             {receiving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirmar"}
           </button>

@@ -25,7 +25,6 @@
   }
 }
 
-
 html, body, #root {
   font-family: var(--font-sans);
   background-color: #f6eedd !important;
@@ -55,7 +54,7 @@ html {
   .card {
     background: white;
     border-radius: 0px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
   }
 
   @keyframes shake {
@@ -70,11 +69,11 @@ html {
 
   @keyframes softGlow {
     0%, 100% { 
-      box-shadow: 0 5px 15px rgba(15,85,216,0.2);
+
       transform: scale(1);
     }
     50% { 
-      box-shadow: 0 12px 25px rgba(15,85,216,0.4);
+
       transform: scale(1.02);
     }
   }
@@ -117,7 +116,7 @@ html {
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
   max-height: 90vh;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.12);
+
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -146,6 +145,3 @@ html {
   transform: translateY(0);
   transition-delay: 50ms;
 }
-
-
-

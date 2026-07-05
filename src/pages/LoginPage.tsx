@@ -32,7 +32,7 @@ export default function LoginPage() {
   return (
     <div className="flex-1 flex flex-col mt-8 animate-in fade-in">
       <div className="mb-10 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-full mb-6 shadow-sm border border-blue-100">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-full mb-6 border border-blue-100">
           <Lock className="w-8 h-8" />
         </div>
         <h1 className="text-2xl font-medium tracking-widest text-gray-900 uppercase mb-2">Acceso Personal</h1>
@@ -75,7 +75,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className={`w-full text-lg p-4 bg-white border ${error ? 'border-red-300 focus:ring-red-50' : 'border-gray-200 focus:border-blue-500 focus:ring-blue-50'} rounded-2xl outline-none focus:ring-4 transition-all shadow-sm`}
+              className={`w-full text-lg p-4 bg-white border ${error ? 'border-red-300 focus:ring-red-50' : 'border-gray-200 focus:border-blue-500 focus:ring-blue-50'} rounded-2xl outline-none focus:ring-4 transition-all`}
               placeholder="••••••••"
               autoFocus
             />
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <button 
             type="submit" 
             disabled={!password}
-            className="w-full bg-black text-white p-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-gray-900 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-gray-200"
+            className="w-full bg-black text-white p-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-gray-900 transition-all disabled:opacity-50"
           >
             Ingresar
             <ArrowRight className="w-5 h-5" />
