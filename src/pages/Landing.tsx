@@ -1111,11 +1111,11 @@ export default function Landing() {
                 </div>
 
                 {/* Imagen del cesto */}
-                <div className="relative w-full flex-1 select-none overflow-hidden bg-transparent flex items-center justify-center">
+                <div className="relative w-full flex-1 select-none overflow-hidden bg-transparent flex items-center justify-center px-2.5">
                   <img 
                     src="https://i.ibb.co/VcVSqJbP/A5-DFA592-E652-4373-9358-BA9-DC228-E0-D7.webp" 
                     alt="Cesto de lona premium SOMOS en ambiente real minimal" 
-                    className="w-full h-full object-cover object-[center_60%] pointer-events-none select-none"
+                    className="w-full h-full object-cover object-[center_60%] pointer-events-none select-none rounded-md"
                     fetchPriority="high"
                     decoding="sync"
                     onError={(e) => {
@@ -1126,28 +1126,31 @@ export default function Landing() {
               </div>
 
               {/* Tarjeta de beneficios */}
-              <div className="p-4 w-full border-t border-gray-100/50">
+              <div className="pt-2 pb-4 px-4 w-full border-t border-gray-100/50">
                 {/* Textos de inclusión */}
-                <div className="flex flex-col gap-2.5 select-none text-left">
-                  <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-5 h-5 ml-2 mr-2 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu">
-                      <Check className="w-3 h-3 text-[#0f55d8]" strokeWidth={2.5} />
+                <div className="flex flex-col gap-2 select-none text-left">
+                  <span className="font-geist text-[#6A6A6A] text-[16px] font-medium ml-3 mb-0.5">
+                    Incluye:
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <div className="shrink-0 w-5 h-5 ml-2 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
-                      Cesto de capacidad semanal
+                      Cesto de carga semanal
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-5 h-5 ml-2 mr-2 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu">
-                      <Check className="w-3 h-3 text-[#0f55d8]" strokeWidth={2.5} />
+                  <div className="flex items-center gap-2">
+                    <div className="shrink-0 w-5 h-5 ml-2 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
                       Recolección en punto
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="shrink-0 w-5 h-5 ml-2 mr-2 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu">
-                      <Check className="w-3 h-3 text-[#0f55d8]" strokeWidth={2.5} />
+                  <div className="flex items-center gap-2">
+                    <div className="shrink-0 w-5 h-5 ml-2 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
                       Entrega a domicilio
