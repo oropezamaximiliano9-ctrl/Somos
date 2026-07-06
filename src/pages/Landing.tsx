@@ -157,7 +157,7 @@ const TypewriterTitle = () => {
       >
         Tu ropa limpia
       </h1>
-      <p className="text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-1.5">
+      <p className="text-[19px] sm:text-[21px] text-[#6A6A6A] font-semibold font-geist mt-1.5">
         A un precio fijo
       </p>
     </div>
@@ -692,11 +692,6 @@ export default function Landing() {
         if (viewportRef.current) {
           viewportRef.current.scrollLeft = 0;
         }
-        if (activeFormStep === 1) {
-          nameInputRef.current?.focus();
-        } else if (activeFormStep === 2) {
-          calleInputRef.current?.focus();
-        }
       }, 180);
       return () => clearTimeout(timer);
     }
@@ -1173,7 +1168,7 @@ export default function Landing() {
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist">
               Empieza hoy
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist whitespace-nowrap" style={{ marginTop: '6px' }}>
+            <p className="text-center text-[19px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist whitespace-nowrap" style={{ marginTop: '6px' }}>
               Sin salir de casa
             </p>
           </div>
@@ -1289,7 +1284,7 @@ export default function Landing() {
             <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist">
               Recolección
             </h2>
-            <p className="text-center text-[18px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
+            <p className="text-center text-[19px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
               Paseo de las Palmas 209
             </p>
           </div>
@@ -1581,7 +1576,7 @@ export default function Landing() {
                   <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-1.5 font-geist">
                     Verificando Cobertura
                   </h3>
-                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-5">
+                  <p className="text-gray-400 text-[19px] font-semibold uppercase tracking-wider mb-5">
                     Análisis de Ruta en Tiempo Real
                   </p>
 
