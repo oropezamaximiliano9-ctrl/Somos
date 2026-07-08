@@ -1293,13 +1293,15 @@ export default function Landing() {
 
           {/* Custom CSS Map Container matching the exact provided location image */}
           <div className="px-0 sm:px-0 mt-6 w-full">
-            <a 
-              href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative w-full h-[300px] border border-slate-200/55 rounded-lg overflow-hidden bg-[#f4f5f5] flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:" 
-              id="location-dynamic-map-frame-container"
-            >
+            <div className="w-full bg-white border border-[#eaeaea] rounded-2xl p-2 text-left relative overflow-hidden flex flex-col">
+              <div className="w-full p-0">
+                <a 
+                  href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative w-full h-[260px] rounded-lg overflow-hidden bg-[#f4f5f5] flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:opacity-95 transition-opacity" 
+                  id="location-dynamic-map-frame-container"
+                >
               {/* Abstract Buildings */}
               <div className="absolute inset-0 pointer-events-none opacity-[0.6]">
                 <div className="absolute top-8 left-4 w-24 h-12 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
@@ -1368,12 +1370,34 @@ export default function Landing() {
                 </div>
                 <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight notranslate">OXXO Santa Isabel</span>
               </div>
+                </a>
+              </div>
 
-            </a>
+              {/* Tarjeta de información */}
+              <div className="pt-2.5 pb-0.5 w-full bg-white relative z-10 flex flex-row justify-between items-center px-1.5">
+                {/* Horario */}
+                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
+                  Horario: 9 am - 6 pm
+                </div>
+
+                {/* Contacto */}
+                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1">
+                  Contacto:{" "}
+                  <a 
+                    href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#6A6A6A] underline hover:no-underline"
+                  >
+                    whatsapp
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Navigation Route CTA helper */}
-          <div className="space-y-4 mt-10 px-4 sm:px-0 flex flex-col items-center">
+          <div className="space-y-4 mt-6 px-4 sm:px-0 flex flex-col items-center">
             <div className="w-full flex flex-col items-center gap-y-1.5" id="cta-info-wrapper">
               <button 
                 type="button"
@@ -1390,27 +1414,6 @@ export default function Landing() {
                 )}
               </button>
 
-              {/* Información rápida en una sola línea */}
-              <div className="w-full flex flex-row items-center justify-between mt-3.5 px-1 select-none text-[15px] sm:text-[16px] font-geist text-[#6A6A6A] font-medium leading-snug" id="quick-info-container">
-                {/* Horario */}
-                <div id="quick-info-horario">
-                  Horario: 9 am - 6 pm
-                </div>
-
-                {/* Contacto */}
-                <div className="flex items-center gap-1" id="quick-info-contacto">
-                  Contacto:{" "}
-                  <a 
-                    href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#6A6A6A] underline hover:no-underline font-bold  inline-block"
-                    id="row-whatsapp-contact"
-                  >
-                    WhatsApp
-                  </a>
-                </div>
-              </div>
             </div>
 
             {isNavigatingGPS && gpsLoadingStep && (
