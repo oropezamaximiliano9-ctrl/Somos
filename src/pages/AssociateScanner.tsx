@@ -15,9 +15,9 @@ export default function AssociateScanner() {
 
   if (bagIdParam) {
     if (role === 'associate' || role === 'admin') {
-      return <Navigate to={`/bolsa/${bagIdParam}`} replace />;
+      return <Navigate to={`/cesto/${bagIdParam}`} replace />;
     } else {
-      return <Navigate to={`/login?redirect=/bolsa/${bagIdParam}`} replace />;
+      return <Navigate to={`/login?redirect=/cesto/${bagIdParam}`} replace />;
     }
   }
 
@@ -39,8 +39,8 @@ export default function AssociateScanner() {
         <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-full mb-3 border border-blue-100">
           <Camera className="w-5 h-5 animate-pulse" />
         </div>
-        <h1 className="text-xl font-bold text-gray-900 mb-1">Escanear Bolsa</h1>
-        <p className="text-gray-500 text-xs px-2 leading-relaxed">Apunta la cámara al código QR de la bolsa SOMOS para comenzar</p>
+        <h1 className="text-xl font-bold text-gray-900 mb-1">Escanear Cesto</h1>
+        <p className="text-gray-500 text-xs px-2 leading-relaxed">Apunta la cámara al código QR del cesto SOMOS para comenzar</p>
       </div>
 
       {/* Main Container */}
@@ -63,7 +63,7 @@ export default function AssociateScanner() {
                     if (result && result.length > 0 && result[0].rawValue) {
                       const id = extractBagId(result[0].rawValue);
                       if (id) {
-                        navigate(`/bolsa/${id}`);
+                        navigate(`/cesto/${id}`);
                       }
                     }
                   }}

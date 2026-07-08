@@ -76,11 +76,11 @@ export default function AssociateAssignPreRegistered() {
       const bagRef = doc(db, "bags", bagId);
       const bagSnap = await getDoc(bagRef);
       if (!bagSnap.exists()) {
-        throw new Error("Bolsa no encontrada.");
+        throw new Error("Cesto no encontrado.");
       }
       const bagData = bagSnap.data() as any;
       if (bagData.status === "assigned") {
-        throw new Error("La bolsa ya está asignada.");
+        throw new Error("El cesto ya está asignada.");
       }
 
       const usersQuery = query(collection(db, "users"), where("phone", "==", foundUser.phone));
@@ -118,7 +118,7 @@ export default function AssociateAssignPreRegistered() {
         });
       }
 
-      await updateDoc(doc(db, "bags", bagId), { status: "assigned", userId: targetUserId });
+      await updateDoc(doc(db, "bags", bagId), { status: "assigned", userId: targetUserId, assignedAt: new Date().toISOString() });
       
       // Success! Show green screen mode
       setSuccessData({ name: foundUser.name, bagId });
@@ -129,7 +129,7 @@ export default function AssociateAssignPreRegistered() {
       // Reset and redirect after 2 seconds
       setTimeout(() => {
         setSuccessData(null);
-        navigate(`/bolsa/${bagId}`);
+        navigate(`/cesto/${bagId}`);
       }, 2000);
       
     } catch (err: any) {
@@ -152,7 +152,7 @@ export default function AssociateAssignPreRegistered() {
             <CheckCircle2 className="w-12 h-12 text-white" />
           </div>
           <h1 className="text-2xl font-medium tracking-widest text-gray-900 uppercase leading-tight">
-            ✓ Bolsa asignada a<br />{successData.name.split(' ')[0]}
+            ✓ Cesto asignado a<br />{successData.name.split(' ')[0]}
           </h1>
           <p className="text-xl font-medium bg-black/20 px-6 py-3 rounded-2xl">
             {successData.bagId}
@@ -245,7 +245,7 @@ export default function AssociateAssignPreRegistered() {
                         <span className="text-base tracking-wider font-extrabold">{prefilledBagId}</span>
                       </div>
                     ) : (
-                      "Asignar bolsa"
+                      "Asignar cesto"
                     )}
                   </button>
                   {prefilledBagId && (
@@ -254,7 +254,7 @@ export default function AssociateAssignPreRegistered() {
                       className="w-full py-4 mt-3 rounded-2xl border border-dashed border-gray-300 text-gray-500 font-bold text-sm hover:bg-gray-50 hover:text-gray-750 transition-all outline-none flex items-center justify-center gap-2"
                     >
                       <Camera className="w-4 h-4" />
-                      <span>Escanear otra bolsa</span>
+                      <span>Escanear otro cesto</span>
                     </button>
                   )}
                </div>
@@ -268,8 +268,8 @@ export default function AssociateAssignPreRegistered() {
                 <div className="inline-flex w-16 h-16 bg-blue-50 rounded-full items-center justify-center mb-4 border border-blue-100">
                    <Camera className="w-8 h-8 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-bold">Escanear Bolsa</h2>
-                <p className="text-gray-500 text-sm mt-1">Escanea el código QR de una bolsa vacía para asignársela a {foundUser?.name.split(' ')[0]}.</p>
+                <h2 className="text-2xl font-bold">Escanear Cesto</h2>
+                <p className="text-gray-500 text-sm mt-1">Escanea el código QR de un cesto vacío para asignárselo a {foundUser?.name.split(' ')[0]}.</p>
              </div>
 
              <div className="flex-1 w-full bg-black rounded-none overflow-hidden relative">
@@ -282,8 +282,8 @@ export default function AssociateAssignPreRegistered() {
                   onScan={(result) => {
                     if (result && result.length > 0 && result[0].rawValue) {
                       let value = extractBagId(result[0].rawValue) || "";
-                      if (value.includes('/bolsa/')) {
-                        value = value.split('/bolsa/').pop() || value;
+                      if (value.includes('/cesto/')) {
+                        value = value.split('/cesto/').pop() || value;
                       } else if (value.includes('=')) {
                           // just in case they have it in search params
                           value = value.split('=').pop() || value;
@@ -306,7 +306,7 @@ export default function AssociateAssignPreRegistered() {
              </div>
              
              <div className="mt-8 shrink-0 text-center text-xs text-gray-400">
-                Apunta la cámara al código QR de la bolsa SOMOS
+                Apunta la cámara al código QR del cesto SOMOS
              </div>
           </motion.div>
         )}

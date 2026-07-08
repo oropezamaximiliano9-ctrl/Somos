@@ -113,10 +113,10 @@ function MainLayout() {
       </header>
 
       {/* Main Content Area - Mobile constrained with modern standard spacing */}
-      <main className={`flex-1 w-full max-w-sm mx-auto relative flex flex-col px-4 ${isLandingPage ? "pt-0 pb-0" : "pt-16 pb-4"}`}>
+      <main className={`flex-1 w-full max-w-sm mx-auto relative flex flex-col px-4 ${isLandingPage ? "pt-0 pb-0" : "pt-4 pb-4"}`}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/bolsa/:id" element={<BagFlow />} />
+          <Route path="/cesto/:id" element={<BagFlow />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/scanner" element={<AssociateScanner />} />
@@ -190,7 +190,7 @@ function MainLayout() {
                           className="w-full text-left px-4 py-3 text-xs font-semibold text-slate-700 bg-slate-50/50 hover:bg-slate-100 border border-slate-100/80 rounded-xl flex items-center gap-2.5 transition-all cursor-pointer"
                         >
                           <Menu className="w-4 h-4 text-emerald-650" />
-                          <span>Ir al Escáner de Bolsas</span>
+                          <span>Ir al Escáner de Cestos</span>
                         </button>
                       )}
 

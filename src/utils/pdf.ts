@@ -74,7 +74,7 @@ export function generateOrdersReport(orders: PdfOrder[]): void {
   doc.setFontSize(9);
   doc.text("ID ÓRDEN", colX.id, currentY);
   doc.text("CLIENTE", colX.user, currentY);
-  doc.text("BOLSA", colX.bag, currentY);
+  doc.text("CESTO", colX.bag, currentY);
   doc.text("SERVICIO", colX.delivery, currentY);
   doc.text("ESTADO", colX.status, currentY);
 
@@ -100,7 +100,7 @@ export function generateOrdersReport(orders: PdfOrder[]): void {
       doc.setFontSize(9);
       doc.text("ID ÓRDEN", colX.id, currentY);
       doc.text("CLIENTE", colX.user, currentY);
-      doc.text("BOLSA", colX.bag, currentY);
+      doc.text("CESTO", colX.bag, currentY);
       doc.text("SERVICIO", colX.delivery, currentY);
       doc.text("ESTADO", colX.status, currentY);
 
@@ -206,13 +206,13 @@ export function generateBagQrLabelPdf(bagId: string, qrDataBase64: string): void
   doc.addImage(qrDataBase64, "PNG", qrX, qrY, qrSize, qrSize);
 
   // Clean, big bag code (e.g. "SMS-01" parsed to "01")
-  const cleanedBagNum = bagId.replace(/^SMS-/i, "").replace(/^BOLSA[ -]*/i, "");
+  const cleanedBagNum = bagId.replace(/^SMS-/i, "").replace(/^CESTO[ -]*/i, "");
 
   // Bag Number Section
   doc.setTextColor(107, 114, 128); // Gray 500
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("BOLSA", w / 2, 118, { align: "center" });
+  doc.text("CESTO", w / 2, 118, { align: "center" });
 
   doc.setTextColor(17, 24, 39); // Gray 900
   doc.setFont("helvetica", "bold");

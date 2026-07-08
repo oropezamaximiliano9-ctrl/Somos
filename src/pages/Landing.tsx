@@ -1140,7 +1140,7 @@ export default function Landing() {
                       <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
-                      Recolección en punto
+                      Lavado y doblado
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

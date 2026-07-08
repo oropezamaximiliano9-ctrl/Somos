@@ -33,10 +33,8 @@ const getDeliveryDayDescription = (deliveryTypeStr: string) => {
 
 const formatBagId = (id: string) => {
   if (!id) return '';
-  // Convert "BOLSA-001" -> "Bolsa-001" and "SMS-124" -> "Sms-124" for friendly, non-all-caps rendering
-  return id.replace(/^(bolsa|sms)/i, (match) => {
-    return match.charAt(0).toUpperCase() + match.slice(1).toLowerCase();
-  });
+  // Convert "CESTO-001" to "Cesto-001"
+  return id.replace(/^(bolsa|cesto)/i, () => "Cesto");
 };
 
 // Helper to compute statistics changes compared to previous cycle and return absolute dynamic metrics
@@ -117,19 +115,35 @@ const getMetricsForRange = (
   const curRevenue = curCompleted * 150;
   const prevRevenue = prevCompleted * 150;
 
-  // 4. Bags in rotation (linked to orders in date range)
+  // 4. Cestos asignados en el periodo
+  const getBagAssignedDate = (bag: any) => {
+    if (bag.assignedAt) return parseDate(bag.assignedAt);
+    const bagOrders = ordersList.filter(o => o.bagId === bag.id);
+    if (bagOrders.length > 0) {
+      return new Date(Math.min(...bagOrders.map(o => parseDate(o.createdAt).getTime())));
+    }
+    // Fallback: Si no tiene assignedAt y no tiene órdenes previas, le asignamos una fecha muy antigua
+    // para que no infle los periodos recientes (solo aparecerá en "Todo el tiempo").
+    return new Date(0);
+  };
+
+  const assignedBags = bagsList.filter(b => b.status === 'assigned');
   let currentBags = 0;
-  if (range === 'all') {
-    currentBags = bagsList.filter(b => b.status === 'assigned').length;
-  } else {
-    currentBags = new Set(ordersInRange.map(o => o.bagId).filter(Boolean)).size;
-  }
-  
   let prevBags = 0;
+
   if (range === 'all') {
-    prevBags = bagsList.filter(b => b.status === 'assigned').length;
+    currentBags = assignedBags.length;
+    prevBags = 0; // Para 'all', el periodo anterior es 0
   } else {
-    prevBags = new Set(previousOrdersInRange.map(o => o.bagId).filter(Boolean)).size;
+    currentBags = assignedBags.filter(b => {
+      const d = getBagAssignedDate(b);
+      return d >= currentPeriodStart;
+    }).length;
+
+    prevBags = assignedBags.filter(b => {
+      const d = getBagAssignedDate(b);
+      return d >= previousPeriodStart && d < currentPeriodStart;
+    }).length;
   }
 
   // 5. Customer sign ups
@@ -144,9 +158,20 @@ const getMetricsForRange = (
     ? customersList.filter(c => parseDate(c.createdAt) < currentPeriodStart).length
     : prevCustomersInRange.length;
 
-  // 6. Kilos carga procesada (assuming 5 kg of processed laundry per completed standard bag)
-  const curKilos = Math.round(curCompleted * 5 * 10) / 10;
-  const prevKilos = Math.round(prevCompleted * 5 * 10) / 10;
+  // 6. Peso promedio / Cesto
+  const curCompletedOrders = range === 'all' 
+    ? ordersList.filter(o => o.status === 'completed') 
+    : ordersInRange.filter(o => o.status === 'completed');
+  
+  const curTotalKilos = curCompletedOrders.reduce((sum, o) => sum + (Number(o.kilos || o.weight) || 0), 0);
+  const curKilos = curCompleted > 0 ? Math.round((curTotalKilos / curCompleted) * 10) / 10 : 0;
+
+  const prevCompletedOrders = range === 'all'
+    ? ordersList.filter(o => o.status === 'completed' && parseDate(o.createdAt) < currentPeriodStart)
+    : previousOrdersInRange.filter(o => o.status === 'completed');
+    
+  const prevTotalKilos = prevCompletedOrders.reduce((sum, o) => sum + (Number(o.kilos || o.weight) || 0), 0);
+  const prevKilos = prevCompleted > 0 ? Math.round((prevTotalKilos / prevCompleted) * 10) / 10 : 0;
 
   // 7. Recurrent customers
   const getCustId = (o: any) => o.userPhone || o.userName;
@@ -197,13 +222,29 @@ const getMetricsForRange = (
     }
   });
 
-  const completedOrdersInRange = ordersInRange.filter(o => o.status === 'completed');
-  const userCompletedCounts: Record<string, number> = {};
-  
-  completedOrdersInRange.forEach(o => {
+  // Rolling 30 days logic for Customer Frequency
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const completedOrdersLast30Days = ordersList.filter(o => {
+    return o.status === 'completed' && parseDate(o.createdAt) >= thirtyDaysAgo;
+  });
+
+  const allCompletedOrders = ordersList.filter(o => o.status === 'completed');
+
+  const user30DaysCompletedCounts: Record<string, number> = {};
+  completedOrdersLast30Days.forEach(o => {
     const cid = o.userId || o.userPhone || o.userName;
     if (cid) {
-      userCompletedCounts[cid] = (userCompletedCounts[cid] || 0) + 1;
+      user30DaysCompletedCounts[cid] = (user30DaysCompletedCounts[cid] || 0) + 1;
+    }
+  });
+
+  const userTotalCompletedCounts: Record<string, number> = {};
+  allCompletedOrders.forEach(o => {
+    const cid = o.userId || o.userPhone || o.userName;
+    if (cid) {
+      userTotalCompletedCounts[cid] = (userTotalCompletedCounts[cid] || 0) + 1;
     }
   });
 
@@ -211,17 +252,16 @@ const getMetricsForRange = (
   let ocasional = 0;
   let enRiesgo = 0;
 
-  // We should evaluate all registered customers to find those with 0 orders ("en riesgo").
   customersList.forEach(c => {
-    // Try to match the customer using the same fields we used for the orders
     const cid = c.id || c.phone || c.name;
-    const count = userCompletedCounts[cid] || userCompletedCounts[c.phone] || userCompletedCounts[c.name] || 0;
+    const count30 = user30DaysCompletedCounts[cid] || user30DaysCompletedCounts[c.phone] || user30DaysCompletedCounts[c.name] || 0;
+    const countTotal = userTotalCompletedCounts[cid] || userTotalCompletedCounts[c.phone] || userTotalCompletedCounts[c.name] || 0;
 
-    if (count >= 2) {
+    if (count30 >= 2) {
       habitual++;
-    } else if (count === 1) {
+    } else if (count30 === 1) {
       ocasional++;
-    } else {
+    } else if (count30 === 0 && countTotal >= 1) {
       enRiesgo++;
     }
   });
@@ -458,7 +498,7 @@ function CustomerFrequencyChart({ frequency, range = '7d' }: CustomerFrequencyCh
             <span className="text-[7px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes</span>
           </div>
         </div>
-        <p className="text-xs text-slate-400 mt-4 font-medium">No hay suficiente información en este período</p>
+        <p className="text-xs text-slate-400 mt-4 font-medium">No hay suficiente información en los últimos 30 días</p>
       </div>
     );
   }
@@ -641,7 +681,7 @@ export default function Dashboard() {
         const dColonia = orderObj.addressColonia || "";
         const locationPart = dCalle ? `${dCalle}${dColonia ? `, Col. ${dColonia}` : ''}` : "Mostrador / Recoger presencial";
 
-        const message = `\u00A1Hola, *${orderObj.userName}*! \u{1F9E7}\n\nTe comunicamos de *SOMOS lavander\u00EDa* que tu ropa de la *Bolsa ${orderObj.bagId}* (Orden *#${String(orderObj.id || '').padStart(4, '0')}*) ya est\u00E1 lista, limpia y doblada. \u{2705}\n\n\u{1F69A} *Programaci\u00F3n de Entrega:*\n\u{1F4C5} *D\u00EDa:* ${suggestedDay}\n\u{23F0} *Horario:* ${timeInput}\n\u{1F4CD} *Domicilio:* ${locationPart}\n\n\u00A1Muchas gracias por tu confianza! Si tienes alguna duda o necesitas cambiar el horario, av\u00EDsanos con un mensaje aqu\u00ED.`;
+        const message = `\u00A1Hola, *${orderObj.userName}*! \u{1F9E7}\n\nTe comunicamos de *SOMOS lavander\u00EDa* que tu ropa del *Cesto ${orderObj.bagId}* (Orden *#${String(orderObj.id || '').padStart(4, '0')}*) ya est\u00E1 lista, limpia y doblada. \u{2705}\n\n\u{1F69A} *Programaci\u00F3n de Entrega:*\n\u{1F4C5} *D\u00EDa:* ${suggestedDay}\n\u{23F0} *Horario:* ${timeInput}\n\u{1F4CD} *Domicilio:* ${locationPart}\n\n\u00A1Muchas gracias por tu confianza! Si tienes alguna duda o necesitas cambiar el horario, av\u00EDsanos con un mensaje aqu\u00ED.`;
         
         let cleanPhone = (orderObj.userPhone || "").replace(/\D/g, "");
         // MX prefix support
@@ -738,11 +778,23 @@ export default function Dashboard() {
 
       const bagsData = rawBagsList.map((bag) => {
         const u = bag.userId ? usersMap[bag.userId] : null;
+        let assignedAt = bag.assignedAt || null;
+        
+        // Si no tiene fecha de asignación nativa, buscamos la orden más antigua de este cesto
+        if (!assignedAt && bag.status === 'assigned') {
+          const bagOrders = rawOrdersList.filter(o => o.bagId === bag.id && o.createdAt);
+          if (bagOrders.length > 0) {
+            const firstOrderDate = new Date(Math.min(...bagOrders.map(o => new Date(o.createdAt).getTime())));
+            assignedAt = firstOrderDate.toISOString();
+          }
+        }
+
         return {
           id: bag.id,
           status: bag.status,
           userId: bag.userId,
-          userName: u ? (u.name || "") : ""
+          userName: u ? (u.name || "") : "",
+          assignedAt: assignedAt
         };
       });
 
@@ -789,7 +841,7 @@ export default function Dashboard() {
     try {
       const bagsSnap = await getDocs(collection(db, "bags"));
       let nextNum = bagsSnap.size + 1;
-      let bagId = `BOLSA-${nextNum.toString().padStart(3, "0")}`;
+      let bagId = `CESTO-${nextNum.toString().padStart(3, "0")}`;
 
       while (true) {
         const checkSnap = await getDoc(doc(db, "bags", bagId));
@@ -797,7 +849,7 @@ export default function Dashboard() {
           break;
         }
         nextNum++;
-        bagId = `BOLSA-${nextNum.toString().padStart(3, "0")}`;
+        bagId = `CESTO-${nextNum.toString().padStart(3, "0")}`;
       }
 
       await setDoc(doc(db, "bags", bagId), { id: bagId, status: "unassigned", userId: null });
@@ -918,7 +970,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex-1 flex flex-col py-4 animate-in fade-in">
+    <div className="flex-1 flex flex-col pt-0 pb-4 animate-in fade-in">
       {errorObj && (
         <div className="mb-4 bg-red-50 text-red-600 p-4 rounded-xl border border-red-100 text-sm">
           {errorObj}. Mostrando caché.
@@ -982,7 +1034,7 @@ export default function Dashboard() {
           }`}
         >
           <QrCode className="w-4 h-4" />
-          Gestión de Bolsas
+          Gestión de Cestos
         </button>
       </div>
 
@@ -1043,24 +1095,24 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'completed' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Total de órdenes con estado "Completado" en el período seleccionado.</p>
+                      <p className="text-[10px] text-white leading-tight">Total de órdenes con estado "Completado".</p>
                     </div>
                   )}
                 </div>
 
-                {/* Metric 2.5: Kilos Carga Procesada */}
+                {/* Metric 2.5: Peso Promedio / Cesto */}
                 <div 
                   className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'kilos' ? null : 'kilos')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Kilos procesados</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Peso Promedio / Cesto</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'kilos' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-black text-slate-900 leading-none">
-                        {metrics.kilos.value.toLocaleString()}
+                        {metrics.kilos.value.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                       </span>
                       <span className="text-[9px] text-slate-500 font-semibold font-mono">
                         KG
@@ -1078,7 +1130,7 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'kilos' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Equivalente estimado basado en órdenes completadas.</p>
+                      <p className="text-[10px] text-white leading-tight">(Total de kilos) / (Total de órdenes completadas)</p>
                     </div>
                   )}
                 </div>
@@ -1113,18 +1165,18 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'revenue' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Valor monetario generado por las órdenes completadas.</p>
+                      <p className="text-[10px] text-white leading-tight">Dinero generado por las órdenes completadas.</p>
                     </div>
                   )}
                 </div>
 
-                {/* Metric 4: Bolsas Asignadas */}
+                {/* Metric 4: Cestos Asignados */}
                 <div 
                   className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'bags' ? null : 'bags')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Bolsas asignadas</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Cestos asignados</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'bags' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
@@ -1143,7 +1195,7 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'bags' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Bolsas actualmente en posesión de los clientes en este período o en general.</p>
+                      <p className="text-[10px] text-white leading-tight">Nuevos cestos asignados a clientes.</p>
                     </div>
                   )}
                 </div>
@@ -1154,7 +1206,7 @@ export default function Dashboard() {
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'customers' ? null : 'customers')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes nuevos</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'customers' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
@@ -1173,7 +1225,7 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'customers' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Nuevos clientes registrados vs el período anterior.</p>
+                      <p className="text-[10px] text-white leading-tight">Nuevos clientes registrados.</p>
                     </div>
                   )}
                 </div>
@@ -1184,7 +1236,7 @@ export default function Dashboard() {
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'recurrentes' ? null : 'recurrentes')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Recurrentes</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes recurrentes</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'recurrentes' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
@@ -1203,7 +1255,7 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'recurrentes' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Clientes que han completado 2 o más órdenes.</p>
+                      <p className="text-[10px] text-white leading-tight">Clientes del período actual que ya tenían órdenes previas.</p>
                     </div>
                   )}
                 </div>
@@ -1218,7 +1270,7 @@ export default function Dashboard() {
                   <div>
                     <div className="border-b border-gray-100 pb-1.5 mb-2.5 flex items-center justify-between">
                       <h3 className="font-bold text-slate-800 text-[11px] uppercase font-mono tracking-wider">
-                        Preferencias de Servicio
+                        Preferencias de Entrega
                       </h3>
                       <div className={`flex items-center gap-1 transition-colors ${activeMetricTooltip === 'services' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'}`}>
                         <span className="text-[9px] uppercase font-bold tracking-wider">Detalles</span>
@@ -1228,7 +1280,7 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'services' && (
                     <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Distribución de los servicios completados según la preferencia de entrega en el período.</p>
+                      <p className="text-[10px] text-white leading-tight">Distribución de los servicios completados según la preferencia de entrega.</p>
                     </div>
                   )}
                   <div className="mt-2 w-full flex-1 flex flex-col justify-center">
@@ -1254,7 +1306,7 @@ export default function Dashboard() {
                   </div>
                   {activeMetricTooltip === 'frequencies' && (
                     <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Clasificación de clientes según las órdenes completadas en este período.</p>
+                      <p className="text-[10px] text-white leading-tight">Clasificación de clientes según las órdenes completadas en los últimos 30 días.</p>
                     </div>
                   )}
                   <div className="mt-2 w-full flex-1 flex flex-col justify-center">
@@ -1353,7 +1405,7 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <div className="text-xs text-slate-500 font-medium flex flex-wrap gap-x-3 gap-y-1">
-                            <span><strong className="text-slate-600">Bolsa:</strong> {formatBagId(o.bagId)}</span>
+                            <span><strong className="text-slate-600">Cesto:</strong> {formatBagId(o.bagId)}</span>
                             <span className="text-slate-300">•</span>
                             <span translate="no" className="notranslate"><strong className="text-slate-600">Plan:</strong> {o.deliveryType || 'Estándar'}</span>
                           </div>
@@ -1584,8 +1636,8 @@ export default function Dashboard() {
             >
               <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900 text-left">Generador de QR para Bolsas</h3>
-                  <p className="text-xs text-gray-500 text-left">Imprime los siguientes códigos para pegarlos en las bolsas físicas.</p>
+                  <h3 className="font-semibold text-gray-900 text-left">Generador de QR para Cestos</h3>
+                  <p className="text-xs text-gray-500 text-left">Imprime los siguientes códigos para pegarlos en los cestos físicos.</p>
                 </div>
                 <button
                   onClick={handleCreateBag}
@@ -1593,18 +1645,18 @@ export default function Dashboard() {
                   className="px-3 py-2 bg-blue-50 text-blue-700 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-100 transition-colors border border-blue-200 disabled:opacity-50 flex-shrink-0 ml-4"
                 >
                   {creatingBag ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                  <span className="inline">Nueva Bolsa</span>
+                  <span className="inline">Nuevo Cesto</span>
                 </button>
               </div>
 
               <div className="bg-white border border-gray-100 rounded-none p-5 space-y-4">
-                <h4 className="font-medium text-gray-800 text-left border-b border-gray-100 pb-2">Bolsas Sin Asignar</h4>
+                <h4 className="font-medium text-gray-800 text-left border-b border-gray-100 pb-2">Cestos Sin Asignar</h4>
                 {bags.filter(b => b.status === "unassigned").length === 0 ? (
-                  <p className="text-sm text-gray-400 text-left py-4">No hay bolsas sin asignar.</p>
+                  <p className="text-sm text-gray-400 text-left py-4">No hay cestos sin asignar.</p>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-2">
                     {bags.filter(b => b.status === "unassigned").map((bag) => {
-                      const qrUrl = `${window.location.origin}/bolsa/${bag.id}`;
+                      const qrUrl = `${window.location.origin}/cesto/${bag.id}`;
                       return (
                         <div key={bag.id} onClick={() => setSelectedQRBag(bag)} className="flex flex-col items-center justify-center p-4 border border-gray-100 rounded-none bg-gray-50 hover: cursor-pointer hover:border-blue-200">
                           <div className="p-2 bg-white rounded-none mb-2 pointer-events-none">
@@ -1620,13 +1672,13 @@ export default function Dashboard() {
               </div>
 
               <div className="bg-white border border-gray-100 rounded-none p-5 space-y-4">
-                <h4 className="font-medium text-gray-800 text-left border-b border-gray-100 pb-2">Bolsas Asignadas</h4>
+                <h4 className="font-medium text-gray-800 text-left border-b border-gray-100 pb-2">Cestos Asignados</h4>
                 {bags.filter(b => b.status === "assigned").length === 0 ? (
-                  <p className="text-sm text-gray-400 text-left py-4">No hay bolsas asignadas a órdenes actualmente.</p>
+                  <p className="text-sm text-gray-400 text-left py-4">No hay cestos asignados a órdenes actualmente.</p>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-2 cursor-pointer">
                     {bags.filter(b => b.status === "assigned").map((bag) => {
-                      const qrUrl = `${window.location.origin}/bolsa/${bag.id}`;
+                      const qrUrl = `${window.location.origin}/cesto/${bag.id}`;
                       return (
                         <div key={bag.id} onClick={() => setSelectedQRBag(bag)} className="flex flex-col items-center justify-center p-4 border border-blue-50 rounded-none bg-blue-50/30 hover: cursor-pointer hover:border-blue-200">
                           <div className="p-2 bg-white rounded-none mb-2 pointer-events-none">
@@ -1815,7 +1867,7 @@ export default function Dashboard() {
                               </span>
                             </div>
                             <div className="text-xs text-slate-500 font-medium flex flex-wrap gap-x-3 gap-y-1">
-                              <span><strong className="text-slate-600">Bolsa:</strong> {formatBagId(o.bagId)}</span>
+                              <span><strong className="text-slate-600">Cesto:</strong> {formatBagId(o.bagId)}</span>
                               <span className="text-slate-300">•</span>
                               <span translate="no" className="notranslate"><strong className="text-slate-600">Plan:</strong> {o.deliveryType || 'Estándar'}</span>
                             </div>
@@ -1921,12 +1973,12 @@ export default function Dashboard() {
             <div className="flex flex-col items-center justify-center space-y-6">
               <h2 className="text-2xl font-bold text-gray-900 font-mono tracking-tight">{selectedQRBag.id}</h2>
               <div className="p-6 bg-white border border-gray-100 rounded-none relative">
-                <QRCodeSVG value={`${window.location.origin}/bolsa/${selectedQRBag.id}`} size={240} />
+                <QRCodeSVG value={`${window.location.origin}/cesto/${selectedQRBag.id}`} size={240} />
                 {/* Hidden high-res canvas used for generating crisp PDF vector graphics */}
                 <div style={{ display: "none" }}>
                   <QRCodeCanvas 
                     id="qr-canvas-hidden" 
-                    value={`${window.location.origin}/bolsa/${selectedQRBag.id}`} 
+                    value={`${window.location.origin}/cesto/${selectedQRBag.id}`} 
                     size={400} 
                     level="H"
                     includeMargin={true}
@@ -1938,9 +1990,16 @@ export default function Dashboard() {
                   {selectedQRBag.status === 'assigned' ? 'Asignada' : 'Sin Asignar'}
                 </span>
                 {selectedQRBag.status === 'assigned' ? (
-                  <p className="text-sm font-semibold text-gray-800 text-center px-4">
-                    {selectedQRBag.userName || 'Cliente Asignado'}
-                  </p>
+                  <div className="flex flex-col items-center">
+                    <p className="text-sm font-semibold text-gray-800 text-center px-4">
+                      {selectedQRBag.userName || 'Cliente Asignado'}
+                    </p>
+                    {selectedQRBag.assignedAt && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Asignado: {new Date(selectedQRBag.assignedAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   <p className="text-xs text-gray-400 text-center px-4">
                     Sin cliente asignado

@@ -17,10 +17,10 @@ export default function FlowSimulator() {
   const [bagStatus, setBagStatus] = useState<string>("unassigned");
   const [activeOrderId, setActiveOrderId] = useState<string>("");
 
-  // Fetch initial state of BOLSA-001 to sync step correctly on load
+  // Fetch initial state of CESTO-001 to sync step correctly on load
   const checkStatus = async () => {
     try {
-      const id = "BOLSA-001";
+      const id = "CESTO-001";
       const bagSnap = await getDoc(doc(db, "bags", id));
       if (bagSnap.exists()) {
         const bagData = bagSnap.data() as any;
@@ -124,7 +124,7 @@ export default function FlowSimulator() {
       setStatusMsg("✅ Jaime Hernández pre-registrado con éxito en Firestore.");
       // Only navigate automatically if they aren't on the dedicated simulator page
       if (location.pathname !== "/simulator") {
-        navigate("/associate/link?bagId=BOLSA-001&phone=9212393938");
+        navigate("/associate/link?bagId=CESTO-001&phone=9212393938");
       }
     } catch (e: any) {
       setStatusMsg(`❌ Error: ${e.message}`);
@@ -136,12 +136,12 @@ export default function FlowSimulator() {
   // Step 2: Auto-link Bag directly or navigate
   const runStep2Auto = async () => {
     setLoading(true);
-    setStatusMsg("Bypasseando: Vinculando BOLSA-001 a Jaime...");
+    setStatusMsg("Bypasseando: Vinculando CESTO-001 a Jaime...");
     try {
-      const bagRef = doc(db, "bags", "BOLSA-001");
+      const bagRef = doc(db, "bags", "CESTO-001");
       const bagSnap = await getDoc(bagRef);
       if (!bagSnap.exists()) {
-        throw new Error("La bolsa BOLSA-001 no existe en la BD.");
+        throw new Error("El cesto CESTO-001 no existe en la BD.");
       }
       
       const phone = "9212393938";
@@ -176,10 +176,10 @@ export default function FlowSimulator() {
 
       setBagStatus("assigned");
       setCurrentStep(3);
-      setStatusMsg("🔗 BOLSA-001 asignada con éxito.");
+      setStatusMsg("🔗 CESTO-001 asignado con éxito.");
       // Only navigate automatically if they aren't on the dedicated simulator page
       if (location.pathname !== "/simulator") {
-        navigate("/bolsa/BOLSA-001");
+        navigate("/cesto/CESTO-001");
       }
     } catch (e: any) {
       setStatusMsg(`❌ Error: ${e.message}`);
@@ -193,10 +193,10 @@ export default function FlowSimulator() {
     setLoading(true);
     setStatusMsg("Recibiendo prendas y generando Orden en base de datos...");
     try {
-      const bagId = "BOLSA-001";
+      const bagId = "CESTO-001";
       const bagSnap = await getDoc(doc(db, "bags", bagId));
       if (!bagSnap.exists() || bagSnap.data()?.status !== "assigned") {
-        throw new Error("La bolsa no está asignada o no existe.");
+        throw new Error("El cesto no está asignada o no existe.");
       }
 
       const bag = bagSnap.data() as any;
@@ -242,7 +242,7 @@ export default function FlowSimulator() {
       setStatusMsg("🎉 ¡Orden # " + orderId + " creada para Jaime!");
       // Only navigate automatically or reload if not on dedicated simulator page
       if (location.pathname !== "/simulator") {
-        navigate("/bolsa/BOLSA-001");
+        navigate("/cesto/CESTO-001");
         window.location.reload();
       }
     } catch (e: any) {
@@ -257,7 +257,7 @@ export default function FlowSimulator() {
     let orderIdToComplete = activeOrderId;
     if (!orderIdToComplete) {
       try {
-        const id = "BOLSA-001";
+        const id = "CESTO-001";
         const ordersSnap = await getDocs(collection(db, "orders"));
         let latestCreatedAt = 0;
         ordersSnap.forEach((oSnap) => {
@@ -279,16 +279,16 @@ export default function FlowSimulator() {
     }
 
     setLoading(true);
-    setStatusMsg(`Entregando prendas para Orden #${orderIdToComplete} y liberando BOLSA-001...`);
+    setStatusMsg(`Entregando prendas para Orden #${orderIdToComplete} y liberando CESTO-001...`);
     try {
       const orderRef = doc(db, "orders", orderIdToComplete);
       await updateDoc(orderRef, { status: "completed" });
 
       setCurrentStep(5);
       setActiveOrderId("");
-      setStatusMsg("✅ ¡Prendas entregadas al cliente! Bolsa liberada con éxito.");
+      setStatusMsg("✅ ¡Prendas entregadas al cliente! Cesto liberado con éxito.");
       if (location.pathname !== "/simulator") {
-        navigate("/bolsa/BOLSA-001");
+        navigate("/cesto/CESTO-001");
       }
     } catch (e: any) {
       setStatusMsg(`❌ Error al entregar orden: ${e.message}`);
@@ -309,14 +309,14 @@ export default function FlowSimulator() {
         userIdsToDelete.push(uDoc.id);
       });
 
-      // Reset BOLSA-001
-      await setDoc(doc(db, "bags", "BOLSA-001"), { id: "BOLSA-001", status: "unassigned", userId: null });
+      // Reset CESTO-001
+      await setDoc(doc(db, "bags", "CESTO-001"), { id: "CESTO-001", status: "unassigned", userId: null });
 
-      // Delete active orders for BOLSA-001
+      // Delete active orders for CESTO-001
       const ordersSnap = await getDocs(collection(db, "orders"));
       for (const oDoc of ordersSnap.docs) {
         const odata = oDoc.data();
-        if (odata.bagId === "BOLSA-001") {
+        if (odata.bagId === "CESTO-001") {
           await deleteDoc(doc(db, "orders", oDoc.id));
         }
       }
@@ -330,7 +330,7 @@ export default function FlowSimulator() {
       setBagStatus("unassigned");
       setActiveOrderId("");
       setCurrentStep(1);
-      setStatusMsg("🔄 Simulación reiniciada. Bolsa 1 puesta a 'unassigned'.");
+      setStatusMsg("🔄 Simulación reiniciada. Cesto 1 puesto a 'unassigned'.");
       // Only navigate automatically if they aren't on the dedicated simulator page
       if (location.pathname !== "/simulator") {
         navigate("/scanner");
@@ -347,19 +347,19 @@ export default function FlowSimulator() {
     const path = location.pathname;
     if (path.startsWith("/scanner")) {
       return {
-        title: "Escáner de Bolsa",
-        desc: "El asociado inicia aquí. Normalmente escanea el código QR de la bolsa vacía con la cámara. Con el simulador, puedes automatizarlo para pre-registrar al cliente Jaime."
+        title: "Escáner de Cesto",
+        desc: "El asociado inicia aquí. Normalmente escanea el código QR del cesto vacío con la cámara. Con el simulador, puedes automatizarlo para pre-registrar al cliente Jaime."
       };
     } else if (path.startsWith("/associate/link")) {
       return {
         title: "Vincular Pre-registro",
         desc: "Aquí el asociado busca al cliente por teléfono. Para simularlo, ingresa el celular de Jaime (9212393938), dale 'Buscar', y luego da clic al gran botón azul de 'Confirmar Vinculación'."
       };
-    } else if (path.startsWith("/bolsa/BOLSA-001")) {
+    } else if (path.startsWith("/cesto/CESTO-001")) {
       if (currentStep < 4) {
         return {
           title: "Recepción de Prendas",
-          desc: "BOLSA-001 está vinculada a Jaime. Verifica que las prendas quepan y dale 'Confirmar Recepción' para habilitar tus bonitos tickets digitales."
+          desc: "CESTO-001 está vinculado a Jaime. Verifica que las prendas quepan y dale 'Confirmar Recepción' para habilitar tus bonitos tickets digitales."
         };
       } else {
         return {
@@ -384,7 +384,7 @@ export default function FlowSimulator() {
         <div className="flex flex-col text-left">
           <span className="text-[10px] uppercase font-bold tracking-widest text-[#0f55d8] flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#0f55d8] animate-pulse"></span>
-            Área de Simulación (Bolsa 1)
+            Área de Simulación (Cesto 1)
           </span>
           <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
             SOMOS Lavandería
@@ -458,12 +458,12 @@ export default function FlowSimulator() {
           <div className="flex-1 flex flex-col text-left space-y-1">
             <div className="flex justify-between items-center">
               <span className={`text-xs font-bold ${currentStep === 2 ? "text-slate-900" : "text-slate-400"}`}>
-                Vincular BOLSA-001 en pantalla
+                Vincular CESTO-001 en pantalla
               </span>
               {currentStep === 2 && (
                 <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => navigate("/associate/link?bagId=BOLSA-001&phone=9212393938")}
+                    onClick={() => navigate("/associate/link?bagId=CESTO-001&phone=9212393938")}
                     className="text-[9px] font-bold px-2 py-0.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors bg-white cursor-pointer"
                   >
                     Ir a Pantalla 🔍
@@ -480,7 +480,7 @@ export default function FlowSimulator() {
             </div>
             <span className="text-[10px] text-slate-400">
               {currentStep > 2
-                ? "✓ Bolsa 1 exitosamente asociada a Jaime."
+                ? "✓ Cesto 1 exitosamente asociado a Jaime."
                 : "Abre la pantalla de búsqueda con los campos pre-llenados o vincúlalo instantáneamente con el bypass."}
             </span>
           </div>
@@ -505,7 +505,7 @@ export default function FlowSimulator() {
               {currentStep === 3 && (
                 <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => navigate("/bolsa/BOLSA-001")}
+                    onClick={() => navigate("/cesto/CESTO-001")}
                     className="text-[9px] font-bold px-2 py-0.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors bg-white cursor-pointer"
                   >
                     Ver Pantalla 🧺
@@ -547,7 +547,7 @@ export default function FlowSimulator() {
               {currentStep === 4 && (
                 <button
                   type="button"
-                  onClick={() => navigate("/bolsa/BOLSA-001")}
+                  onClick={() => navigate("/cesto/CESTO-001")}
                   className="text-[9px] font-bold px-2.5 py-0.5 bg-[#0f55d8] hover:bg-[#0d4bc0] text-white rounded-lg transition-colors cursor-pointer"
                 >
                   Ir a Entrega 📦
@@ -556,9 +556,9 @@ export default function FlowSimulator() {
             </div>
             <span className="text-[10px] text-slate-400">
               {currentStep === 5 
-                ? "🎉 ¡Entrega finalizada! Bolsa vacía liberada automáticamente para volver a usarse sin trabas."
+                ? "🎉 ¡Entrega finalizada! Cesto vacío liberado automáticamente para volver a usarse sin trabas."
                 : currentStep === 4
-                ? "✓ Escanear la bolsa con orden activa ahora abre la nueva pantalla dedicada de Entrega de Ropa."
+                ? "✓ Escanear el cesto con orden activa ahora abre la nueva pantalla dedicada de Entrega de Ropa."
                 : "Disponible una vez confirmada la recepción."}
             </span>
           </div>

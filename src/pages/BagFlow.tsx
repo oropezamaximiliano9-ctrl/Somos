@@ -62,10 +62,10 @@ export default function BagFlow() {
   const fetchBag = async () => {
     setLoading(true);
     try {
-      if (!id) throw new Error("ID de bolsa es requerido");
+      if (!id) throw new Error("ID de cesto es requerido");
       const bagSnap = await getDoc(doc(db, "bags", id));
       if (!bagSnap.exists()) {
-        throw new Error("Bolsa no encontrada en la base de datos.");
+        throw new Error("Cesto no encontrado en la base de datos.");
       }
       const bagData = bagSnap.data() as any;
       let userData: any = null;
@@ -123,10 +123,10 @@ export default function BagFlow() {
   const handleReceiveBag = async (selectedDeliveryType?: string, preferredTimePreference?: string) => {
     setReceiving(true);
     try {
-      if (!id) throw new Error("ID de bolsa es requerido");
+      if (!id) throw new Error("ID de cesto es requerido");
       const bagSnap = await getDoc(doc(db, "bags", id));
       if (!bagSnap.exists() || bagSnap.data()?.status !== "assigned") {
-        throw new Error("La bolsa no está asignada o no fue encontrada.");
+        throw new Error("El cesto no está asignado o no fue encontrado.");
       }
       const bagData = bagSnap.data() as any;
       const userSnap = await getDoc(doc(db, "users", bagData.userId));
@@ -204,7 +204,7 @@ export default function BagFlow() {
   const handleDeliverBag = async () => {
     const activeOrderId = bag?.activeOrder?.id || confirmedOrderData?.orderId;
     if (!activeOrderId) {
-      alert("Error: No hay una orden activa identificada para esta bolsa.");
+      alert("Error: No hay una orden activa identificada para este cesto.");
       return;
     }
 
@@ -250,12 +250,12 @@ export default function BagFlow() {
         <div className="space-y-2">
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">¡Ropa Entregada!</h2>
           <p className="text-sm text-slate-500 font-medium max-w-[280px] mx-auto leading-relaxed">
-            La orden ha sido marcada como completada y la bolsa <span className="font-mono font-bold text-slate-700">#{id}</span> se liberó con éxito para nuevas recepciones.
+            La orden ha sido marcada como completada y el cesto <span className="font-mono font-bold text-slate-700">#{id}</span> se liberó con éxito para nuevas recepciones.
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-mono bg-emerald-50/55 px-3 py-1.5 rounded-full border border-emerald-100">
           <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-          Bolsa lista para siguiente servicio
+          Cesto listo para siguiente servicio
         </div>
       </div>
     );
@@ -264,7 +264,7 @@ export default function BagFlow() {
   if (error || !bag) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center space-y-4">
-        <div className="text-red-500 font-medium">{error || "Bolsa no encontrada"}</div>
+        <div className="text-red-500 font-medium">{error || "Cesto no encontrado"}</div>
         <button onClick={() => navigate("/")} className="text-blue-500 underline">Volver</button>
       </div>
     );
@@ -277,9 +277,9 @@ export default function BagFlow() {
         <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 animate-in fade-in zoom-in p-6">
           <Package className="w-24 h-24 text-gray-300" />
           <div className="space-y-2">
-            <h2 className="text-2xl font-light">Bolsa no asignada</h2>
+            <h2 className="text-2xl font-light">Cesto no asignado</h2>
             <p className="text-gray-500 text-sm leading-relaxed max-w-[280px] mx-auto">
-              Esta bolsa aún no está vinculada. Por favor, entrégala a un asociado de SOMOS para que la asigne a tu cuenta.
+              Este cesto aún no está vinculado. Por favor, entrégalo a un asociado de SOMOS para que lo asigne a tu cuenta.
             </p>
           </div>
 
@@ -307,11 +307,11 @@ export default function BagFlow() {
         <Package className="w-20 h-20 text-blue-500" />
         <div className="space-y-3">
           <div className="inline-block px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold uppercase tracking-widest border border-blue-100">
-            Bolsa Nueva
+            Cesto Nuevo
           </div>
-          <h2 className="text-3xl font-light">Bolsa {id}</h2>
+          <h2 className="text-3xl font-light">Cesto {id}</h2>
           <p className="text-gray-500 text-sm leading-relaxed max-w-[280px] mx-auto">
-            Esta bolsa está disponible. Para asignarla a un cliente, utiliza el buscador de pre-registros.
+            Este cesto está disponible. Para asignarlo a un cliente, utiliza el buscador de pre-registros.
           </p>
         </div>
          <button 
@@ -333,11 +333,11 @@ export default function BagFlow() {
         </div>
         <div className="space-y-3">
           <div className="inline-block px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold uppercase tracking-widest text-gray-500">
-            Tu Bolsa
+            Tu cesto
           </div>
           <h2 className="text-3xl font-light">Hola, {bag.user?.name?.split(' ')[0]}</h2>
           <p className="text-gray-500 text-sm max-w-[260px] mx-auto leading-relaxed">
-            Puedes depositar esta bolsa en cualquier punto SOMOS. Nosotros nos encargamos del resto.
+            Puedes depositar este cesto en cualquier punto SOMOS. Nosotros nos encargamos del resto.
           </p>
         </div>
         
@@ -590,10 +590,10 @@ export default function BagFlow() {
             <div className="absolute inset-y-0 right-20 w-[1px] bg-[#0c3ab5]/15 pointer-events-none" />
             <div className="absolute inset-y-0 right-30 w-[1px] bg-[#0c3ab5]/15 pointer-events-none" />
 
-            {/* Service Item 1: Lavado bolsa mediana */}
+            {/* Service Item 1: Lavado cesto mediano */}
             <div className="py-2.5 border-b border-[#0c3ab5]/15 flex justify-between items-center relative z-10">
               <div className="pr-3 text-left">
-                <h4 className="text-sm font-bold text-slate-900">Lavado bolsa mediana</h4>
+                <h4 className="text-sm font-bold text-slate-900">Lavado cesto mediano</h4>
               </div>
               <div className="text-right font-sans text-[11px] font-black text-[#0c3ab5] shrink-0 pr-1 flex items-center justify-end min-w-[65px]">
                 <span>$150</span>
@@ -610,7 +610,7 @@ export default function BagFlow() {
               </div>
             </div>
 
-            {/* Service Item 3: Bolsa Inteligente SOMOS (Espacio vacío) */}
+            {/* Service Item 3: Cesto Inteligente SOMOS (Espacio vacío) */}
             <div className="py-2.5 flex justify-between items-center relative z-10 min-h-[40px]">
               <div className="pr-3 text-left">
                 {/* Manteniendo el espacio vacío */}
