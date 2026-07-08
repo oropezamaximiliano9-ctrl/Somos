@@ -1397,7 +1397,7 @@ export default function Landing() {
           </div>
 
           {/* Navigation Route CTA helper */}
-          <div className="space-y-4 mt-6 px-4 sm:px-0 flex flex-col items-center">
+          <div className="space-y-4 mt-10 px-4 sm:px-0 flex flex-col items-center">
             <div className="w-full flex flex-col items-center gap-y-1.5" id="cta-info-wrapper">
               <button 
                 type="button"
