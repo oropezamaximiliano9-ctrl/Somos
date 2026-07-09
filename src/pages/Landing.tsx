@@ -1372,26 +1372,26 @@ export default function Landing() {
               </div>
                 </a>
               </div>
+            </div>
 
-              {/* Tarjeta de información */}
-              <div className="pt-2.5 pb-0.5 w-full bg-white relative z-10 flex flex-row justify-between items-center px-1.5">
-                {/* Horario */}
-                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
-                  Horario: 9 am - 6 pm
-                </div>
+            {/* Tarjeta de información */}
+            <div className="pt-2.5 pb-0.5 w-full relative z-10 flex flex-row justify-between items-center px-1.5 mt-2">
+              {/* Horario */}
+              <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
+                Horario: 9 am - 6 pm
+              </div>
 
-                {/* Contacto */}
-                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1">
-                  Contacto:{" "}
-                  <a 
-                    href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#6A6A6A] underline hover:no-underline"
-                  >
-                    whatsapp
-                  </a>
-                </div>
+              {/* Contacto */}
+              <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1">
+                Contacto:{" "}
+                <a 
+                  href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#6A6A6A] underline hover:no-underline"
+                >
+                  whatsapp
+                </a>
               </div>
             </div>
           </div>
