@@ -1261,7 +1261,6 @@ export default function Landing() {
           </div>
 
           <div className="mt-10 px-4 sm:px-0">
-            <p className="text-center text-sm font-medium text-gray-500 mb-2.5">Recíbelo gratis, pagas solo al lavar</p>
             <button 
               onClick={openBottomSheet}
               className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none disabled:opacity-85 hover:brightness-110  "
@@ -1272,6 +1271,7 @@ export default function Landing() {
                 <ArrowRight className="w-5 h-5" />
               </div>
             </button>
+            <p className="text-center text-sm font-semibold text-gray-500 mt-2.5">Recíbelo gratis, pagas solo al lavar</p>
           </div>
         </div>
       </section>
