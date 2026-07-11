@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
-    "@tremor/react": "^3.18.7",
     "@types/google.maps": "^3.64.1",
     "@vis.gl/react-google-maps": "^1.8.3",
     "@vitejs/plugin-react": "^5.0.4",

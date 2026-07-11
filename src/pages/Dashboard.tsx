@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { Loader2, PackageSearch, Clock, CheckCircle, FileText, MapPin, Plus, Edit2, ChevronRight, ArrowLeft, QrCode, Download, Users, CreditCard, Search, Send, MessageSquare, LayoutGrid, TrendingUp, Calendar, ChevronDown, Info } from "lucide-react";
+import { Loader2, PackageSearch, Clock, CheckCircle, FileText, MapPin, Plus, Edit2, ChevronRight, ArrowLeft, QrCode, Download, Users, CreditCard, Search, Send, MessageSquare, LayoutGrid, TrendingUp, Calendar, ChevronDown, Info, Banknote, ShoppingBag } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import { OrderWaterfall, WaterfallData } from "../components/OrderWaterfall";
@@ -1069,7 +1069,7 @@ export default function Dashboard() {
               </div>
 
               {/* Margen Neto Promedio Card */}
-              <div className="mb-4 bg-white ring-1 ring-gray-200 rounded-2xl p-5 text-center flex flex-col items-center justify-center">
+              <div className="mb-4 bg-white border border-slate-200 rounded-2xl p-5 text-center flex flex-col items-center justify-center">
                  <div className="text-sm font-medium text-gray-500 mb-1">Margen Neto Promedio</div>
                  <div className="text-6xl font-semibold text-gray-900 mb-3 tracking-tighter">32%</div>
                  <div className="text-[13px] text-[#0f55d8] font-medium bg-blue-50/50 px-4 py-1.5 rounded-lg ring-1 ring-blue-100">
@@ -1081,7 +1081,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Metric 2: Completadas */}
                 <div 
-                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'completed' ? null : 'completed')}
                 >
                   <div className="flex items-center justify-between">
@@ -1111,7 +1111,7 @@ export default function Dashboard() {
 
                 {/* Metric 2.5: Peso Promedio / Cesto */}
                 <div 
-                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'kilos' ? null : 'kilos')}
                 >
                   <div className="flex items-center justify-between">
@@ -1146,7 +1146,7 @@ export default function Dashboard() {
 
                 {/* Metric 3: Ingresos Est. */}
                 <div 
-                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'revenue' ? null : 'revenue')}
                 >
                   <div className="flex items-center justify-between">
@@ -1181,7 +1181,7 @@ export default function Dashboard() {
 
                 {/* Metric 4: Cestos Asignados */}
                 <div 
-                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'bags' ? null : 'bags')}
                 >
                   <div className="flex items-center justify-between">
@@ -1211,7 +1211,7 @@ export default function Dashboard() {
 
                 {/* Metric 5: Clientes */}
                 <div 
-                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'customers' ? null : 'customers')}
                 >
                   <div className="flex items-center justify-between">
@@ -1241,7 +1241,7 @@ export default function Dashboard() {
 
                 {/* Metric 6: Clientes Recurrentes */}
                 <div 
-                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'recurrentes' ? null : 'recurrentes')}
                 >
                   <div className="flex items-center justify-between">
@@ -1273,7 +1273,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
                 {/* Gráfico circular de preferencias de servicio */}
                 <div 
-                  className="relative bg-white border ring-1 ring-gray-200 px-4 py-3 rounded-xl text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border-slate-200 px-4 py-3 rounded-xl text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'services' ? null : 'services')}
                 >
                   <div>
@@ -1299,7 +1299,7 @@ export default function Dashboard() {
 
                 {/* Cliente Frecuencia Frecuencia de Pedidos por Cliente */}
                 <div 
-                  className="relative bg-white border ring-1 ring-gray-200 px-4 py-3 rounded-xl text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border-slate-200 px-4 py-3 rounded-xl text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'frequencies' ? null : 'frequencies')}
                 >
                   <div>
