@@ -1073,7 +1073,7 @@ export default function Dashboard() {
                  <div className="text-sm font-medium text-gray-500 mb-1">Margen Neto Promedio</div>
                  <div className="text-6xl font-semibold text-gray-900 mb-3 tracking-tighter">32%</div>
                  <div className="text-[13px] text-[#0f55d8] font-medium bg-blue-50/50 px-4 py-1.5 rounded-lg ring-1 ring-blue-100">
-                   Ganancia neta acumulada: ${(metrics.revenue.value * 0.32).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MXN
+                   Ganancia acumulada: ${(metrics.revenue.value * 0.32).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MXN
                  </div>
               </div>
 

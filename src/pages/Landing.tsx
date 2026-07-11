@@ -1286,7 +1286,7 @@ export default function Landing() {
               Recolección
             </h2>
             <p className="text-center text-[19px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
-              Paseo de las Palmas 209
+              Cerca de ti
             </p>
           </div>
 
@@ -1295,6 +1295,13 @@ export default function Landing() {
           {/* Custom CSS Map Container matching the exact provided location image */}
           <div className="px-0 sm:px-0 mt-6 w-full">
             <div className="w-full bg-white border border-[#eaeaea] rounded-2xl p-2 text-left relative overflow-hidden flex flex-col">
+              {/* Dirección */}
+              <div className="pb-2 pt-1 w-full bg-white relative z-10 flex flex-col items-center px-1.5">
+                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight text-center">
+                  Paseo de las Palmas 209
+                </div>
+              </div>
+
               <div className="w-full p-0">
                 <a 
                   href="https://www.google.com/maps/place/Paseo+de+las+Palmas+209,+Coatzacoalcos,+Veracruz"
