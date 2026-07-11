@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { Loader2, PackageSearch, Clock, CheckCircle, FileText, MapPin, Plus, Edit2, ChevronRight, ArrowLeft, QrCode, Download, Users, CreditCard, Search, Send, MessageSquare, LayoutGrid, TrendingUp, Calendar, ChevronDown, Info } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
+import { OrderWaterfall, WaterfallData } from "../components/OrderWaterfall";
 import { generateBagQrLabelPdf } from "../utils/pdf";
 import { motion, AnimatePresence } from "motion/react";
 import { db } from "../firebase";
@@ -298,7 +299,7 @@ function ServicePreferenceChart({ preferences }: ServicePreferenceChartProps) {
   if (total === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 rounded-none border border-dashed border-slate-200">
-        <div className="relative w-28 h-28 flex items-center justify-center">
+        <div className="relative w-24 h-24 flex items-center justify-center">
           <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
             <circle
               cx="50"
@@ -340,10 +341,10 @@ function ServicePreferenceChart({ preferences }: ServicePreferenceChartProps) {
   const otrDash = (otrPct / 100) * circ;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
       {/* SVG Donut Center */}
       <div className="sm:col-span-4 flex justify-center">
-        <div className="relative w-28 h-28 flex items-center justify-center">
+        <div className="relative w-24 h-24 flex items-center justify-center">
           <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
             {/* Background Base Ring */}
             <circle
@@ -413,7 +414,7 @@ function ServicePreferenceChart({ preferences }: ServicePreferenceChartProps) {
       </div>
 
       {/* Legend & Details */}
-      <div className="sm:col-span-8 space-y-2">
+      <div className="sm:col-span-8 space-y-1.5">
         {/* Estándar progress & stats */}
         <div className="space-y-0.5">
           <div className="flex justify-between items-baseline">
@@ -489,7 +490,7 @@ function CustomerFrequencyChart({ frequency, range = '7d' }: CustomerFrequencyCh
   if (total === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 rounded-none border border-dashed border-slate-200">
-        <div className="relative w-28 h-28 flex items-center justify-center">
+        <div className="relative w-24 h-24 flex items-center justify-center">
           <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
             <circle cx="50" cy="50" r="38" fill="transparent" stroke="#e2e8f0" strokeWidth="8" />
           </svg>
@@ -534,9 +535,9 @@ function CustomerFrequencyChart({ frequency, range = '7d' }: CustomerFrequencyCh
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         <div className="sm:col-span-4 flex justify-center">
-          <div className="relative w-28 h-28 flex items-center justify-center">
+          <div className="relative w-24 h-24 flex items-center justify-center">
             <svg width="100%" height="100%" viewBox="0 0 100 100" className="transform -rotate-90">
               <circle cx="50" cy="50" r={r} fill="transparent" stroke="#f8fafc" strokeWidth="10" />
               
@@ -557,7 +558,7 @@ function CustomerFrequencyChart({ frequency, range = '7d' }: CustomerFrequencyCh
           </div>
         </div>
 
-        <div className="sm:col-span-8 space-y-2">
+        <div className="sm:col-span-8 space-y-1.5">
           <div className="space-y-0.5">
             <div className="flex justify-between items-baseline">
               <div className="flex items-center gap-1.5">
@@ -635,6 +636,7 @@ export default function Dashboard() {
 
   // Orders Filter and Search State
   const [orderFilter, setOrderFilter] = useState<'all' | 'pending' | 'processing' | 'completed'>('all');
+  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
 
   // Customers Management State
@@ -977,76 +979,74 @@ export default function Dashboard() {
         </div>
       )}
       <div className="mb-6">
-        <h1 className="text-2xl font-medium tracking-widest text-gray-900 uppercase">Administración</h1>
+        <h1 className="text-3xl font-semibold text-gray-900">Administración</h1>
       </div>
 
-      <div className="flex space-x-2 bg-gray-100/50 p-1 rounded-xl mb-6 overflow-x-auto">
-        <button
-          onClick={() => setActiveTab('general')}
-          className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-            activeTab === 'general' 
-              ? 'bg-white text-blue-700 border border-gray-200/50' 
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
-          }`}
-        >
-          <LayoutGrid className="w-4 h-4" />
-          General
-        </button>
-        <button
-          onClick={() => setActiveTab('orders')}
-          className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-            activeTab === 'orders' 
-              ? 'bg-white text-blue-700 border border-gray-200/50' 
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          Órdenes
-        </button>
-        <button
-          onClick={() => { setActiveTab('customers'); setSelectedCustomer(null); }}
-          className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-            activeTab === 'customers' 
-              ? 'bg-white text-blue-700 border border-gray-200/50' 
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          Clientes
-        </button>
-        <button
-          onClick={() => setActiveTab('locations')}
-          className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-            activeTab === 'locations' 
-              ? 'bg-white text-blue-700 border border-gray-200/50' 
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
-          }`}
-        >
-          <MapPin className="w-4 h-4" />
-          Puntos de Recolección
-        </button>
-        <button
-          onClick={() => setActiveTab('qrcodes')}
-          className={`px-4 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-            activeTab === 'qrcodes' 
-              ? 'bg-white text-blue-700 border border-gray-200/50' 
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
-          }`}
-        >
-          <QrCode className="w-4 h-4" />
-          Gestión de Cestos
-        </button>
+      <div className="border-b border-gray-200 mb-6">
+        <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+          <button
+            onClick={() => setActiveTab('general')}
+            className={`whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+              activeTab === 'general' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            General
+          </button>
+          <button
+            onClick={() => { setActiveTab('orders'); setSelectedOrder(null); }}
+            className={`whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+              activeTab === 'orders' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            Órdenes
+          </button>
+          <button
+            onClick={() => { setActiveTab('customers'); setSelectedCustomer(null); }}
+            className={`whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+              activeTab === 'customers' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Clientes
+          </button>
+          <button
+            onClick={() => setActiveTab('locations')}
+            className={`whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+              activeTab === 'locations' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <MapPin className="w-4 h-4" />
+            Puntos de Recolección
+          </button>
+          <button
+            onClick={() => setActiveTab('qrcodes')}
+            className={`whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+              activeTab === 'qrcodes' 
+                ? 'border-blue-500 text-blue-600' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <QrCode className="w-4 h-4" />
+            Gestión de Cestos
+          </button>
+        </nav>
       </div>
 
       <div className="min-h-[420px] flex flex-col justify-start">
-        <AnimatePresence mode="wait">
+        
           {activeTab === 'general' && (
-            <motion.div
+            <div
               key="general"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-6 w-full text-left"
             >
               {/* Selector de Plazo de Tiempo como filtro compacto desplegable */}
@@ -1068,26 +1068,35 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              {/* Margen Neto Promedio Card */}
+              <div className="mb-4 bg-white ring-1 ring-gray-200 rounded-2xl p-5 text-center flex flex-col items-center justify-center">
+                 <div className="text-sm font-medium text-gray-500 mb-1">Margen Neto Promedio</div>
+                 <div className="text-6xl font-semibold text-gray-900 mb-3 tracking-tighter">32%</div>
+                 <div className="text-[13px] text-[#0f55d8] font-medium bg-blue-50/50 px-4 py-1.5 rounded-lg ring-1 ring-blue-100">
+                   Ganancia neta acumulada: ${(metrics.revenue.value * 0.32).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MXN
+                 </div>
+              </div>
+
               {/* Dynamic stats cards responsive grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Metric 2: Completadas */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'completed' ? null : 'completed')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Órdenes completadas</span>
+                    <span className="text-sm font-medium text-gray-500">Órdenes completadas</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'completed' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-2xl font-black text-slate-900 leading-none">
+                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
                       {metrics.completed.value}
                     </span>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs border ${
+                      <span className={`text-xs font-medium ${
                         metrics.completed.trend.isPositive 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-rose-50 text-rose-700 border-rose-100'
+                          ? 'text-emerald-600' 
+                          : 'text-rose-600'
                       }`}>
                         {metrics.completed.trend.isPositive ? '▲' : '▼'} {metrics.completed.trend.percent}%
                       </span>
@@ -1102,16 +1111,16 @@ export default function Dashboard() {
 
                 {/* Metric 2.5: Peso Promedio / Cesto */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'kilos' ? null : 'kilos')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Peso Promedio / Cesto</span>
+                    <span className="text-sm font-medium text-gray-500">Peso Promedio / Cesto</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'kilos' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-black text-slate-900 leading-none">
+                      <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
                         {metrics.kilos.value.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                       </span>
                       <span className="text-[9px] text-slate-500 font-semibold font-mono">
@@ -1119,10 +1128,10 @@ export default function Dashboard() {
                       </span>
                     </div>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs border ${
+                      <span className={`text-xs font-medium ${
                         metrics.kilos.trend.isPositive 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-rose-50 text-rose-700 border-rose-100'
+                          ? 'text-emerald-600' 
+                          : 'text-rose-600'
                       }`}>
                         {metrics.kilos.trend.isPositive ? '▲' : '▼'} {metrics.kilos.trend.percent}%
                       </span>
@@ -1137,27 +1146,27 @@ export default function Dashboard() {
 
                 {/* Metric 3: Ingresos Est. */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'revenue' ? null : 'revenue')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Ingresos</span>
+                    <span className="text-sm font-medium text-gray-500">Ingresos</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'revenue' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-black text-[#0f55d8] leading-none">
-                        ${metrics.revenue.value.toLocaleString()}
+                      <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
+                        {metrics.revenue.value.toLocaleString()}
                       </span>
                       <span className="text-[9px] text-slate-500 font-semibold font-mono">
                         MXN
                       </span>
                     </div>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs border ${
+                      <span className={`text-xs font-medium ${
                         metrics.revenue.trend.isPositive 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-rose-50 text-rose-700 border-rose-100'
+                          ? 'text-emerald-600' 
+                          : 'text-rose-600'
                       }`}>
                         {metrics.revenue.trend.isPositive ? '▲' : '▼'} {metrics.revenue.trend.percent}%
                       </span>
@@ -1172,22 +1181,22 @@ export default function Dashboard() {
 
                 {/* Metric 4: Cestos Asignados */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'bags' ? null : 'bags')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Cestos asignados</span>
+                    <span className="text-sm font-medium text-gray-500">Cestos asignados</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'bags' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-2xl font-black text-slate-900 leading-none">
+                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
                       {metrics.bags.value}
                     </span>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs border ${
+                      <span className={`text-xs font-medium ${
                         metrics.bags.trend.isPositive 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-rose-50 text-rose-700 border-rose-100'
+                          ? 'text-emerald-600' 
+                          : 'text-rose-600'
                       }`}>
                         {metrics.bags.trend.isPositive ? '▲' : '▼'} {metrics.bags.trend.percent}%
                       </span>
@@ -1202,22 +1211,22 @@ export default function Dashboard() {
 
                 {/* Metric 5: Clientes */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'customers' ? null : 'customers')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes nuevos</span>
+                    <span className="text-sm font-medium text-gray-500">Clientes nuevos</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'customers' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-2xl font-black text-slate-900 leading-none">
+                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
                       {metrics.customers.value}
                     </span>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs border ${
+                      <span className={`text-xs font-medium ${
                         metrics.customers.trend.isPositive 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-rose-50 text-rose-700 border-rose-100'
+                          ? 'text-emerald-600' 
+                          : 'text-rose-600'
                       }`}>
                         {metrics.customers.trend.isPositive ? '▲' : '▼'} {metrics.customers.trend.percent}%
                       </span>
@@ -1232,22 +1241,22 @@ export default function Dashboard() {
 
                 {/* Metric 6: Clientes Recurrentes */}
                 <div 
-                  className="relative bg-white border border-gray-100 p-4 text-left flex flex-col justify-between min-h-[6.5rem] rounded-none cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white ring-1 ring-gray-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'recurrentes' ? null : 'recurrentes')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Clientes recurrentes</span>
+                    <span className="text-sm font-medium text-gray-500">Clientes recurrentes</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'recurrentes' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
                   <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-2xl font-black text-slate-900 leading-none">
+                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
                       {metrics.recurrent.value}
                     </span>
                     <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs border ${
+                      <span className={`text-xs font-medium ${
                         metrics.recurrent.trend.isPositive 
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                          : 'bg-rose-50 text-rose-700 border-rose-100'
+                          ? 'text-emerald-600' 
+                          : 'text-rose-600'
                       }`}>
                         {metrics.recurrent.trend.isPositive ? '▲' : '▼'} {metrics.recurrent.trend.percent}%
                       </span>
@@ -1261,15 +1270,15 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
                 {/* Gráfico circular de preferencias de servicio */}
                 <div 
-                  className="relative bg-white border border-gray-100 px-5 py-3 rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border ring-1 ring-gray-200 px-4 py-3 rounded-xl text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'services' ? null : 'services')}
                 >
                   <div>
-                    <div className="border-b border-gray-100 pb-1.5 mb-2.5 flex items-center justify-between">
-                      <h3 className="font-bold text-slate-800 text-[11px] uppercase font-mono tracking-wider">
+                    <div className="border-b border-gray-100 pb-1.5 mb-2 flex items-center justify-between">
+                      <h3 className="text-sm font-medium text-gray-500">
                         Preferencias de Entrega
                       </h3>
                       <div className={`flex items-center gap-1 transition-colors ${activeMetricTooltip === 'services' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'}`}>
@@ -1279,7 +1288,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'services' && (
-                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 border border-slate-700">
+                    <div className="absolute z-10 left-4 right-4 top-10 mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Distribución de los servicios completados según la preferencia de entrega.</p>
                     </div>
                   )}
@@ -1290,12 +1299,12 @@ export default function Dashboard() {
 
                 {/* Cliente Frecuencia Frecuencia de Pedidos por Cliente */}
                 <div 
-                  className="relative bg-white border border-gray-100 px-5 py-3 rounded-none text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+                  className="relative bg-white border ring-1 ring-gray-200 px-4 py-3 rounded-xl text-left flex flex-col justify-between cursor-pointer hover:bg-slate-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'frequencies' ? null : 'frequencies')}
                 >
                   <div>
-                    <div className="border-b border-gray-100 pb-1.5 mb-2.5 flex items-center justify-between">
-                      <h3 className="font-bold text-slate-800 text-[11px] uppercase font-mono tracking-wider">
+                    <div className="border-b border-gray-100 pb-1.5 mb-2 flex items-center justify-between">
+                      <h3 className="text-sm font-medium text-gray-500">
                         Frecuencia de Pedidos
                       </h3>
                       <div className={`flex items-center gap-1 transition-colors ${activeMetricTooltip === 'frequencies' ? 'text-blue-500' : 'text-slate-400 hover:text-slate-600'}`}>
@@ -1305,7 +1314,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {activeMetricTooltip === 'frequencies' && (
-                    <div className="absolute z-10 left-5 right-5 top-12 mt-1 bg-slate-800 p-2 border border-slate-700">
+                    <div className="absolute z-10 left-4 right-4 top-10 mt-1 bg-slate-800 p-2 border border-slate-700">
                       <p className="text-[10px] text-white leading-tight">Clasificación de clientes según las órdenes completadas en los últimos 30 días.</p>
                     </div>
                   )}
@@ -1314,7 +1323,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'orders' && (() => {
@@ -1332,13 +1341,49 @@ export default function Dashboard() {
               return matchesFilter && matchesSearch;
             });
 
-            return (
-              <motion.div
+            
+            if (selectedOrder) {
+              // Mock data based on order
+              const isHomeDelivery = !!selectedOrder.addressCalle;
+              const baseRevenue = 100; // Fixed base for standard
+              const upsellRevenue = 0;
+const suppliesCost = 12;
+              const operationsCost = 15;
+              const logisticsCost = isHomeDelivery ? 15 : 0;
+              const fixedCosts = 20;
+
+              const waterfallData: WaterfallData = {
+                baseRevenue,
+                upsellRevenue,
+                suppliesCost,
+                operationsCost,
+                logisticsCost,
+                fixedCosts,
+                isHomeDelivery
+              };
+
+              return (
+                <div key="order-waterfall" className="space-y-4 w-full">
+                  <div className="flex items-center gap-4 mb-4">
+                    <button 
+                      onClick={() => setSelectedOrder(null)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <ArrowLeft className="w-5 h-5 text-gray-600" />
+                    </button>
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-900">#{String(selectedOrder.id || '').padStart(4, '0')}</h2>
+                      <p className="text-sm text-gray-500">Desglose Financiero</p>
+                    </div>
+                  </div>
+                  <OrderWaterfall data={waterfallData} />
+                </div>
+              );
+            }
+
+return (
+              <div
                 key="orders"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.15, ease: "easeInOut" }}
                 className="space-y-4 w-full"
               >
                 {/* Selector de Estado como filtro compacto a la derecha sin tarjeta completa */}
@@ -1370,21 +1415,27 @@ export default function Dashboard() {
                     {filteredOrders.map((o) => (
                       <div 
                         key={o.id} 
-                        className="p-4 bg-white hover:bg-slate-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-none border border-slate-100 text-left"
+                        className="group p-4 bg-white hover:bg-slate-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-none border border-slate-100 text-left cursor-pointer"
+                        onClick={(e) => {
+                          // Prevent triggering if clicking select
+                          if ((e.target as HTMLElement).tagName.toLowerCase() !== 'select') {
+                            setSelectedOrder(o);
+                          }
+                        }}
                       >
                         <div className="space-y-2 text-left w-full sm:w-auto">
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pb-0.5">
                             <p className="font-bold text-slate-800 text-[14px]">{o.userName}</p>
                             <div className="flex items-center gap-1.5">
-                              <span className="font-mono text-[11px] font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
-                                Orden #{String(o.id || '').padStart(4, '0')}
+                              <span className="text-xs font-medium text-gray-900 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
+                                #{String(o.id || '').padStart(4, '0')}
                               </span>
                               <div className="relative">
                                 <select
                                   value={o.status}
                                   onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
                                   disabled={updatingOrderId === o.id}
-                                  className={`text-[10px] uppercase font-bold px-2 py-0.5 pr-5.5 rounded-full border cursor-pointer appearance-none outline-none transition-all ${
+                                  className={`text-xs font-medium px-2 py-0.5 pr-5.5 rounded-full border cursor-pointer appearance-none outline-none transition-all ${
                                     o.status === 'completed'
                                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/50'
                                       : o.status === 'processing'
@@ -1404,36 +1455,43 @@ export default function Dashboard() {
                               </div>
                             </div>
                           </div>
-                          <div className="text-xs text-slate-500 font-medium flex flex-wrap gap-x-3 gap-y-1">
-                            <span><strong className="text-slate-600">Cesto:</strong> {formatBagId(o.bagId)}</span>
+                          <div className="text-xs text-slate-550 font-medium flex flex-wrap gap-x-3 gap-y-1">
+                            <span>Cesto: {formatBagId(o.bagId)}</span>
                             <span className="text-slate-300">•</span>
-                            <span translate="no" className="notranslate"><strong className="text-slate-600">Plan:</strong> {o.deliveryType || 'Estándar'}</span>
+                            <span translate="no" className="notranslate">Plan: {o.deliveryType || 'Estándar'}</span>
                           </div>
                         </div>
                         
-                        <div className="text-left sm:text-right flex sm:flex-col justify-between sm:justify-center items-baseline sm:items-end gap-x-2 border-t sm:border-t-0 border-slate-100 pt-2 sm:pt-0 mt-1 sm:mt-0 pct-100 shrink-0">
-                          <span className="text-slate-550 font-mono text-xs">
-                            {new Date(o.createdAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
-                          </span>
-                          <span className="text-slate-400 font-mono text-[11px]">
-                            {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </span>
+                        <div className="flex flex-row items-center justify-between sm:justify-end gap-x-4 border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0 mt-2 sm:mt-0 w-full sm:w-auto shrink-0">
+                          <div className="flex items-center gap-x-4 text-left sm:text-right">
+                            <span className="text-slate-550 text-xs font-medium">
+                              {new Date(o.createdAt).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                            </span>
+                            <span className="text-slate-550 text-xs font-medium">
+                              {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 shrink-0 select-none">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-md transition-colors group-hover:bg-slate-100/60 group-hover:text-slate-700 font-mono">
+                              DESGLOSE
+                            </span>
+                            <div className="p-1.5 rounded-full border border-slate-100 bg-slate-50 text-slate-400 transition-all duration-200 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900">
+                              <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-              </motion.div>
+              </div>
             );
           })()}
 
           {activeTab === 'locations' && !selectedLocation && (
-            <motion.div
+            <div
               key="locations-list"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-4 w-full"
             >
               <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4">
@@ -1534,16 +1592,12 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'locations' && selectedLocation && (
-            <motion.div
+            <div
               key="location-detail"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-4 w-full"
             >
               <div className="flex items-center gap-3 mb-2">
@@ -1586,7 +1640,7 @@ export default function Dashboard() {
                                 disabled={updatingOrderId === o.id}
                                 className={`text-[10px] font-bold border px-1.5 py-0.5 pr-5.5 rounded tracking-wide capitalize cursor-pointer appearance-none outline-none transition-all ${
                                   o.status === 'completed'
-                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100/50'
+                                    ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20 hover:bg-emerald-100/50'
                                     : o.status === 'processing'
                                     ? 'bg-sky-50 text-sky-700 border-sky-100 hover:bg-sky-100/50'
                                     : 'bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-100/50'
@@ -1614,7 +1668,7 @@ export default function Dashboard() {
                         
                         <div className="flex items-center gap-3 self-start sm:self-auto">
                           <span className="text-xs text-gray-400 font-mono">
-                            Orden #{String(o.id || '').padStart(4, '0')}
+                            #{String(o.id || '').padStart(4, '0')}
                           </span>
                         </div>
                       </div>
@@ -1622,16 +1676,12 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'qrcodes' && (
-            <motion.div
+            <div
               key="qrcodes"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-6 pb-12 w-full"
             >
               <div className="flex justify-between items-center bg-white border border-gray-100 rounded-none p-4">
@@ -1692,16 +1742,12 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'customers' && !selectedCustomer && (
-            <motion.div
+            <div
               key="customers-list"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-4 w-full"
             >
 
@@ -1745,7 +1791,7 @@ export default function Dashboard() {
                       {/* Right: Interactive CTA element */}
                       <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 select-none pt-2 sm:pt-0 border-t sm:border-0 border-slate-100/50 w-full sm:w-auto justify-end">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-md transition-colors group-hover:bg-slate-100/60 group-hover:text-slate-700 font-mono">
-                          VER HISTORIAL
+                          HISTORIAL
                         </span>
                         <div className="p-1.5 rounded-full border border-slate-100 bg-slate-50 text-slate-400 transition-all duration-200 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900">
                           <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -1755,16 +1801,12 @@ export default function Dashboard() {
                   ))}
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
 
           {activeTab === 'customers' && selectedCustomer && (
-            <motion.div
+            <div
               key="customer-detail"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="space-y-6 w-full text-left pb-10"
             >
               {/* Back button */}
@@ -1849,14 +1891,15 @@ export default function Dashboard() {
                       {customerOrders.map((o) => (
                         <div 
                           key={o.id} 
-                          className="p-4 border border-gray-150/80 bg-slate-50/50 hover:bg-slate-50/90 hover:border-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-xl"
+                          className="group p-4 border border-gray-150/80 bg-slate-50/50 hover:bg-slate-50/90 hover:border-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm transition-all rounded-xl cursor-pointer"
+                          onClick={() => { setActiveTab('orders'); setSelectedOrder(o); }}
                         >
                           <div className="space-y-2">
                             <div className="flex flex-wrap items-center gap-2.5">
                               <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-                                Orden #{String(o.id || '').padStart(4, '0')}
+                                #{String(o.id || '').padStart(4, '0')}
                               </span>
-                              <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${
+                              <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${
                                 o.status === 'completed'
                                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                   : o.status === 'processing'
@@ -1866,19 +1909,31 @@ export default function Dashboard() {
                                 {o.status === 'completed' ? '● Completada' : o.status === 'processing' ? '● Procesando' : '● Pendiente'}
                               </span>
                             </div>
-                            <div className="text-xs text-slate-500 font-medium flex flex-wrap gap-x-3 gap-y-1">
-                              <span><strong className="text-slate-600">Cesto:</strong> {formatBagId(o.bagId)}</span>
+                            <div className="text-xs text-slate-550 font-medium flex flex-wrap gap-x-3 gap-y-1">
+                              <span>Cesto: {formatBagId(o.bagId)}</span>
                               <span className="text-slate-300">•</span>
-                              <span translate="no" className="notranslate"><strong className="text-slate-600">Plan:</strong> {o.deliveryType || 'Estándar'}</span>
+                              <span translate="no" className="notranslate">Plan: {o.deliveryType || 'Estándar'}</span>
                             </div>
                           </div>
-                          <div className="text-left sm:text-right flex sm:flex-col justify-between sm:justify-center items-baseline sm:items-end gap-x-2 border-t sm:border-t-0 border-slate-100 pt-2 sm:pt-0 mt-1 sm:mt-0">
-                            <span className="text-slate-550 font-mono text-xs">
-                              {new Date(o.createdAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
-                            </span>
-                            <span className="text-slate-400 font-mono text-[11px]">
-                              {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </span>
+                          
+                          <div className="flex flex-row items-center justify-between sm:justify-end gap-x-4 border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0 mt-2 sm:mt-0 w-full sm:w-auto shrink-0">
+                            <div className="flex items-center gap-x-4 text-left sm:text-right">
+                              <span className="text-slate-550 text-xs font-medium">
+                                {new Date(o.createdAt).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                              </span>
+                              <span className="text-slate-550 text-xs font-medium">
+                                {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 shrink-0 select-none">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-white border border-slate-200 px-2.5 py-1 rounded-md transition-colors group-hover:bg-slate-100/60 group-hover:text-slate-700 font-mono">
+                                DESGLOSE
+                              </span>
+                              <div className="p-1.5 rounded-full border border-slate-200 bg-white text-slate-400 transition-all duration-200 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900">
+                                <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -1962,9 +2017,9 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        
       </div>
 
       {selectedQRBag && (
@@ -1996,7 +2051,7 @@ export default function Dashboard() {
                     </p>
                     {selectedQRBag.assignedAt && (
                       <p className="text-xs text-gray-500 mt-1">
-                        Asignado: {new Date(selectedQRBag.assignedAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        Asignado: {new Date(selectedQRBag.assignedAt).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                       </p>
                     )}
                   </div>

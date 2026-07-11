@@ -1261,6 +1261,7 @@ export default function Landing() {
           </div>
 
           <div className="mt-10 px-4 sm:px-0">
+            <p className="text-center text-sm font-medium text-gray-500 mb-2.5">Recíbelo gratis, pagas solo al lavar</p>
             <button 
               onClick={openBottomSheet}
               className="w-full py-4 bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none disabled:opacity-85 hover:brightness-110  "
@@ -1302,18 +1303,6 @@ export default function Landing() {
                   className="relative w-full h-[280px] rounded-lg overflow-hidden bg-[#f4f5f5] flex items-center justify-center font-sans tracking-tight block cursor-pointer hover:opacity-95 transition-opacity" 
                   id="location-dynamic-map-frame-container"
                 >
-              {/* Abstract Buildings */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.6]">
-                <div className="absolute top-8 left-4 w-24 h-12 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
-                <div className="absolute top-24 left-4 w-32 h-12 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
-                <div className="absolute top-[140px] left-6 w-28 h-16 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
-                <div className="absolute top-8 right-24 w-16 h-20 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
-                <div className="absolute top-4 left-[56%] w-20 h-14 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
-                <div className="absolute top-[80px] left-[56%] w-16 h-28 bg-[#e9ebeb] border border-[#e0e2e2]"></div>
-                <div className="absolute top-[140px] right-6 w-14 h-14 bg-[#eef1ed] border border-[#e4e9e3]"></div>
-                <div className="absolute top-[190px] right-12 w-20 h-20 bg-[#faefe4] border border-[#f0e3d6]"></div>
-              </div>
-
               {/* Streets & Roads Layer */}
               {/* Paseo de las palmas */}
               <div className="absolute top-[-20%] bottom-[35%] left-[48%] w-[32px] bg-[#cbcfdb] z-0">
@@ -1321,18 +1310,18 @@ export default function Landing() {
               </div>
               
               {/* Avestruces */}
-              <div className="absolute top-[-20%] bottom-[-20%] left-[84%] w-[32px] bg-[#cbcfdb] z-0">
+              <div className="absolute top-[-20%] bottom-[-20%] right-0 w-[32px] bg-[#cbcfdb] z-0">
                 <span translate="no" className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide notranslate">Avestruces</span>
               </div>
 
               {/* Río Calzadas */}
-              <div className="absolute bottom-[35%] -left-10 w-[120%] h-[32px] bg-[#cbcfdb] z-0 flex items-center justify-center">
+              <div className="absolute bottom-[35%] -left-10 right-0 h-[32px] bg-[#cbcfdb] z-0 flex items-center justify-center">
                  <span translate="no" className="text-[#495464] text-[12px] font-medium tracking-wide mr-10 relative notranslate">Río Calzadas</span>
                  <ArrowRight className="absolute right-12 text-[#6e7682] w-3.5 h-3.5 rotate-180" />
               </div>
               
               {/* Bottom horizontal street */}
-              <div className="absolute bottom-[10%] -left-10 w-[120%] h-[32px] bg-[#cbcfdb] z-0">
+              <div className="absolute bottom-[10%] -left-10 right-0 h-[32px] bg-[#cbcfdb] z-0">
                  <ArrowRight className="absolute left-[47%] top-1/2 -translate-y-1/2 text-[#6e7682] w-3.5 h-3.5" />
               </div>
               
@@ -1364,7 +1353,7 @@ export default function Landing() {
               </div>
 
               {/* OXXO Santa Isabel */}
-              <div className="absolute bottom-[2%] right-[25%] flex flex-col items-center z-10 transition-transform cursor-pointer">
+              <div className="absolute bottom-[2%] right-[15%] flex flex-col items-center z-10 transition-transform cursor-pointer">
                 <div className="bg-[#9ca3af] w-[26px] h-[26px] rounded-[6px] border-2 border-white flex items-center justify-center text-white mb-1">
                   <ShoppingBag size={14} strokeWidth={2.5}/>
                 </div>
@@ -1417,7 +1406,7 @@ export default function Landing() {
             </div>
 
             {isNavigatingGPS && gpsLoadingStep && (
-              <div className="w-full p-3 bg-blue-50/60 border border-blue-100 rounded-2xl text-center text-[12px] text-[#0f55d8] font-bold flex items-center justify-center gap-2 select-none">
+              <div className="w-full p-3 bg-blue-50/60 border border-blue-100 rounded-2xl text-center text-sm text-[#0f55d8] font-bold flex items-center justify-center gap-2 select-none">
                 <span className="w-2 h-2 rounded-full bg-[#0f55d8]" />
                 <span>{gpsLoadingStep}</span>
               </div>

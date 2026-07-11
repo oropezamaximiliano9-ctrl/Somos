@@ -239,7 +239,7 @@ export default function FlowSimulator() {
 
       setActiveOrderId(orderId);
       setCurrentStep(4);
-      setStatusMsg("🎉 ¡Orden # " + orderId + " creada para Jaime!");
+      setStatusMsg("🎉 ¡#" + orderId + " creada para Jaime!");
       // Only navigate automatically or reload if not on dedicated simulator page
       if (location.pathname !== "/simulator") {
         navigate("/cesto/CESTO-001");
@@ -279,7 +279,7 @@ export default function FlowSimulator() {
     }
 
     setLoading(true);
-    setStatusMsg(`Entregando prendas para Orden #${orderIdToComplete} y liberando CESTO-001...`);
+    setStatusMsg(`Entregando prendas para #${orderIdToComplete} y liberando CESTO-001...`);
     try {
       const orderRef = doc(db, "orders", orderIdToComplete);
       await updateDoc(orderRef, { status: "completed" });
