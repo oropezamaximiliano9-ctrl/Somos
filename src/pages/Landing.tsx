@@ -1096,7 +1096,7 @@ export default function Landing() {
 
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-0 sm:px-0 mt-6 mb-6 w-full">
-            <div className="rounded-xl border border-gray-100/50 overflow-hidden bg-white">
+            <div className="rounded-lg border border-gray-100/50 overflow-hidden bg-white">
               <div id="basket-container" className="relative w-full h-[300px] flex flex-col">
                 {/* Texto superior del cesto */}
                 <div className="py-2.5 px-3.5 select-none shrink-0">
@@ -1294,7 +1294,7 @@ export default function Landing() {
 
           {/* Custom CSS Map Container matching the exact provided location image */}
           <div className="px-0 sm:px-0 mt-6 w-full">
-            <div className="w-full bg-white border border-[#eaeaea] rounded-2xl p-2 text-left relative overflow-hidden flex flex-col">
+            <div className="w-full bg-white border border-[#eaeaea] rounded-lg p-[10px] text-left relative overflow-hidden flex flex-col">
               {/* Dirección */}
               <div className="pb-2 pt-1 w-full bg-white relative z-10 flex flex-col items-center px-1.5">
                 <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight text-center">
