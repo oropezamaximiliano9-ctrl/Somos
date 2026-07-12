@@ -979,7 +979,7 @@ export default function Dashboard() {
         </div>
       )}
       <div className="mb-6">
-        <h1 className="text-3xl font-semibold text-gray-900">Administración</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Administración</h1>
       </div>
 
       <div className="border-b border-gray-200 mb-6">
@@ -1069,11 +1069,17 @@ export default function Dashboard() {
               </div>
 
               {/* Margen Neto Promedio Card */}
-              <div className="mb-4 bg-white border border-slate-200 rounded-2xl p-5 text-center flex flex-col items-center justify-center">
-                 <div className="text-sm font-medium text-gray-500 mb-1">Margen Neto Promedio</div>
-                 <div className="text-6xl font-semibold text-gray-900 mb-3 tracking-tighter">32%</div>
-                 <div className="text-[13px] text-[#0f55d8] font-medium bg-blue-50/50 px-4 py-1.5 rounded-lg ring-1 ring-blue-100">
-                   Ganancia acumulada: ${(metrics.revenue.value * 0.32).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} MXN
+              <div className="mb-4 bg-white border border-slate-200 rounded-2xl p-4 text-center flex flex-col items-center justify-center">
+                 <div className="text-sm font-medium text-slate-500 mb-1">Margen Neto Promedio</div>
+                 <div className="flex items-baseline gap-2">
+                   <div className="text-5xl font-bold text-slate-900 tracking-tighter leading-none">32%</div>
+                   <div className={`text-[14px] font-medium ${
+                     metrics.revenue.trend.isPositive 
+                       ? 'text-emerald-600' 
+                       : 'text-rose-600'
+                   }`}>
+                     {metrics.revenue.trend.isPositive ? '▲' : '▼'} {metrics.revenue.trend.percent}%
+                   </div>
                  </div>
               </div>
 
@@ -1081,19 +1087,19 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Metric 2: Completadas */}
                 <div 
-                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-2.5 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'completed' ? null : 'completed')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Órdenes completadas</span>
+                    <span className="text-xs font-medium text-gray-500">Órdenes completadas</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'completed' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
-                  <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
+                  <div className="mt-1 flex items-baseline justify-between">
+                    <span className="text-2xl font-semibold text-gray-900 leading-none">
                       {metrics.completed.value}
                     </span>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-xs font-medium ${
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[11px] font-medium ${
                         metrics.completed.trend.isPositive 
                           ? 'text-emerald-600' 
                           : 'text-rose-600'
@@ -1111,24 +1117,24 @@ export default function Dashboard() {
 
                 {/* Metric 2.5: Peso Promedio / Cesto */}
                 <div 
-                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-2.5 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'kilos' ? null : 'kilos')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Peso Promedio / Cesto</span>
+                    <span className="text-xs font-medium text-gray-500">Peso Promedio / Cesto</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'kilos' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
-                  <div className="mt-2 flex flex-col justify-end">
+                  <div className="mt-1 flex items-baseline justify-between">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
+                      <span className="text-2xl font-semibold text-gray-900 leading-none">
                         {metrics.kilos.value.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                       </span>
                       <span className="text-[9px] text-slate-500 font-semibold font-mono">
                         KG
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-xs font-medium ${
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[11px] font-medium ${
                         metrics.kilos.trend.isPositive 
                           ? 'text-emerald-600' 
                           : 'text-rose-600'
@@ -1146,24 +1152,24 @@ export default function Dashboard() {
 
                 {/* Metric 3: Ingresos Est. */}
                 <div 
-                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-2.5 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'revenue' ? null : 'revenue')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Ingresos</span>
+                    <span className="text-xs font-medium text-gray-500">Ingresos</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'revenue' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
-                  <div className="mt-2 flex flex-col justify-end">
+                  <div className="mt-1 flex items-baseline justify-between">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
+                      <span className="text-2xl font-semibold text-gray-900 leading-none">
                         {metrics.revenue.value.toLocaleString()}
                       </span>
                       <span className="text-[9px] text-slate-500 font-semibold font-mono">
                         MXN
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-xs font-medium ${
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[11px] font-medium ${
                         metrics.revenue.trend.isPositive 
                           ? 'text-emerald-600' 
                           : 'text-rose-600'
@@ -1179,51 +1185,51 @@ export default function Dashboard() {
                   )}
                 </div>
 
-                {/* Metric 4: Cestos Asignados */}
+                {/* Metric 4: Ganancia Acumulada */}
                 <div 
-                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'bags' ? null : 'bags')}
+                  className="relative bg-white border border-slate-200 p-2.5 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'profit' ? null : 'profit')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Cestos asignados</span>
-                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'bags' ? 'text-blue-500' : 'text-slate-300'}`} />
+                    <span className="text-xs font-medium text-gray-500">Ganancia acumulada</span>
+                    <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'profit' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
-                  <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
-                      {metrics.bags.value}
+                  <div className="mt-1 flex items-baseline justify-between">
+                    <span className="text-2xl font-semibold text-gray-900 leading-none">
+                      ${(metrics.revenue.value * 0.32).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </span>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-xs font-medium ${
-                        metrics.bags.trend.isPositive 
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[11px] font-medium ${
+                        metrics.revenue.trend.isPositive 
                           ? 'text-emerald-600' 
                           : 'text-rose-600'
                       }`}>
-                        {metrics.bags.trend.isPositive ? '▲' : '▼'} {metrics.bags.trend.percent}%
+                        {metrics.revenue.trend.isPositive ? '▲' : '▼'} {metrics.revenue.trend.percent}%
                       </span>
                     </div>
                   </div>
-                  {activeMetricTooltip === 'bags' && (
+                  {activeMetricTooltip === 'profit' && (
                     <div className="absolute z-10 left-0 right-0 top-full mt-1 bg-slate-800 p-2 border border-slate-700">
-                      <p className="text-[10px] text-white leading-tight">Nuevos cestos asignados a clientes.</p>
+                      <p className="text-[10px] text-white leading-tight">Ganancia neta.</p>
                     </div>
                   )}
                 </div>
 
                 {/* Metric 5: Clientes */}
                 <div 
-                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-2.5 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'customers' ? null : 'customers')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Clientes nuevos</span>
+                    <span className="text-xs font-medium text-gray-500">Clientes nuevos</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'customers' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
-                  <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
+                  <div className="mt-1 flex items-baseline justify-between">
+                    <span className="text-2xl font-semibold text-gray-900 leading-none">
                       {metrics.customers.value}
                     </span>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-xs font-medium ${
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[11px] font-medium ${
                         metrics.customers.trend.isPositive 
                           ? 'text-emerald-600' 
                           : 'text-rose-600'
@@ -1241,19 +1247,19 @@ export default function Dashboard() {
 
                 {/* Metric 6: Clientes Recurrentes */}
                 <div 
-                  className="relative bg-white border border-slate-200 p-3 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="relative bg-white border border-slate-200 p-2.5 text-left flex flex-col justify-between min-h-[5.5rem] rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setActiveMetricTooltip(activeMetricTooltip === 'recurrentes' ? null : 'recurrentes')}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Clientes recurrentes</span>
+                    <span className="text-xs font-medium text-gray-500">Clientes recurrentes</span>
                     <Info className={`w-3 h-3 transition-colors ${activeMetricTooltip === 'recurrentes' ? 'text-blue-500' : 'text-slate-300'}`} />
                   </div>
-                  <div className="mt-2 flex flex-col justify-end">
-                    <span className="text-3xl font-semibold text-gray-900 leading-none mt-1">
+                  <div className="mt-1 flex items-baseline justify-between">
+                    <span className="text-2xl font-semibold text-gray-900 leading-none">
                       {metrics.recurrent.value}
                     </span>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <span className={`text-xs font-medium ${
+                    <div className="flex items-center gap-1">
+                      <span className={`text-[11px] font-medium ${
                         metrics.recurrent.trend.isPositive 
                           ? 'text-emerald-600' 
                           : 'text-rose-600'

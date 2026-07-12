@@ -1129,7 +1129,7 @@ export default function Landing() {
                   </span>
                   <div className="flex items-center gap-2">
                     <div className="shrink-0 w-5 h-5 ml-2 flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
+                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={4} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
                       Cesto de carga semanal
@@ -1137,7 +1137,7 @@ export default function Landing() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="shrink-0 w-5 h-5 ml-2 flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
+                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={4} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
                       Lavado y doblado
@@ -1145,7 +1145,7 @@ export default function Landing() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="shrink-0 w-5 h-5 ml-2 flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={3} />
+                      <Check className="w-3.5 h-3.5 text-[#0f55d8]" strokeWidth={4} />
                     </div>
                     <span className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
                       Entrega a domicilio
@@ -1245,7 +1245,7 @@ export default function Landing() {
                     className="w-7 h-7 text-[#0f55d8] bg-[#0f55d8]/10 border-[1.5px] border-[#0f55d8]/30 rounded-full flex items-center justify-center transform-gpu"
                    
                   >
-                    <Check className="w-[15px] h-[15px]" strokeWidth={2.5} />
+                    <Check className="w-[15px] h-[15px]" strokeWidth={3.5} />
                   </div>
                 </div>
                 <div className="flex flex-col text-left space-y-0.5 pt-1.5">

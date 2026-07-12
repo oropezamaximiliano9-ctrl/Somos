@@ -75,7 +75,7 @@ async function bootstrapDb() {
         await setDoc(docRef, { id: bagId, status: "unassigned", userId: null });
       }
     };
-    for (const bagId of ["BOLSA-001", "BOLSA-002", "BOLSA-003", "BOLSA-004"]) {
+    for (const bagId of ["CESTO-001", "CESTO-002", "CESTO-003", "CESTO-004"]) {
       await initBag(bagId);
     }
 
@@ -132,15 +132,15 @@ async function bootstrapDb() {
       }
 
       // Link bags to their seeded owners
-      await updateDoc(doc(db, "bags", "BOLSA-002"), { status: "assigned", userId: "USR-sofia" });
-      await updateDoc(doc(db, "bags", "BOLSA-003"), { status: "assigned", userId: "USR-sebas" });
-      await updateDoc(doc(db, "bags", "BOLSA-004"), { status: "assigned", userId: "USR-valeria" });
+      await updateDoc(doc(db, "bags", "CESTO-002"), { status: "assigned", userId: "USR-sofia" });
+      await updateDoc(doc(db, "bags", "CESTO-003"), { status: "assigned", userId: "USR-sebas" });
+      await updateDoc(doc(db, "bags", "CESTO-004"), { status: "assigned", userId: "USR-valeria" });
 
       // Seed corresponding orders
       const ordersToSeed = [
         {
           id: "1",
-          bagId: "BOLSA-002",
+          bagId: "CESTO-002",
           userId: "USR-sofia",
           status: "processing",
           deliveryType: "Estándar (48 h)",
@@ -148,7 +148,7 @@ async function bootstrapDb() {
         },
         {
           id: "2",
-          bagId: "BOLSA-003",
+          bagId: "CESTO-003",
           userId: "USR-sebas",
           status: "pending",
           deliveryType: "Express (24 h)",
@@ -156,7 +156,7 @@ async function bootstrapDb() {
         },
         {
           id: "3",
-          bagId: "BOLSA-004",
+          bagId: "CESTO-004",
           userId: "USR-valeria",
           status: "completed",
           deliveryType: "Estándar (48 h)",
@@ -164,7 +164,7 @@ async function bootstrapDb() {
         },
         {
           id: "4",
-          bagId: "BOLSA-002",
+          bagId: "CESTO-002",
           userId: "USR-sofia",
           status: "completed",
           deliveryType: "Estándar (48 h)",
@@ -172,7 +172,7 @@ async function bootstrapDb() {
         },
         {
           id: "5",
-          bagId: "BOLSA-003",
+          bagId: "CESTO-003",
           userId: "USR-sebas",
           status: "completed",
           deliveryType: "Express (24 h)",
@@ -493,8 +493,8 @@ app.post("/api/simulation/reset", async (req, res) => {
       });
     }
 
-    // 2. Locate owner linked to simulator BAG (BOLSA-001)
-    const bag001Snap = await getDoc(doc(db, "bags", "BOLSA-001"));
+    // 2. Locate owner linked to simulator BAG (CESTO-001)
+    const bag001Snap = await getDoc(doc(db, "bags", "CESTO-001"));
     if (bag001Snap.exists()) {
       const bagData = bag001Snap.data();
       if (bagData && bagData.userId && !userIdsToDelete.includes(bagData.userId)) {
@@ -506,16 +506,16 @@ app.post("/api/simulation/reset", async (req, res) => {
     const ordersSnap = await getDocs(collection(db, "orders"));
     for (const docSnap of ordersSnap.docs) {
       const data = docSnap.data();
-      if (data.bagId === "BOLSA-001" || (data.userId && userIdsToDelete.includes(data.userId))) {
+      if (data.bagId === "CESTO-001" || (data.userId && userIdsToDelete.includes(data.userId))) {
         await deleteDoc(doc(db, "orders", docSnap.id));
       }
     }
 
-    // Reset bags with BOLSA-001 or matching userId
+    // Reset bags with CESTO-001 or matching userId
     const bagsSnap = await getDocs(collection(db, "bags"));
     for (const docSnap of bagsSnap.docs) {
       const bData = docSnap.data();
-      if (docSnap.id === "BOLSA-001" || (bData.userId && userIdsToDelete.includes(bData.userId))) {
+      if (docSnap.id === "CESTO-001" || (bData.userId && userIdsToDelete.includes(bData.userId))) {
         await updateDoc(doc(db, "bags", docSnap.id), { status: "unassigned", userId: null });
       }
     }
@@ -567,13 +567,13 @@ app.get("/api/bags", async (req, res) => {
   }
 });
 
-// Dynamic Bag Creation (generates next BOLSA-XXX sequential id)
+// Dynamic Bag Creation (generates next CESTO-XXX sequential id)
 app.post("/api/bags", async (req, res) => {
   if (!db) return res.status(500).json({ error: "Database not connected" });
   try {
     const bagsSnap = await getDocs(collection(db, "bags"));
     let nextNum = bagsSnap.size + 1;
-    let bagId = `BOLSA-${nextNum.toString().padStart(3, "0")}`;
+    let bagId = `CESTO-${nextNum.toString().padStart(3, "0")}`;
 
     while (true) {
       const checkSnap = await getDoc(doc(db, "bags", bagId));
@@ -581,7 +581,7 @@ app.post("/api/bags", async (req, res) => {
         break;
       }
       nextNum++;
-      bagId = `BOLSA-${nextNum.toString().padStart(3, "0")}`;
+      bagId = `CESTO-${nextNum.toString().padStart(3, "0")}`;
     }
 
     await setDoc(doc(db, "bags", bagId), { id: bagId, status: "unassigned", userId: null });
