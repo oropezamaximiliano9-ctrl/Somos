@@ -1386,7 +1386,7 @@ export default function Landing() {
                     rel="noopener noreferrer"
                     className="text-[#6A6A6A] underline hover:no-underline"
                   >
-                    921 239 3938
+                    Contáctanos
                   </a>
                 </div>
               </div>
