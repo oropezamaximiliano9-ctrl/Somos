@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building } from "lucide-react";
+import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, MessageCircleMore, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
@@ -1372,19 +1372,21 @@ export default function Landing() {
               {/* Tarjeta de información */}
               <div className="pt-2.5 pb-0.5 w-full bg-white relative z-10 flex flex-row justify-between items-center px-1.5">
                 {/* Horario */}
-                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight">
+                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1.5">
+                  <Clock size={16} strokeWidth={2} />
                   9 am - 6 pm
                 </div>
 
                 {/* Contacto */}
-                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1">
+                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1.5">
+                  <MessageCircleMore size={16} strokeWidth={2} />
                   <a 
                     href="https://wa.me/529212393938?text=Hola%2C%20tengo%20una%20duda%20sobre%20SOMOS%20lavander%C3%ADa."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#6A6A6A] underline hover:no-underline"
                   >
-                    whatsapp
+                    921 239 3938
                   </a>
                 </div>
               </div>
