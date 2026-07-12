@@ -1182,10 +1182,10 @@ export default function Landing() {
                   <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">1</span>
                   <div className="space-y-0.5 pt-1.5">
                     <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
-                      Pide nuestro cesto gratis
+                      Pide nuestro cesto
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug">
-                      Envío sin costo
+                      Lo recibes gratis
                     </p>
                   </div>
                 </div>
