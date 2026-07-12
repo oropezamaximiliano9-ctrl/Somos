@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, MessageCircleMore, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building } from "lucide-react";
+import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, MessageCircleMore, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building, Wrench } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
@@ -1312,42 +1312,50 @@ export default function Landing() {
                 >
               {/* Streets & Roads Layer */}
               {/* Paseo de las palmas */}
-              <div className="absolute top-[-20%] bottom-[35%] left-[48%] w-[32px] bg-[#cbcfdb] z-0">
-                 <span translate="no" className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide notranslate">Paseo de las Palmas</span>
+              <div className="absolute top-[-20%] bottom-[40%] left-[48%] w-[32px] bg-[#cbcfdb] z-0">
+                 <span translate="no" className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[10px] font-medium tracking-wide notranslate">Paseo de las Palmas</span>
               </div>
               
               {/* Avestruces */}
               <div className="absolute top-[-20%] bottom-[-20%] right-0 w-[32px] bg-[#cbcfdb] z-0">
-                <span translate="no" className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[12px] font-medium tracking-wide notranslate">Avestruces</span>
+                <span translate="no" className="absolute top-[31.4%] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap text-[#495464] text-[10px] font-medium tracking-wide notranslate">Avestruces</span>
               </div>
 
               {/* Río Calzadas */}
-              <div className="absolute bottom-[35%] -left-10 right-0 h-[32px] bg-[#cbcfdb] z-0 flex items-center justify-center">
-                 <span translate="no" className="text-[#495464] text-[12px] font-medium tracking-wide mr-10 relative notranslate">Río Calzadas</span>
+              <div className="absolute bottom-[40%] -left-10 right-0 h-[32px] bg-[#cbcfdb] z-0 flex items-center justify-center">
+                 <span translate="no" className="text-[#495464] text-[10px] font-medium tracking-wide whitespace-nowrap mr-10 relative notranslate">Río Calzadas</span>
                  <ArrowRight className="absolute right-12 text-[#6e7682] w-3.5 h-3.5 rotate-180" />
               </div>
               
               {/* Bottom horizontal street */}
-              <div className="absolute bottom-[10%] -left-10 right-0 h-[32px] bg-[#cbcfdb] z-0">
+              <div className="absolute bottom-[15%] -left-10 right-0 h-[32px] bg-[#cbcfdb] z-0">
                  <ArrowRight className="absolute left-[47%] top-1/2 -translate-y-1/2 text-[#6e7682] w-3.5 h-3.5" />
               </div>
               
               {/* Conexión de calles izquierda */}
-              <div className="absolute bottom-[10%] -left-6 w-[50px] h-[30%] bg-[#cbcfdb] z-0"></div>
+              <div className="absolute bottom-[15%] -left-6 w-[50px] h-[30%] bg-[#cbcfdb] z-0"></div>
 
               {/* Markers & Labels */}
               
               {/* Lions Boot Camp */}
-              <div className="absolute top-[18%] left-[10%] flex items-center z-10 transition-transform cursor-pointer">
+              <div className="absolute top-[13%] left-[12%] flex items-center z-10 transition-transform cursor-pointer">
                 <span translate="no" className="text-black text-[12px] font-medium mr-2 tracking-tight notranslate">Lions Boot Camp</span>
-                <div className="w-[28px] h-[28px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-[2.5px] border-white">
-                  <div className="w-[8px] h-[8px] bg-white rounded-full"></div>
+                <div className="w-[22px] h-[22px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-2 border-white">
+                  <div className="w-[6px] h-[6px] bg-white rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Ferreteria */}
+              <div className="absolute bottom-[50%] left-[65%] flex flex-col items-center z-10 transition-transform cursor-pointer">
+                <span translate="no" className="text-black text-[12px] font-medium tracking-tight notranslate mb-0.5">Ferretería</span>
+                <div className="w-[22px] h-[22px] bg-[#9ca3af] rounded-full flex items-center justify-center text-white border-2 border-white">
+                  <div className="w-[6px] h-[6px] bg-white rounded-full"></div>
                 </div>
               </div>
 
               {/* Red Pin - Location */}
               <div 
-                className="absolute top-[24%] left-[40%] z-20 drop- cursor-pointer origin-bottom"
+                className="absolute top-[19%] left-[40%] z-20 drop- cursor-pointer origin-bottom"
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
               >
@@ -1359,12 +1367,12 @@ export default function Landing() {
                 </div>
               </div>
 
-              {/* OXXO */}
-              <div className="absolute bottom-[2%] right-[15%] flex flex-col items-center z-10 transition-transform cursor-pointer">
+              {/* OXXO Santa Isabel */}
+              <div className="absolute bottom-[3%] right-[15%] flex flex-col items-center z-10 transition-transform cursor-pointer">
                 <div className="bg-white w-[34px] h-[24px] rounded-[4px] border border-gray-200 shadow-sm flex items-center justify-center mb-1 overflow-hidden">
                   <img src="https://upload.wikimedia.org/wikipedia/en/4/40/OXXO_logo.svg" alt="OXXO" className="w-[85%] object-contain" />
                 </div>
-                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight notranslate">OXXO</span>
+                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight notranslate">OXXO Santa Isabel</span>
               </div>
                 </a>
               </div>
