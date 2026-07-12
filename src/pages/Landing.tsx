@@ -1359,12 +1359,12 @@ export default function Landing() {
                 </div>
               </div>
 
-              {/* OXXO Santa Isabel */}
+              {/* OXXO */}
               <div className="absolute bottom-[2%] right-[15%] flex flex-col items-center z-10 transition-transform cursor-pointer">
-                <div className="bg-[#9ca3af] w-[26px] h-[26px] rounded-[6px] border-2 border-white flex items-center justify-center text-white mb-1">
-                  <ShoppingBag size={14} strokeWidth={2.5}/>
+                <div className="bg-white w-[34px] h-[24px] rounded-[4px] border border-gray-200 shadow-sm flex items-center justify-center mb-1 overflow-hidden">
+                  <img src="https://upload.wikimedia.org/wikipedia/en/4/40/OXXO_logo.svg" alt="OXXO" className="w-[85%] object-contain" />
                 </div>
-                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight notranslate">OXXO Santa Isabel</span>
+                <span translate="no" className="text-black text-[12px] font-medium whitespace-nowrap tracking-tight notranslate">OXXO</span>
               </div>
                 </a>
               </div>
