@@ -1185,7 +1185,7 @@ export default function Landing() {
                       Pide nuestro cesto
                     </h4>
                     <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-snug">
-                      Lo recibes gratis
+                      Con envío gratis
                     </p>
                   </div>
                 </div>
