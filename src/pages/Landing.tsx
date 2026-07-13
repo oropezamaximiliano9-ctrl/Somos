@@ -1253,7 +1253,7 @@ export default function Landing() {
                     Tu ropa limpia a domicilio
                   </p>
                   <p className="font-geist text-[#4b6a9b] font-medium text-[16px] leading-snug">
-                    Entrega al día siguiente sin costo
+                    Entrega al día siguiente
                   </p>
                 </div>
               </div>
