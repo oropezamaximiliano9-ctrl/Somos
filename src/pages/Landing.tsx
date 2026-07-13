@@ -1101,7 +1101,7 @@ export default function Landing() {
                 {/* Texto superior del cesto */}
                 <div className="py-2.5 px-3.5 select-none shrink-0">
                   <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ lineHeight: '1.5' }}>
-                    Toda la ropa que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
+                    Todo lo que quepa por <span className="text-[#0f55d8] font-bold">$95</span>
                   </span>
                 </div>
 
