@@ -1437,6 +1437,83 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Nueva Sección: Servicios adicionales */}
+      <section className="w-full px-0 pt-5 flex flex-col justify-start pb-10 bg-[#f6eedd] snap-start snap-always" id="servicios-adicionales-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
+        <div className="w-full max-w-sm mx-auto text-left">
+          
+          <div className="w-full pb-4">
+            <h2 className="text-center text-[28px] sm:text-[34px] font-semibold tracking-tight text-gray-800 leading-tight px-4 font-geist">
+              Soluciones
+            </h2>
+            <p className="text-center text-[19px] sm:text-[21px] text-[#6A6A6A] font-semibold px-4 font-geist no-underline pointer-events-none select-text cursor-text" style={{ textDecoration: 'none', borderBottom: 'none', marginTop: '6px' }}>
+              Con costo adicional
+            </p>
+          </div>
+
+          <div className="px-0 sm:px-0 mt-6 w-full">
+            <div className="w-full bg-white border border-[#eaeaea] rounded-lg py-5 px-4 text-left relative overflow-hidden flex flex-col">
+              <div className="flex flex-col">
+                <div className="flex flex-col pb-5">
+                  <div className="flex items-center gap-4">
+                    <div className="shrink-0">
+                      <div className="bg-gradient-to-b from-[#0f55d8]/10 to-[#0f55d8]/[0.02] w-[64px] flex justify-center py-2 rounded-full border border-[#0f55d8]/20 shadow-[0_2px_8px_rgba(15,85,216,0.06)]">
+                        <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
+                          +$20
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-geist font-bold text-[#181818] text-[17px] sm:text-[18px] leading-snug">
+                        Urgente
+                      </h4>
+                      <p className="font-geist text-[#6A6A6A] text-[15px] sm:text-[16px] font-medium leading-relaxed">
+                        Recibe tu ropa limpia el mismo día.
+                      </p>
+                      <div className="flex items-start gap-1.5 pt-1.5">
+                        <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
+                        <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
+                          Pídelo al entregar tu cesto
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-[#EDE9E0] w-full" />
+
+                <div className="flex flex-col pt-5">
+                  <div className="flex items-center gap-4">
+                    <div className="shrink-0">
+                      <div className="bg-gradient-to-b from-[#0f55d8]/10 to-[#0f55d8]/[0.02] w-[64px] flex justify-center py-2 rounded-full border border-[#0f55d8]/20 shadow-[0_2px_8px_rgba(15,85,216,0.06)]">
+                        <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
+                          +$$$
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-geist font-bold text-[#181818] text-[17px] sm:text-[18px] leading-snug">
+                        Ropa de cama
+                      </h4>
+                      <p className="font-geist text-[#6A6A6A] text-[15px] sm:text-[16px] font-medium leading-relaxed">
+                        Añade el lavado de tu edredón, cobertor o sábana.
+                      </p>
+                      <div className="flex items-start gap-1.5 pt-1.5">
+                        <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
+                        <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
+                          Entrégalo por separado
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+
       {/* Bottom Sheet sliding panel modal - High Performance pure CSS */}
       <div 
         className="form-overlay" 
