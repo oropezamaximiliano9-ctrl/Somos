@@ -5,7 +5,7 @@
 
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, createContext, useContext, useRef, MouseEvent, useEffect } from "react";
-import { Calendar, Clock, Menu, MoreVertical, X, ArrowLeft, Play } from "lucide-react";
+import { Calendar, Clock, Menu, MoreVertical, X, ArrowLeft, Play, MessageCircleMore } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import Landing from "./pages/Landing";
 import BagFlow from "./pages/BagFlow";

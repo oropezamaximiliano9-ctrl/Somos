@@ -1379,12 +1379,6 @@ export default function Landing() {
 
               {/* Tarjeta de información */}
               <div className="pt-2.5 pb-0.5 w-full bg-white relative z-10 flex flex-row justify-between items-center px-1.5">
-                {/* Horario */}
-                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1.5">
-                  <Clock size={16} strokeWidth={2} />
-                  9 am - 6 pm
-                </div>
-
                 {/* Contacto */}
                 <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1.5">
                   <MessageCircleMore size={16} strokeWidth={2} />
@@ -1396,6 +1390,11 @@ export default function Landing() {
                   >
                     Contáctanos
                   </a>
+                </div>
+                {/* Horario */}
+                <div className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-tight flex items-center gap-1.5">
+                  <Clock size={16} strokeWidth={2} />
+                  9 am - 6 pm
                 </div>
               </div>
             </div>
@@ -1454,9 +1453,9 @@ export default function Landing() {
             <div className="w-full bg-white border border-[#eaeaea] rounded-lg py-5 px-4 text-left relative overflow-hidden flex flex-col">
               <div className="flex flex-col">
                 <div className="flex flex-col pb-5">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div className="shrink-0">
-                      <div className="bg-gradient-to-b from-[#0f55d8]/10 to-[#0f55d8]/[0.02] w-[64px] flex justify-center py-2 rounded-full border border-[#0f55d8]/20 shadow-[0_2px_8px_rgba(15,85,216,0.06)]">
+                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
                         <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
                           +$20
                         </span>
@@ -1482,9 +1481,9 @@ export default function Landing() {
                 <div className="border-t border-[#EDE9E0] w-full" />
 
                 <div className="flex flex-col pt-5">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div className="shrink-0">
-                      <div className="bg-gradient-to-b from-[#0f55d8]/10 to-[#0f55d8]/[0.02] w-[64px] flex justify-center py-2 rounded-full border border-[#0f55d8]/20 shadow-[0_2px_8px_rgba(15,85,216,0.06)]">
+                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
                         <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
                           +$$$
                         </span>
