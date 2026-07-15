@@ -1108,7 +1108,7 @@ export default function Landing() {
                 {/* Imagen del cesto */}
                 <div className="relative w-full flex-1 select-none overflow-hidden bg-transparent flex items-center justify-center px-2.5">
                   <img 
-                    src="/hero-basket.webp" 
+                    src="https://i.ibb.co/VcVSqJbP/A5-DFA592-E652-4373-9358-BA9-DC228-E0-D7.webp" 
                     alt="Cesto de lona premium SOMOS en ambiente real minimal" 
                     className="w-full h-full object-cover object-[center_60%] pointer-events-none select-none rounded-md"
                     fetchPriority="high"
