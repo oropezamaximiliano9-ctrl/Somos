@@ -1097,7 +1097,7 @@ export default function Landing() {
           {/* Cesto grande centrado en ambiente real minimal con texto descriptivo unificado */}
           <div className="px-0 sm:px-0 mt-6 mb-6 w-full">
             <div className="rounded-lg border border-gray-100/50 overflow-hidden bg-white">
-              <div id="basket-container" className="relative w-full h-[300px] flex flex-col">
+              <div id="basket-container" className="relative w-full h-[270px] flex flex-col">
                 {/* Texto superior del cesto */}
                 <div className="py-2.5 px-3.5 select-none shrink-0">
                   <span className="font-geist text-[#6A6A6A] text-[16px] font-medium text-center block w-full" style={{ lineHeight: '1.5' }}>
@@ -1152,6 +1152,16 @@ export default function Landing() {
                     </span>
                   </div>
                 </div>
+                
+                <button 
+                  onClick={openBottomSheet}
+                  className="w-full h-[40px] bg-[#0f55d8] text-white rounded-2xl font-bold text-lg font-geist flex items-center justify-center gap-2 select-none disabled:opacity-85 hover:brightness-110 mt-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <span>Quiero mi cesto</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </div>
+                </button>
               </div>
           </div>
         </div>
