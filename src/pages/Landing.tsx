@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, MessageCircleMore, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building, Wrench } from "lucide-react";
+import { Check, CheckCircle, CheckCircle2, Clock, Info, Loader2, MapPin, Phone, MessageCircleMore, ShoppingBag, Sparkles, Truck, User, X, Banknote, ArrowRight, Building, Wrench, Shirt, Package } from "lucide-react";
 import { useState, useContext, useRef, FormEvent, useEffect } from "react";
 import { RoleContext } from "../App";
 import canvasLaundryBag from "../assets/images/IMG_8321.jpg";
@@ -1175,12 +1175,12 @@ export default function Landing() {
 
           {/* Tarjeta Unica de Pasos */}
           <div className="px-0 sm:px-0 mt-6 w-full">
-            <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 text-left relative overflow-hidden">
+            <div className="w-full bg-white border-t border-x border-[#eaeaea] rounded-t-lg pt-3.5 pb-3.5 pl-5 pr-2.5 text-left relative overflow-hidden">
               <div className="flex flex-col">
                 {/* Item 1 */}
-                <div className="flex items-start gap-3 pb-3">
-                  <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">1</span>
-                  <div className="space-y-0.5 pt-1.5">
+                <div className="flex items-center gap-4 pt-[6px] pb-[12px]">
+                  <span className="font-inter font-semibold text-[19px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">1</span>
+                  <div className="space-y-0.5">
                     <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
                       Pide nuestro cesto
                     </h4>
@@ -1195,9 +1195,9 @@ export default function Landing() {
                   {/* Separador 1 */}
                   <div className="border-t border-[#EDE9E0] w-full" />
 
-                  <div className="flex items-start gap-3 py-3">
-                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">2</span>
-                    <div className="space-y-0.5 pt-1.5">
+                  <div className="flex items-center gap-4 pt-[18px] pb-[12px]">
+                    <span className="font-inter font-semibold text-[19px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">2</span>
+                    <div className="space-y-0.5">
                       <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
                         Llénalo en casa
                       </h4>
@@ -1213,9 +1213,9 @@ export default function Landing() {
                   {/* Separador 2 */}
                   <div className="border-t border-[#EDE9E0] w-full" />
 
-                  <div className="flex items-start gap-3 pt-3">
-                    <span className="font-inter font-semibold text-[18px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">3</span>
-                    <div className="space-y-0.5 pt-1.5">
+                  <div className="flex items-center gap-4 pt-[18px] pb-[6px]">
+                    <span className="font-inter font-semibold text-[19px] text-[#6A6A6A] shrink-0 w-9 h-9 flex items-center justify-center select-none">3</span>
+                    <div className="space-y-0.5">
                       <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-tight">
                         Déjalo en el punto de recolección
                       </h4>
@@ -1234,7 +1234,7 @@ export default function Landing() {
 
               <div 
                
-                className="w-full bg-[#f8fbff] border border-[#0f55d8]/30 rounded-lg pt-3.5 pb-3.5 pl-2.5 pr-2.5 mt-0 mb-0 text-left flex items-start gap-3 select-none transform-gpu relative z-10 overflow-hidden" 
+                className="w-full bg-[#f8fbff] border border-[#0f55d8]/30 rounded-lg pt-3.5 pb-3.5 pl-5 pr-2.5 mt-0 mb-0 text-left flex items-center gap-4 select-none transform-gpu relative z-10 overflow-hidden" 
                 id="flow-reward-banner"
               >
                 <div 
@@ -1248,7 +1248,7 @@ export default function Landing() {
                     <Check className="w-[15px] h-[15px]" strokeWidth={3.5} />
                   </div>
                 </div>
-                <div className="flex flex-col text-left space-y-0.5 pt-1.5">
+                <div className="flex flex-col text-left space-y-0.5">
                   <p className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[17px] leading-tight">
                     Tu ropa limpia a domicilio
                   </p>
