@@ -1271,7 +1271,7 @@ export default function Landing() {
                 <ArrowRight className="w-5 h-5" />
               </div>
             </button>
-            <p className="text-center text-sm font-semibold text-gray-500 mt-2.5">Recíbelo gratis, paga solo al lavar</p>
+            <p className="text-center text-[15px] font-semibold text-gray-500 mt-2.5">Recíbelo gratis, paga solo al lavar</p>
           </div>
         </div>
       </section>
