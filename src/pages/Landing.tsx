@@ -1504,22 +1504,7 @@ export default function Landing() {
 
               </div>
             </div>
-            <a 
-              href="https://wa.me/529212393938" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="mt-5 w-full flex flex-wrap items-center gap-x-2.5 gap-y-1 px-1"
-            >
-              <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-snug">
-                ¿Necesitas más?
-              </h4>
-              <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-relaxed">
-                Pídelo
-              </p>
-              <div className="flex items-center text-[#6A6A6A] shrink-0">
-                <span className="font-geist font-medium text-[15px] sm:text-[16px] leading-none underline">921 239 3938</span>
-              </div>
-            </a>
+
           </div>
 
 
