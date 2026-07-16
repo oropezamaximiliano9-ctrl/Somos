@@ -1354,13 +1354,9 @@ export default function Landing() {
               </div>
 
               {/* Red Pin - Location */}
-              <div 
-                className="absolute top-[19%] left-[40%] z-20 drop- cursor-pointer origin-bottom"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              >
-                <div className="text-[#ea4335] relative">
-                  <svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="drop-">
+              <div className="absolute top-[19%] left-[40%] z-20 cursor-pointer flex flex-col items-center">
+                <div className="text-[#ea4335] relative origin-bottom">
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-sm">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
                   <div className="absolute top-[9px] left-1/2 w-3 h-3 bg-[#a50f03] rounded-full -translate-x-1/2 opacity-30"></div>
@@ -1450,25 +1446,25 @@ export default function Landing() {
           </div>
 
           <div className="px-0 sm:px-0 mt-6 w-full">
-            <div className="w-full bg-white border border-[#eaeaea] rounded-lg py-5 px-4 text-left relative overflow-hidden flex flex-col">
+            <div className="w-full bg-white border border-[#eaeaea] rounded-lg pt-5 pb-2.5 px-4 text-left relative overflow-hidden flex flex-col">
               <div className="flex flex-col">
-                <div className="flex flex-col pb-5">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col pb-2.5">
+                  <div className="flex items-center gap-4">
                     <div className="shrink-0">
-                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
+                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-[1.5px] border-[#4b6a9b]">
                         <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
                           +$20
                         </span>
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <h4 className="font-geist font-bold text-[#181818] text-[17px] sm:text-[18px] leading-snug">
+                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-snug">
                         Urgente
                       </h4>
-                      <p className="font-geist text-[#6A6A6A] text-[15px] sm:text-[16px] font-medium leading-relaxed">
+                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-relaxed">
                         Recibe tu ropa limpia el mismo día.
                       </p>
-                      <div className="flex items-start gap-1.5 pt-1.5">
+                      <div className="flex items-start gap-1.5 pt-4">
                         <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
                         <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
                           Pídelo al entregar tu cesto
@@ -1480,23 +1476,23 @@ export default function Landing() {
 
                 <div className="border-t border-[#EDE9E0] w-full" />
 
-                <div className="flex flex-col pt-5 pb-5">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col pt-5 pb-2.5">
+                  <div className="flex items-center gap-4">
                     <div className="shrink-0">
-                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
+                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-[1.5px] border-[#4b6a9b]">
                         <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
                           +$$$
                         </span>
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <h4 className="font-geist font-bold text-[#181818] text-[17px] sm:text-[18px] leading-snug">
+                      <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-snug">
                         Ropa de cama
                       </h4>
-                      <p className="font-geist text-[#6A6A6A] text-[15px] sm:text-[16px] font-medium leading-relaxed">
+                      <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-relaxed">
                         Añade el lavado de tu edredón, cobertor o sábana.
                       </p>
-                      <div className="flex items-start gap-1.5 pt-1.5">
+                      <div className="flex items-start gap-1.5 pt-4">
                         <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
                         <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
                           Entrégalo por separado
@@ -1506,35 +1502,24 @@ export default function Landing() {
                   </div>
                 </div>
 
-                <div className="border-t border-[#EDE9E0] w-full" />
-
-                <div className="flex flex-col pt-5">
-                  <div className="flex items-center gap-3">
-                    <div className="shrink-0">
-                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
-                        <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
-                          +$$$
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="font-geist font-bold text-[#181818] text-[17px] sm:text-[18px] leading-snug">
-                        Nuevo servicio
-                      </h4>
-                      <p className="font-geist text-[#6A6A6A] text-[15px] sm:text-[16px] font-medium leading-relaxed">
-                        Descripción del nuevo servicio.
-                      </p>
-                      <div className="flex items-start gap-1.5 pt-1.5">
-                        <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
-                        <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
-                          Información adicional
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+            <a 
+              href="https://wa.me/529212393938" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="mt-5 w-full flex flex-wrap items-center gap-x-2.5 gap-y-1 px-1"
+            >
+              <h4 className="font-geist font-bold text-[#181818] text-[16px] sm:text-[17px] leading-snug">
+                ¿Necesitas más?
+              </h4>
+              <p className="font-geist text-[#6A6A6A] text-[16px] font-medium leading-relaxed">
+                Pídelo
+              </p>
+              <div className="flex items-center text-[#6A6A6A] shrink-0">
+                <span className="font-geist font-medium text-[15px] sm:text-[16px] leading-none underline">921 239 3938</span>
+              </div>
+            </a>
           </div>
 
 

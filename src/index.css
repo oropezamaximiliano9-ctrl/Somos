@@ -81,6 +81,7 @@ html {
   .animate-soft-glow {
     animation: softGlow 3s ease-in-out infinite;
   }
+
 }
 
 /* Custom High-Performance Bottom Sheet Form Transitions */
