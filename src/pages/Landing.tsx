@@ -1086,7 +1086,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full bg-[#f6eedd]">
+    <div className="flex-1 flex flex-col w-full bg-[#fdf0d5]">
       {/* Hero Section */}
       <section className="relative w-full px-0 pt-0 pb-12 flex flex-col items-start text-left justify-start snap-start snap-always" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
 
@@ -1277,7 +1277,7 @@ export default function Landing() {
       </section>
 
       {/* Nueva Sección: Ubicación Dinámica Interactiva sin Clave de API */}
-      <section className="w-full px-0 pt-5 flex flex-col justify-start pb-10 bg-[#f6eedd] snap-start snap-always" id="editorial-location-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
+      <section className="w-full px-0 pt-5 flex flex-col justify-start pb-10 bg-[#fdf0d5] snap-start snap-always" id="editorial-location-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
         <div className="w-full max-w-sm mx-auto text-left">
           
           {/* Header directly in the layout, extremely bold and crisp */}
@@ -1437,7 +1437,7 @@ export default function Landing() {
       </section>
 
       {/* Nueva Sección: Servicios adicionales */}
-      <section className="w-full px-0 pt-5 flex flex-col justify-start pb-10 bg-[#f6eedd] snap-start snap-always" id="servicios-adicionales-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
+      <section className="w-full px-0 pt-5 flex flex-col justify-start pb-10 bg-[#fdf0d5] snap-start snap-always" id="servicios-adicionales-section" style={{ scrollSnapAlign: 'start', minHeight: 'calc(100dvh - 56px)' }}>
         <div className="w-full max-w-sm mx-auto text-left">
           
           <div className="w-full pb-4">
@@ -1480,7 +1480,7 @@ export default function Landing() {
 
                 <div className="border-t border-[#EDE9E0] w-full" />
 
-                <div className="flex flex-col pt-5">
+                <div className="flex flex-col pt-5 pb-5">
                   <div className="flex items-center gap-3">
                     <div className="shrink-0">
                       <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
@@ -1500,6 +1500,34 @@ export default function Landing() {
                         <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
                         <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
                           Entrégalo por separado
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-[#EDE9E0] w-full" />
+
+                <div className="flex flex-col pt-5">
+                  <div className="flex items-center gap-3">
+                    <div className="shrink-0">
+                      <div className="bg-white w-[64px] flex justify-center py-2 rounded-full border-2 border-[#0f55d8]/20">
+                        <span className="font-geist font-bold text-[#0f55d8] text-[16px] sm:text-[18px] leading-none tracking-tight">
+                          +$$$
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-geist font-bold text-[#181818] text-[17px] sm:text-[18px] leading-snug">
+                        Nuevo servicio
+                      </h4>
+                      <p className="font-geist text-[#6A6A6A] text-[15px] sm:text-[16px] font-medium leading-relaxed">
+                        Descripción del nuevo servicio.
+                      </p>
+                      <div className="flex items-start gap-1.5 pt-1.5">
+                        <Info className="w-[14px] h-[14px] text-[#0f55d8] shrink-0 mt-[2px]" />
+                        <span className="font-geist text-[#4b6a9b] text-[13.5px] font-semibold leading-snug">
+                          Información adicional
                         </span>
                       </div>
                     </div>

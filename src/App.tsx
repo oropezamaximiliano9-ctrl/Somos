@@ -70,13 +70,13 @@ function MainLayout() {
 
   return (
     <div 
-      className="h-[100dvh] w-full overflow-y-auto overflow-x-hidden flex flex-col bg-[#f6eedd] snap-y snap-mandatory"
+      className="h-[100dvh] w-full overflow-y-auto overflow-x-hidden flex flex-col bg-[#fdf0d5] snap-y snap-mandatory"
       style={{ scrollBehavior: 'smooth', scrollPaddingTop: '56px' }}
     >
       {/* Top Banner removed */}
 
       {/* Header - Always present, sticky below the top banner */}
-      <header className="bg-[#f6eedd]/95 backdrop-blur-md sticky top-0 w-full z-50">
+      <header className="bg-[#fdf0d5]/95 backdrop-blur-md sticky top-0 w-full z-50">
         <div className="max-w-sm mx-auto px-4 h-14 flex items-center justify-between">
           <span 
             onClick={handleClick}
